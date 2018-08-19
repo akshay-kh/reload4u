@@ -2,14 +2,27 @@
   <html>
     <head>
       <style>
-        button {
-
+      .button {
+        border-radius: 7px;
+        margin: 3px;
+        padding: 7px;
+      }
+        .select-button {
+          background: #0486ef;
+          color: white;
+        }
+        .deselect-button {
+          background: #f44336;
+          color: white;
         }
       </style>
     </head>
     <body>
       <div>
-        <button id="selectThisTab">Select This tab</button>
+        <button class="select-button button" id="selectThisTab">Select tab</button>
+      </div>
+      <div>
+        <button class="deselect-button button" id="stopThisTab">Stop</button>
       </div>
       <script src="popup.js"></script>
     </body>

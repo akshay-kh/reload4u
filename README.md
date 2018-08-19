@@ -1,4 +1,4 @@
-#Reload 4 U !
+# Reload 4 U !
 
 This a chrome extension to reload selected tab for every 2 seconds
 

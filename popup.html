@@ -1,29 +1,21 @@
- <!DOCTYPE html>
-  <html>
-    <head>
-      <style>
-      .button {
-        border-radius: 7px;
-        margin: 3px;
-        padding: 7px;
-      }
-        .select-button {
-          background: #0486ef;
-          color: white;
-        }
-        .deselect-button {
-          background: #f44336;
-          color: white;
-        }
-      </style>
-    </head>
-    <body>
-      <div>
-        <button class="select-button button" id="selectThisTab">Select tab</button>
+<!DOCTYPE html>
+<html>
+   <head>
+      <link rel="stylesheet" href="./assets/css/bootstrap.min.css" crossorigin="anonymous">
+      <script src="./assets/js/bootstrap.min.js"></script>
+   </head>
+   <body>
+     <div class="container">
+      <div class="card">
+         <div class="card-header">
+            Reload4U!
+         </div>
+         <ul class="list-group list-group-flush">
+            <li class="list-group-item"><button class="btn btn-primary" id="selectThisTab">Select tab</button></li>
+            <li class="list-group-item"><button class="btn btn-danger" id="stopThisTab">Deselect Tab</button></li>
+         </ul>
       </div>
-      <div>
-        <button class="deselect-button button" id="stopThisTab">Stop</button>
-      </div>
-      <script src="popup.js"></script>
-    </body>
-  </html>
+    </div>
+    <script src="popup.js"></script>
+   </body>
+</html>

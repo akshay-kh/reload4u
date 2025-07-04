@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Reload4U</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body class="min-w-64 max-w-xs p-5 bg-gray-50 text-gray-800 font-sans">
+
+    <div class="space-y-4">
+      <h1 class="text-2xl font-semibold text-blue-600 flex items-center gap-2">
+        🔁 Reload4U
+      </h1>
+
+      <p class="text-sm text-gray-600">
+        Select a tab to auto-reload it.
+      </p>
+
+      <div class="flex flex-col space-y-2">
+        <button
+          id="selectThisTab"
+          class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition"
+        >
+          ✅ Select This Tab
+        </button>
+
+        <button
+          id="stopThisTab"
+          class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow transition"
+        >
+          ❌ Deselect Tab
+        </button>
+      </div>
+    </div>
+
+    <script type="module" src="/popup.js"></script>
+  </body>
+</html>

@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Build artifacts
+dist/
+.tmp/
+.tscache/
+
+# IDE and editor-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+.Trashes
+
+# Log files and temporary files
+*.log
+*.tmp
+*.temp
+
+# Packaging
+*.zip
+*.crx
+.crx*
+.DS_Store
+
+# System files
+.AppleDouble
+.LSOverride
+
+# npm
+npm-debug.log*
+package-lock.json
+yarn-debug.log*
+yarn-error.log*

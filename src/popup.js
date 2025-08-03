@@ -1,5 +1,6 @@
 let selectTab = document.getElementById('selectThisTab');
 let stopAllTabs = document.getElementById('stopAllTabs');
+let openSettings = document.getElementById('openSettings');
 let selectedTabsInfo = document.getElementById('selectedTabsInfo');
 let activeTabsSection = document.getElementById('activeTabsSection');
 let pausedTabsSection = document.getElementById('pausedTabsSection');
@@ -8,6 +9,16 @@ let pausedTabsList = document.getElementById('pausedTabsList');
 
 // Store countdown intervals for cleanup
 let countdownIntervals = {};
+
+// Function to get default interval from settings
+function getDefaultInterval() {
+    return new Promise(function(resolve) {
+        chrome.storage.sync.get(['reload4uSettings'], function(data) {
+            const settings = data.reload4uSettings || { defaultInterval: 0.5 };
+            resolve(settings.defaultInterval);
+        });
+    });
+}
 
 // Function to get next reload time for a tab
 function getNextReloadTime(tabId) {
@@ -399,30 +410,37 @@ selectTab.onclick = function(){
     chrome.tabs.query(query, function(tabs) {
         var currentTab = tabs[0];
         var tabId = String(currentTab.id); // Ensure string type
-        var defaultInterval = Math.max(0.5, parseFloat(document.getElementById('defaultInterval').value));
         
-        getSelectedTabs().then(function(selectedTabsData) {
-            if (!selectedTabsData.hasOwnProperty(tabId)) {
-                selectedTabsData[tabId] = {
-                    interval: defaultInterval,
-                    paused: false
-                };
-                chrome.storage.sync.set({selectedTabsWithIntervals: selectedTabsData}, function() {
-                    // Create alarm for this specific tab
-                    chrome.alarms.create('reloadTab_' + tabId, {
-                        when: Date.now(),
-                        periodInMinutes: defaultInterval
+        // Get default interval from settings
+        getDefaultInterval().then(function(defaultInterval) {
+            getSelectedTabs().then(function(selectedTabsData) {
+                if (!selectedTabsData.hasOwnProperty(tabId)) {
+                    selectedTabsData[tabId] = {
+                        interval: defaultInterval,
+                        paused: false
+                    };
+                    chrome.storage.sync.set({selectedTabsWithIntervals: selectedTabsData}, function() {
+                        // Create alarm for this specific tab
+                        chrome.alarms.create('reloadTab_' + tabId, {
+                            when: Date.now(),
+                            periodInMinutes: defaultInterval
+                        });
+                        
+                        displaySelectedTabs();
+                        console.log('Added tab:', tabId, 'with interval:', defaultInterval);
+                        alert("Tab added to auto-reload list");
                     });
-                    
-                    displaySelectedTabs();
-                    console.log('Added tab:', tabId, 'with interval:', defaultInterval);
-                    alert("Tab added to auto-reload list");
-                });
-            } else {
-                alert("This tab is already selected for auto-reload");
-            }
+                } else {
+                    alert("This tab is already selected for auto-reload");
+                }
+            });
         });
     });
+};
+
+// Open settings page
+openSettings.onclick = function() {
+    chrome.runtime.openOptionsPage();
 };
 
 stopAllTabs.onclick = function () {

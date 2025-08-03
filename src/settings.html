@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Reload4U Settings</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="assets/style.css" />
+  </head>
+  <body class="min-h-screen bg-gray-50 text-gray-800 font-sans">
+    <div class="max-w-2xl mx-auto py-8 px-6">
+      
+      <!-- Header -->
+      <div class="mb-8">
+        <div class="flex items-center gap-3 mb-4">
+          <img src="../public/images/icon48.png" alt="Reload4U" class="w-12 h-12">
+          <div>
+            <h1 class="text-3xl font-bold text-blue-600">Reload4U Settings</h1>
+            <p class="text-gray-600">Configure your auto-reload preferences</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Form -->
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        
+        <!-- Default Interval Setting -->
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Default Settings</h2>
+          
+          <div class="space-y-4">
+            <div>
+              <label for="defaultInterval" class="block text-sm font-medium text-gray-700 mb-2">
+                Default Reload Interval (minutes)
+              </label>
+              <div class="flex items-center gap-3">
+                <input 
+                  id="defaultInterval" 
+                  type="number" 
+                  min="0.5" 
+                  step="0.5" 
+                  value="0.5" 
+                  class="w-32 px-3 py-2 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                <span class="text-sm text-gray-500">
+                  Minimum: 0.5 minutes (30 seconds)
+                </span>
+              </div>
+              <p class="mt-2 text-xs text-gray-500">
+                This interval will be used as the default when adding new tabs to auto-reload.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Future Settings Section -->
+        <!-- <div class="mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-4">Preferences</h2>
+          
+          <div class="space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="text-sm font-medium text-gray-700">Show notifications</label>
+                <p class="text-xs text-gray-500">Get notified when tabs are reloaded</p>
+              </div>
+              <input 
+                id="showNotifications" 
+                type="checkbox" 
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              >
+            </div>
+            
+            <div class="flex items-center justify-between">
+              <div>
+                <label class="text-sm font-medium text-gray-700">Auto-start on browser startup</label>
+                <p class="text-xs text-gray-500">Resume auto-reload for previously selected tabs</p>
+              </div>
+              <input 
+                id="autoStart" 
+                type="checkbox" 
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              >
+            </div>
+          </div>
+        </div> -->
+
+        <!-- Save Button -->
+        <div class="flex justify-between items-center pt-4 border-t border-gray-200">
+          <div id="saveStatus" class="text-sm text-green-600 hidden">
+            ✅ Settings saved successfully!
+          </div>
+          <button 
+            id="saveSettings" 
+            class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow transition-colors"
+          >
+            Save Settings
+          </button>
+        </div>
+      </div>
+
+      <!-- About Section -->
+      <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <h2 class="text-lg font-semibold text-gray-900 mb-4">About Reload4U</h2>
+        <div class="space-y-2 text-sm text-gray-600">
+          <p><strong>Version:</strong> 0.3.1</p>
+          <p><strong>Description:</strong> Auto-reload selected browser tabs at customizable intervals</p>
+          <p><strong>Features:</strong> Multiple tab support, individual intervals, pause/resume, visual indicators</p>
+        </div>
+        
+        <div class="mt-4 pt-4 border-t border-gray-200">
+          <p class="text-xs text-gray-500">
+            Made with ❤️ for better browser productivity
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <script type="module" src="/settings.js"></script>
+  </body>
+</html>

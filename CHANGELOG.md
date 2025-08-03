@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.2] - 2025-08-03
+
+### Added
+- **Extension Settings Page**: Dedicated settings page accessible via right-click extension icon → Options
+- **Centralized Configuration**: Moved default interval setting from popup to settings page for better organization
+- **Settings Link in Popup**: Added ⚙️ Settings button in popup for easy access to configuration
+- **Future-ready Architecture**: Settings page designed to accommodate additional preferences and options
+
+### Changed
+- **Cleaner Popup Interface**: Removed default interval input from popup to focus on core functionality
+- **Improved User Experience**: Settings now follow Chrome extension best practices with dedicated options page
+- **Enhanced Organization**: Configuration options centralized in one location
+
+### Technical
+- **Updated Manifest**: Added `options_page` entry for settings page integration
+- **Enhanced Build System**: Updated Vite configuration to include settings page in build process
+- **Settings Storage**: Implemented proper settings storage and retrieval system
+
 ## [0.3.1] - 2025-08-03
 
 ### Added

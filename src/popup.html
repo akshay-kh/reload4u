@@ -14,21 +14,19 @@
         Reload4U
       </h1>
 
-      <p class="text-sm text-gray-600">
-        Select a tab to auto-reload it.
-      </p>
-
-      <div class="flex items-center gap-2 text-sm">
-        <label for="defaultInterval" class="text-gray-600">Default interval (minutes):</label>
-        <input 
-          id="defaultInterval" 
-          type="number" 
-          min="0.5" 
-          step="0.1" 
-          value="0.5" 
-          class="w-24 px-2 py-1 border border-gray-300 rounded text-center"
+      <div class="flex items-center justify-between">
+        <p class="text-sm text-gray-600">
+          Select a tab to auto-reload it.
+        </p>
+        <button 
+          id="openSettings" 
+          class="text-xs text-blue-600 hover:text-blue-800 underline"
+          title="Open Settings"
         >
+          ⚙️ Settings
+        </button>
       </div>
+
 
       <div id="selectedTabsInfo" class="hidden">
         <!-- Active Tabs Section -->
@@ -59,14 +57,14 @@
           id="selectThisTab"
           class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow transition"
         >
-          ✅ Select This Tab
+          <span class="inline-block px-1 py-0.5 bg-white rounded mr-2">✅</span> Select This Tab
         </button>
 
         <button
           id="stopAllTabs"
-          class="px-4 py-2 bg-stone-400 hover:bg-stone-500 text-white rounded-lg shadow transition"
+          class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg shadow transition"
         >
-          ❌ Stop All Auto-Reload
+          <span class="inline-block px-1 py-0.5 bg-white rounded text-red-500 mr-2">❌</span>Stop All Auto-Reload
         </button>
       </div>
     </div>

@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.1] - 2025-08-03
+
+### Added
+- **Visual Status Indicators**: Comprehensive status badges, countdown timers, and visual grouping
+- **Real-time Countdown Timers**: Live display showing seconds until next reload for active tabs
+- **Enhanced Visual Grouping**: Separate sections for active and paused tabs with color-coded themes
+- **Status Badges**: Colored indicator dots (green pulsing for active, yellow for paused)
+- **Improved Popup Size**: Larger popup window for better content display and usability
+- **Professional UI Cards**: Clean card-based design with shadows and better visual hierarchy
+
+### Changed
+- **Enhanced Tab Display**: Better organization with clear separation of active vs paused tabs
+- **Improved Button Layout**: Better spacing and visual design for pause/resume/remove buttons
+- **Countdown Integration**: Real-time timers integrated into each tab card showing time to next reload
+- **Visual State Management**: Consistent color-coded indicators throughout the interface
+
+### Removed
+- **Tab Title Icon Feature**: Removed problematic 🔄 icon injection into browser tab titles
+- **Script Injection Logic**: Eliminated all tab title modification code for better stability
+- **Unnecessary Permissions**: Removed `scripting` and `host_permissions` for enhanced privacy
+
+### Fixed
+- **Performance Issues**: Eliminated script injection overhead and related bugs
+- **Permission Conflicts**: Reduced required permissions for better user trust
+- **UI Stability**: Removed complex tab title manipulation that caused display issues
+
 ## [0.3.0] - 2025-08-03
 
 ### Added

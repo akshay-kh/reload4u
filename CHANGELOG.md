@@ -18,15 +18,9 @@ All notable changes to this project will be documented in this file.
 - **Countdown Integration**: Real-time timers integrated into each tab card showing time to next reload
 - **Visual State Management**: Consistent color-coded indicators throughout the interface
 
-### Removed
-- **Tab Title Icon Feature**: Removed problematic 🔄 icon injection into browser tab titles
-- **Script Injection Logic**: Eliminated all tab title modification code for better stability
-- **Unnecessary Permissions**: Removed `scripting` and `host_permissions` for enhanced privacy
-
 ### Fixed
-- **Performance Issues**: Eliminated script injection overhead and related bugs
-- **Permission Conflicts**: Reduced required permissions for better user trust
-- **UI Stability**: Removed complex tab title manipulation that caused display issues
+- **UI Performance**: Optimized popup rendering and countdown timer management
+- **Visual Consistency**: Improved color scheme and layout consistency across all components
 
 ## [0.3.0] - 2025-08-03
 

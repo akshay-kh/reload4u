@@ -14,10 +14,6 @@ export default defineConfig({
   build: {
     outDir: '../dist',
     emptyOutDir: true,
-    watch: {
-      include: ['src/**'],
-      exclude: ['node_modules/**', 'dist/**']
-    },
     rollupOptions: {
       input: {
         popup: resolve(fileURLToPath(new URL('.', import.meta.url)), 'src/popup.html'),

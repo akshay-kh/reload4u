@@ -20,7 +20,7 @@
     "manifest_version": 3,
     "browser_specific_settings": {
         "gecko": {
-            "id": "reload4u@example.com",
+            "id": "reload4u@akshay.dev",
             "strict_min_version": "109.0"
         }
     }

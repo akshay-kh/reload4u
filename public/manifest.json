@@ -1,9 +1,10 @@
 {
     "name": "Reload 4 U",
-    "version": "0.3.5",
+    "version": "0.3.6",
     "description": "Reload tab for you!",
     "permissions": ["activeTab","storage","tabs","alarms"],
     "background": {
+        "scripts": ["assets/background.js"],
         "service_worker": "assets/background.js"
     },
     "action": {
@@ -16,5 +17,11 @@
       "48": "images/icon48.png",
       "128": "images/icon128.png"
     },
-    "manifest_version": 3
-  }
+    "manifest_version": 3,
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "reload4u@example.com",
+            "strict_min_version": "109.0"
+        }
+    }
+}

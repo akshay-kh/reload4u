@@ -22,22 +22,30 @@ jobs:
         run: npm install
         
       - name: Build extension
-        run: npm run build
+        run: npm run build:all
         
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
         
-      - name: Create extension zip
+      - name: Create Chrome extension zip
         run: |
           cd dist
-          zip -r ../reload4u-v${{ steps.get_version.outputs.VERSION }}.zip .
+          zip -r ../reload4u-chrome-v${{ steps.get_version.outputs.VERSION }}.zip .
+          cd ..
+          
+      - name: Create Firefox extension zip
+        run: |
+          cd dist
+          zip -r ../reload4u-firefox-v${{ steps.get_version.outputs.VERSION }}.zip .
           cd ..
           
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: reload4u-v${{ steps.get_version.outputs.VERSION }}.zip
+          files: |
+            reload4u-chrome-v${{ steps.get_version.outputs.VERSION }}.zip
+            reload4u-firefox-v${{ steps.get_version.outputs.VERSION }}.zip
           generate_release_notes: true
           draft: false
           prerelease: false

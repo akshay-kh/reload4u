@@ -1,6 +1,6 @@
 # Reload 4 U !
 
-A Chrome extension that automatically reloads selected tabs at customizable intervals.
+A Chrome and Firefox extension that automatically reloads selected tabs at customizable intervals.
 
 ## Features
 
@@ -14,7 +14,7 @@ A Chrome extension that automatically reloads selected tabs at customizable inte
 
 - Node.js (recommended version: 22.18.0)
 - npm (comes with Node.js)
-- Google Chrome browser
+- Google Chrome or Mozilla Firefox browser
 
 ## Setup and Installation
 
@@ -45,13 +45,21 @@ npm run build
 
 This will create a `dist/` folder with the compiled extension files.
 
-### 4. Load Extension in Chrome
+### 4. Load Extension in Browser
 
+#### Chrome:
 1. Open Google Chrome
 2. Navigate to `chrome://extensions/`
 3. Enable "Developer mode" (toggle in the top right)
 4. Click "Load unpacked"
 5. Select the `dist/` folder from your project directory
+
+#### Firefox:
+1. Open Mozilla Firefox
+2. Navigate to `about:debugging`
+3. Click "This Firefox"
+4. Click "Load Temporary Add-on"
+5. Select the `manifest.json` file from your `dist/` folder
 
 ## Development
 
@@ -82,14 +90,14 @@ reload4u/
 
 1. Make your changes in the `src/` directory
 2. Run `npm run dev` to build with file watching
-3. Reload the extension in Chrome:
-   - Go to `chrome://extensions/`
-   - Click the refresh icon on your extension
+3. Reload the extension in your browser:
+   - **Chrome**: Go to `chrome://extensions/` and click the refresh icon on your extension
+   - **Firefox**: Go to `about:debugging` → "This Firefox" and click "Reload" on your extension
 4. Test your changes
 
 ## Usage
 
-1. Click the extension icon in the Chrome toolbar
+1. Click the extension icon in the browser toolbar
 2. Use the popup interface to:
    - Start/stop auto-reload for the current tab
    - Adjust reload interval

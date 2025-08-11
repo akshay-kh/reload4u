@@ -1,6 +1,6 @@
 {
   "name": "reload4u",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "This a chrome extension to reload selected tab for every 2 seconds",
   "main": "popup.js",
   "devDependencies": {
@@ -11,7 +11,10 @@
   },
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build"
+    "build": "vite build",
+    "build:chrome": "npm run build",
+    "build:firefox": "npm run build",
+    "build:all": "npm run build"
   },
   "repository": {
     "type": "git",

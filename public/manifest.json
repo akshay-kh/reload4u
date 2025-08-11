@@ -1,6 +1,6 @@
 {
     "name": "Reload 4 U",
-    "version": "0.3.6",
+    "version": "0.3.7",
     "description": "Reload tab for you!",
     "permissions": ["activeTab","storage","tabs","alarms"],
     "background": {

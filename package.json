@@ -1,6 +1,6 @@
 {
   "name": "reload4u",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "This a chrome extension to reload selected tab for every 2 seconds",
   "main": "popup.js",
   "devDependencies": {

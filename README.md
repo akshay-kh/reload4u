@@ -1,5 +1,8 @@
 # Reload 4 U !
 
+[![Chrome Web Store](https://img.shields.io/badge/chrome-web%20store-brightgreen.svg)](https://chromewebstore.google.com/detail/reload-4-u/eklchcbdgnldjjkfgbpogblkfkmpmdph)
+[![Firefox addon](https://img.shields.io/badge/firefox-addon-brightgreen.svg)](https://addons.mozilla.org/en-US/firefox/addon/reload4u/)
+
 A Chrome and Firefox extension that automatically reloads selected tabs at customizable intervals.
 
 ## Features

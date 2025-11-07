@@ -1,13 +1,15 @@
 // Settings page functionality
 let defaultIntervalInput = document.getElementById('defaultInterval');
+let defaultIntervalUnit = document.getElementById('defaultIntervalUnit');
+let minIntervalHint = document.getElementById('minIntervalHint');
 // let showNotificationsInput = document.getElementById('showNotifications');
 // let autoStartInput = document.getElementById('autoStart');
 let saveButton = document.getElementById('saveSettings');
 let saveStatus = document.getElementById('saveStatus');
 
-// Default settings
+// Default settings (interval in seconds)
 const DEFAULT_SETTINGS = {
-    defaultInterval: 0.5,
+    defaultInterval: 30,
     showNotifications: false,
     autoStart: false
 };
@@ -15,36 +17,93 @@ const DEFAULT_SETTINGS = {
 // Load settings when page loads
 document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
+    updateMinIntervalHint();
 });
+
+// Function to convert seconds to display value
+function convertSecondsToDisplay(seconds) {
+    // Default to seconds
+    if (seconds < 60) {
+        return { value: seconds, unit: 'seconds' };
+    }
+    // If evenly divisible by 60, show in minutes
+    if (seconds % 60 === 0) {
+        return { value: seconds / 60, unit: 'minutes' };
+    }
+    // Otherwise show in seconds
+    return { value: seconds, unit: 'seconds' };
+}
+
+// Function to convert display value to seconds
+function convertDisplayToSeconds(value, unit) {
+    if (unit === 'minutes') {
+        return value * 60;
+    }
+    return value;
+}
+
+// Function to update minimum interval hint
+function updateMinIntervalHint() {
+    const unit = defaultIntervalUnit.value;
+    if (unit === 'minutes') {
+        minIntervalHint.textContent = 'Minimum: 0.5 minutes';
+        defaultIntervalInput.min = '0.5';
+        defaultIntervalInput.step = '0.5';
+    } else {
+        minIntervalHint.textContent = 'Minimum: 30 seconds';
+        defaultIntervalInput.min = '1';
+        defaultIntervalInput.step = '1';
+    }
+}
 
 // Function to load settings from storage
 function loadSettings() {
     chrome.storage.sync.get(['reload4uSettings'], function(data) {
-        const settings = data.reload4uSettings || DEFAULT_SETTINGS;
-        
-        // Populate form with current settings
-        defaultIntervalInput.value = settings.defaultInterval;
+        let settings = data.reload4uSettings || DEFAULT_SETTINGS;
+
+        // Use default if old format (minutes) is detected
+        if (settings.defaultInterval < DEFAULT_SETTINGS.defaultInterval) {
+            settings.defaultInterval = DEFAULT_SETTINGS.defaultInterval;
+        }
+
+        // Convert to display format
+        const display = convertSecondsToDisplay(settings.defaultInterval);
+        defaultIntervalInput.value = display.value;
+        defaultIntervalUnit.value = display.unit;
+        updateMinIntervalHint();
+
         //showNotificationsInput.checked = settings.showNotifications;
         //autoStartInput.checked = settings.autoStart;
-        
+
         console.log('Settings loaded:', settings);
     });
 }
 
 // Function to save settings
 function saveSettings() {
+    const inputValue = parseFloat(defaultIntervalInput.value);
+    const unit = defaultIntervalUnit.value;
+
+    // Convert to seconds
+    let intervalInSeconds = convertDisplayToSeconds(inputValue, unit);
+
+    // Ensure minimum interval (30 seconds - Chrome alarm API minimum)
+    if (intervalInSeconds < 30) {
+        intervalInSeconds = 30;
+        const display = convertSecondsToDisplay(intervalInSeconds);
+        defaultIntervalInput.value = display.value;
+        defaultIntervalUnit.value = display.unit;
+        updateMinIntervalHint();
+        showSaveStatus('Minimum interval is 30 seconds', false);
+        return;
+    }
+
     const settings = {
-        defaultInterval: Math.max(0.5, parseFloat(defaultIntervalInput.value)),
+        defaultInterval: intervalInSeconds,
         //showNotifications: showNotificationsInput.checked,
         //autoStart: autoStartInput.checked
     };
-    
-    // Ensure minimum interval
-    if (settings.defaultInterval < 0.5) {
-        settings.defaultInterval = 0.5;
-        defaultIntervalInput.value = 0.5;
-    }
-    
+
     chrome.storage.sync.set({reload4uSettings: settings}, function() {
         if (chrome.runtime.lastError) {
             console.error('Error saving settings:', chrome.runtime.lastError);
@@ -70,21 +129,36 @@ function showSaveStatus(message, isSuccess) {
 
 // Function to validate interval input
 function validateInterval() {
-    const value = parseFloat(defaultIntervalInput.value);
-    if (value < 0.5) {
-        defaultIntervalInput.value = 0.5;
-        showSaveStatus('Minimum interval is 0.5 minutes (30 seconds)', false);
+    const inputValue = parseFloat(defaultIntervalInput.value);
+    const unit = defaultIntervalUnit.value;
+    const intervalInSeconds = convertDisplayToSeconds(inputValue, unit);
+
+    if (intervalInSeconds < 30) {
+        const display = convertSecondsToDisplay(30);
+        defaultIntervalInput.value = display.value;
+        defaultIntervalUnit.value = display.unit;
+        updateMinIntervalHint();
+        showSaveStatus('Minimum interval is 30 seconds', false);
     }
 }
 
 // Event listeners
 saveButton.addEventListener('click', saveSettings);
 
+// Update hint when unit changes
+defaultIntervalUnit.addEventListener('change', function() {
+    updateMinIntervalHint();
+});
+
 // Validate interval on change
 defaultIntervalInput.addEventListener('change', validateInterval);
 
 // Auto-save on change (optional - can be removed if you prefer manual save only)
 defaultIntervalInput.addEventListener('change', function() {
+    setTimeout(saveSettings, 500); // Auto-save after 500ms delay
+});
+
+defaultIntervalUnit.addEventListener('change', function() {
     setTimeout(saveSettings, 500); // Auto-save after 500ms delay
 });
 

@@ -30,19 +30,26 @@
           <div class="space-y-4">
             <div>
               <label for="defaultInterval" class="block text-sm font-medium text-gray-700 mb-2">
-                Default Reload Interval (minutes)
+                Default Reload Interval
               </label>
               <div class="flex items-center gap-3">
-                <input 
-                  id="defaultInterval" 
-                  type="number" 
-                  min="0.5" 
-                  step="0.5" 
-                  value="0.5" 
+                <input
+                  id="defaultInterval"
+                  type="number"
+                  min="1"
+                  step="1"
+                  value="30"
                   class="w-32 px-3 py-2 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                <span class="text-sm text-gray-500">
-                  Minimum: 0.5 minutes (30 seconds)
+                <select
+                  id="defaultIntervalUnit"
+                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="seconds">Seconds</option>
+                  <option value="minutes">Minutes</option>
+                </select>
+                <span id="minIntervalHint" class="text-sm text-gray-500">
+                  Minimum: 30 seconds
                 </span>
               </div>
               <p class="mt-2 text-xs text-gray-500">

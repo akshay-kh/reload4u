@@ -9,17 +9,22 @@ function getSelectedTabs() {
                 reject(chrome.runtime.lastError);
             } else {
                 let tabsData = data.selectedTabsWithIntervals || {};
-                
+
                 // Migrate old format (number) to new format (object with interval and paused)
                 for (let tabId in tabsData) {
                     if (typeof tabsData[tabId] === 'number') {
+                        // Use default if old format (minutes) is detected
+                        let interval = tabsData[tabId] < 30 ? 30 : tabsData[tabId];
                         tabsData[tabId] = {
-                            interval: tabsData[tabId],
+                            interval: interval,
                             paused: false
                         };
+                    } else if (tabsData[tabId].interval < 30) {
+                        // Fix any intervals that are in old format
+                        tabsData[tabId].interval = 30;
                     }
                 }
-                
+
                 resolve(tabsData);
             }
         });
@@ -59,7 +64,7 @@ function setupTabAlarms() {
             if (!tabData.paused) {
                 chrome.alarms.create('reloadTab_' + tabId, {
                     when: Date.now(),
-                    periodInMinutes: tabData.interval
+                    periodInMinutes: tabData.interval / 60  // Convert seconds to minutes
                 });
             }
         }

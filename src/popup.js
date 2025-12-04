@@ -10,11 +10,37 @@ let pausedTabsList = document.getElementById('pausedTabsList');
 // Store countdown intervals for cleanup
 let countdownIntervals = {};
 
+// Function to convert seconds to display value
+function convertSecondsToDisplay(seconds) {
+    // Default to seconds
+    if (seconds < 60) {
+        return { value: seconds, unit: 'seconds' };
+    }
+    // If evenly divisible by 60, show in minutes
+    if (seconds % 60 === 0) {
+        return { value: seconds / 60, unit: 'minutes' };
+    }
+    // Otherwise show in seconds
+    return { value: seconds, unit: 'seconds' };
+}
+
+// Function to convert display value to seconds
+function convertDisplayToSeconds(value, unit) {
+    if (unit === 'minutes') {
+        return value * 60;
+    }
+    return value;
+}
+
 // Function to get default interval from settings
 function getDefaultInterval() {
     return new Promise(function(resolve) {
         chrome.storage.sync.get(['reload4uSettings'], function(data) {
-            const settings = data.reload4uSettings || { defaultInterval: 0.5 };
+            let settings = data.reload4uSettings || { defaultInterval: 30 };
+            // Use default if old format (minutes) is detected
+            if (settings.defaultInterval < 30) {
+                settings.defaultInterval = 30;
+            }
             resolve(settings.defaultInterval);
         });
     });
@@ -87,10 +113,15 @@ function getSelectedTabs() {
                 // Migrate old format (number) to new format (object with interval and paused)
                 for (let tabId in tabsData) {
                     if (typeof tabsData[tabId] === 'number') {
+                        // Use default if old format (minutes) is detected
+                        let interval = tabsData[tabId] < 30 ? 30 : tabsData[tabId];
                         tabsData[tabId] = {
-                            interval: tabsData[tabId],
+                            interval: interval,
                             paused: false
                         };
+                    } else if (tabsData[tabId].interval < 30) {
+                        // Fix any intervals that are in old format
+                        tabsData[tabId].interval = 30;
                     }
                 }
                 
@@ -123,13 +154,13 @@ function removeTabFromSelected(tabId) {
     });
 }
 
-function updateTabInterval(tabId, newInterval) {
+function updateTabInterval(tabId, newIntervalInSeconds) {
     // Ensure tabId is a string
     tabId = String(tabId);
-    
-    // Enforce minimum interval of 0.5 minutes (30 seconds) due to Chrome alarm API limits
-    const interval = Math.max(0.5, parseFloat(newInterval));
-    
+
+    // Enforce minimum interval of 30 seconds due to Chrome alarm API limits
+    const interval = Math.max(30, parseFloat(newIntervalInSeconds));
+
     getSelectedTabs().then(function(tabsData) {
         if (tabsData.hasOwnProperty(tabId)) {
             tabsData[tabId].interval = interval;
@@ -139,13 +170,13 @@ function updateTabInterval(tabId, newInterval) {
                     chrome.alarms.clear('reloadTab_' + tabId, function() {
                         chrome.alarms.create('reloadTab_' + tabId, {
                             when: Date.now(),
-                            periodInMinutes: interval
+                            periodInMinutes: interval / 60  // Convert seconds to minutes
                         });
                     });
                 }
-                console.log('Updated interval for tab:', tabId, 'to:', interval);
+                console.log('Updated interval for tab:', tabId, 'to:', interval, 'seconds');
                 // Refresh display to show corrected value if it was adjusted
-                if (interval !== parseFloat(newInterval)) {
+                if (interval !== parseFloat(newIntervalInSeconds)) {
                     displaySelectedTabs();
                 }
             });
@@ -169,7 +200,7 @@ function toggleTabPause(tabId) {
                     // Create alarm when resumed
                     chrome.alarms.create('reloadTab_' + tabId, {
                         when: Date.now(),
-                        periodInMinutes: tabsData[tabId].interval
+                        periodInMinutes: tabsData[tabId].interval / 60  // Convert seconds to minutes
                     });
                     console.log('Resumed tab:', tabId);
                 }
@@ -348,24 +379,52 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     
     const intervalSection = document.createElement('div');
     intervalSection.className = 'flex items-center gap-2';
-    
+
     const label = document.createElement('label');
     label.className = 'text-xs text-gray-600';
-    label.textContent = 'Interval (min):';
-    
+    label.textContent = 'Interval:';
+
+    // Convert seconds to display format
+    const display = convertSecondsToDisplay(tabData.interval);
+
     const input = document.createElement('input');
     input.type = 'number';
-    input.min = '0.5';
-    input.step = '0.5';
-    input.value = tabData.interval;
-    input.className = 'w-20 px-2 py-1 text-xs border border-gray-300 rounded text-center focus:border-blue-500 focus:outline-none';
+    input.min = '1';
+    input.step = '1';
+    input.value = display.value;
+    input.className = 'w-16 px-2 py-1 text-xs border border-gray-300 rounded text-center focus:border-blue-500 focus:outline-none';
     input.disabled = isPaused;
-    input.addEventListener('change', function() {
-        updateTabInterval(tabId, this.value);
-    });
-    
+
+    const unitSelect = document.createElement('select');
+    unitSelect.className = 'px-2 py-1 text-xs border border-gray-300 rounded focus:border-blue-500 focus:outline-none';
+    unitSelect.disabled = isPaused;
+
+    const secondsOption = document.createElement('option');
+    secondsOption.value = 'seconds';
+    secondsOption.textContent = 'sec';
+    unitSelect.appendChild(secondsOption);
+
+    const minutesOption = document.createElement('option');
+    minutesOption.value = 'minutes';
+    minutesOption.textContent = 'min';
+    unitSelect.appendChild(minutesOption);
+
+    unitSelect.value = display.unit;
+
+    // Update interval when input or unit changes
+    function handleIntervalChange() {
+        const inputValue = parseFloat(input.value);
+        const unit = unitSelect.value;
+        const intervalInSeconds = convertDisplayToSeconds(inputValue, unit);
+        updateTabInterval(tabId, intervalInSeconds);
+    }
+
+    input.addEventListener('change', handleIntervalChange);
+    unitSelect.addEventListener('change', handleIntervalChange);
+
     intervalSection.appendChild(label);
     intervalSection.appendChild(input);
+    intervalSection.appendChild(unitSelect);
     
     const statusText = document.createElement('div');
     statusText.className = 'text-xs text-gray-500';
@@ -423,11 +482,11 @@ selectTab.onclick = function(){
                         // Create alarm for this specific tab
                         chrome.alarms.create('reloadTab_' + tabId, {
                             when: Date.now(),
-                            periodInMinutes: defaultInterval
+                            periodInMinutes: defaultInterval / 60  // Convert seconds to minutes
                         });
-                        
+
                         displaySelectedTabs();
-                        console.log('Added tab:', tabId, 'with interval:', defaultInterval);
+                        console.log('Added tab:', tabId, 'with interval:', defaultInterval, 'seconds');
                         alert("Tab added to auto-reload list");
                     });
                 } else {

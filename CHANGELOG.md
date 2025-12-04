@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2025-01-08
+
+### Added
+- **Flexible Time Unit Selection**: Users can now choose between seconds and minutes for all interval inputs
+- **Unit Selector Dropdown**: Added intuitive unit selector (sec/min) in both settings page and popup
+- **Smart Display Format**: Intervals automatically display in the most readable format (e.g., 60 seconds shows as "1 min")
+- **Dynamic Input Validation**: Minimum interval hint updates based on selected unit (30 seconds or 0.5 minutes)
+
+### Changed
+- **Interval Storage Format**: All intervals now stored internally in seconds (breaking change from previous 0.5-minute system)
+- **Improved User Experience**: More intuitive time input with familiar units (seconds/minutes)
+- **Settings Page**: Updated with unit selector for default interval configuration
+- **Popup Interface**: Enhanced interval controls with unit dropdown for each tab
+- **Conversion Logic**: Seamless conversion between user-selected units and internal seconds storage
+
+### Technical
+- **Migration Support**: Automatic detection and handling of old interval format (values < 30 reset to default)
+- **Chrome Alarms API**: Proper conversion from seconds to minutes when creating alarms (interval / 60)
+- **Consistent Validation**: 30-second minimum enforced regardless of user-selected unit
+- **Code Organization**: Added conversion helper functions (`convertSecondsToDisplay`, `convertDisplayToSeconds`)
+
+### Migration Notes
+- Existing intervals less than 30 seconds will be automatically reset to 30 seconds (default)
+- Old format data (0.5, 1, 2 for minutes) will be converted or reset to new format
+- All intervals now display intelligently based on their value (60s+ shows in minutes if evenly divisible)
+
 ## [0.3.2] - 2025-08-03
 
 ### Added

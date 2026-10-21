@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.1] - 2026-10-21
+
+### Fixed
+- **Chrome/Firefox minimum-version floors corrected** after a cross-browser compatibility audit:
+  - `minimum_chrome_version` bumped from 116 to **120** — Chrome's `chrome.alarms` 30-second floor
+    (`periodInMinutes: 0.5`) only took effect in Chrome 120; before that the floor was 1 minute,
+    so alarm-based tabs (interval >= 30s) would have silently run at a coarser cadence than
+    configured on Chrome 116–119.
+  - Firefox `strict_min_version` bumped from 109.0 to **127.0** — `chrome.storage.session`, which
+    the whole sub-30s/stop-condition architecture depends on unconditionally, only exists from
+    Firefox 115+; the dual `service_worker`/`scripts` background declaration only resolves
+    correctly together from Firefox 121+; and `host_permissions` (used by the content-change
+    stop condition) aren't reliably granted/displayed at install before Firefox 127.
+
+### Known limitation (documented, not fixed)
+- Firefox's `chrome.alarms` floor for MV3 is reportedly 1 minute even on current versions, vs
+  Chrome's 30 seconds. An alarm-scheduled tab configured for 30–59s will likely fire every 60s on
+  Firefox instead of the configured value. This isn't browser-detected/compensated for yet.
+
 ## [0.6.0] - 2026-10-21
 
 ### Added

@@ -1,7 +1,7 @@
 # Reload4U — Claude Code context
 
 Chrome extension (Manifest V3) that auto-reloads selected tabs at per-tab intervals.
-Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.0
+Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.1
 
 ## Stack
 - Plain JavaScript (no framework), Tailwind CSS 3, Vite 5 build
@@ -59,6 +59,22 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
   for the content-change stop condition's in-page hashing — see `captureContentHash()`).
 - Keep `CHANGELOG.md` updated for user-visible changes; bump version in BOTH
   `package.json` and `public/manifest.json`.
+
+## Cross-browser notes (Chrome vs Firefox)
+- `chrome.alarms` 30s floor (`periodInMinutes: 0.5`) only applies from **Chrome 120+**; before
+  that the floor was 1 minute. `manifest.json`'s `minimum_chrome_version` must stay >= "120" or
+  alarm-based tabs (interval >= 30s) would silently run at a coarser cadence than configured.
+- `chrome.storage.session` is only available from **Firefox 115+**; the whole sub-30s/stop-
+  condition architecture depends on it unconditionally, so `strict_min_version` must stay >= 115.
+- The `background: {service_worker, scripts}` dual-declaration (both fields present, for Chrome
+  vs Firefox's event-page model) only resolves correctly together from **Firefox 121+**.
+- Firefox MV3 `host_permissions` (used by the content-change stop condition) aren't reliably
+  granted/displayed at install until **Firefox 127+**. `strict_min_version` is set to "127.0" to
+  cover all three Firefox constraints above with one floor.
+- Known remaining gap (not fixed, just documented): Firefox's `chrome.alarms` floor for MV3 is
+  reportedly 1 minute even on modern versions, vs Chrome's 30s. An alarm-scheduled tab configured
+  for 30–59s will likely fire every 60s on Firefox instead of the configured value — degraded
+  cadence, not broken, and not currently browser-detected/compensated for.
 
 ## Hard constraints
 - `chrome.alarms` minimum period is 30s (0.5 min). Intervals below that use `setInterval`

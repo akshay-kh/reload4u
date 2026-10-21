@@ -92,24 +92,31 @@ function cleanupCountdownTimer(tabId) {
     }
 }
 
-// Shows live "X/N reloads" progress for a tab with a count-based stop condition.
-// Polls storage.session (where the background tracks it) since that storage
-// area doesn't fire storage.onChanged in a way the popup already listens to.
-function updateProgressLabel(tabId, limit, element) {
+// Shows a live reload count for every active tab: the full label reads "X
+// reloads" (or "X/N reloads" once a count-based stop condition sets a limit),
+// and a compact "(X)" badge is mirrored next to the tab's title. Polls
+// storage.session (where the background tracks it) since that storage area
+// doesn't fire storage.onChanged in a way the popup already listens to.
+function updateProgressDisplays(tabId, limit, labelElement, titleBadgeElement) {
     const key = PROGRESS_PREFIX + tabId;
     chrome.storage.session.get(key, function(data) {
         const count = (data[key] && data[key].count) || 0;
-        element.textContent = `${count}/${limit} reloads`;
+        if (labelElement) {
+            labelElement.textContent = limit ? `${count}/${limit} reloads` : `${count} reloads`;
+        }
+        if (titleBadgeElement) {
+            titleBadgeElement.textContent = count > 0 ? `(${count})` : '';
+        }
     });
 }
 
-function startProgressLabel(tabId, limit, element) {
+function startProgressWatch(tabId, limit, labelElement, titleBadgeElement) {
     if (progressIntervals[tabId]) {
         clearInterval(progressIntervals[tabId]);
     }
-    updateProgressLabel(tabId, limit, element);
+    updateProgressDisplays(tabId, limit, labelElement, titleBadgeElement);
     progressIntervals[tabId] = setInterval(function() {
-        updateProgressLabel(tabId, limit, element);
+        updateProgressDisplays(tabId, limit, labelElement, titleBadgeElement);
     }, 1000);
 }
 
@@ -368,7 +375,12 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     titleText.className = 'text-sm font-medium text-gray-900 truncate';
     titleText.textContent = tab.title;
 
+    // Reload-count badge mirrored next to the title, e.g. "(3)".
+    const titleCountBadge = document.createElement('span');
+    titleCountBadge.className = 'text-xs text-gray-400 font-mono shrink-0';
+
     titleDiv.appendChild(statusBadge);
+    titleDiv.appendChild(titleCountBadge);
     titleDiv.appendChild(titleText);
 
     // URL
@@ -515,28 +527,30 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     countInput.classList.toggle('hidden', currentType !== 'count');
     countInput.disabled = isPaused;
 
-    // Live "X/N reloads" readout for a count-based stop condition.
+    // Live reload-count readout, shown regardless of stop-condition type:
+    // "X reloads" with no limit, or "X/N reloads" once a count limit is set.
     const progressLabel = document.createElement('span');
     progressLabel.className = 'text-xs text-gray-500 font-mono';
-    progressLabel.classList.toggle('hidden', currentType !== 'count' || isPaused);
-    if (currentType === 'count' && !isPaused) {
-        startProgressLabel(tabId, tabData.stopAfter.limit, progressLabel);
+    const initialLimit = currentType === 'count' ? tabData.stopAfter.limit : null;
+    if (isPaused) {
+        updateProgressDisplays(tabId, initialLimit, progressLabel, titleCountBadge);
+    } else {
+        startProgressWatch(tabId, initialLimit, progressLabel, titleCountBadge);
     }
 
     function applyStopCondition() {
         const type = stopSelect.value;
         countInput.classList.toggle('hidden', type !== 'count');
-        progressLabel.classList.toggle('hidden', type !== 'count');
         if (type === 'none') {
-            cleanupProgressLabel(tabId);
             updateStopCondition(tabId, null);
+            startProgressWatch(tabId, null, progressLabel, titleCountBadge);
         } else if (type === 'count') {
             const limit = Math.max(1, parseInt(countInput.value, 10) || 1);
             updateStopCondition(tabId, { type: 'count', limit: limit });
-            startProgressLabel(tabId, limit, progressLabel);
+            startProgressWatch(tabId, limit, progressLabel, titleCountBadge);
         } else if (type === 'title') {
-            cleanupProgressLabel(tabId);
             updateStopCondition(tabId, { type: 'title' });
+            startProgressWatch(tabId, null, progressLabel, titleCountBadge);
         }
     }
 

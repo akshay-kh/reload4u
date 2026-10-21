@@ -99,48 +99,46 @@ function clearStopConditionState(tabId) {
     chrome.storage.session.remove(TITLE_PREFIX + tabId);
 }
 
-// Sets up (or carries forward) session-stored progress for a tab's stop
-// condition. `reset` re-arms from scratch (new tab, resumed, condition edited);
-// without it, existing progress is left alone (worker-restart rebuild).
+// Sets up (or carries forward) session-stored progress for a tab. The reload
+// counter is tracked unconditionally — the popup shows it for every tab,
+// whether or not a stop condition is using it. `reset` re-arms from scratch
+// (new tab, resumed, condition edited); without it, existing progress is
+// left alone (worker-restart rebuild).
 function armStopCondition(tabId, tabData, reset) {
     tabId = String(tabId);
-
     const stopAfter = tabData.stopAfter;
-    if (!stopAfter) {
-        if (reset) clearStopConditionState(tabId);
+
+    const progressKey = PROGRESS_PREFIX + tabId;
+    if (reset) {
+        // Write the reset value directly — a remove() followed by a separate
+        // get()/set() has no ordering guarantee and can leave a stale prior
+        // count in place if the remove hasn't landed yet.
+        chrome.storage.session.set({ [progressKey]: { count: 0 } });
+    } else {
+        chrome.storage.session.get(progressKey, function (data) {
+            if (!data[progressKey]) chrome.storage.session.set({ [progressKey]: { count: 0 } });
+        });
+    }
+
+    const titleKey = TITLE_PREFIX + tabId;
+    if (!stopAfter || stopAfter.type !== 'title') {
+        if (reset) chrome.storage.session.remove(titleKey);
         return;
     }
 
-    if (stopAfter.type === 'count') {
-        const key = PROGRESS_PREFIX + tabId;
-        if (reset) {
-            chrome.storage.session.remove(TITLE_PREFIX + tabId);
-            // Write the reset value directly — a remove() followed by a
-            // separate get()/set() has no ordering guarantee and can leave a
-            // stale prior count in place if the remove hasn't landed yet.
-            chrome.storage.session.set({ [key]: { count: 0 } });
-        } else {
-            chrome.storage.session.get(key, function (data) {
-                if (!data[key]) chrome.storage.session.set({ [key]: { count: 0 } });
-            });
-        }
-    } else if (stopAfter.type === 'title') {
-        const key = TITLE_PREFIX + tabId;
-        if (reset) {
-            chrome.storage.session.remove(PROGRESS_PREFIX + tabId);
+    if (reset) {
+        chrome.tabs.get(parseInt(tabId, 10), function (tab) {
+            if (chrome.runtime.lastError || !tab) return;
+            chrome.storage.session.set({ [titleKey]: { baseline: tab.title } });
+        });
+    } else {
+        chrome.storage.session.get(titleKey, function (data) {
+            if (data[titleKey]) return;
             chrome.tabs.get(parseInt(tabId, 10), function (tab) {
                 if (chrome.runtime.lastError || !tab) return;
-                chrome.storage.session.set({ [key]: { baseline: tab.title } });
+                chrome.storage.session.set({ [titleKey]: { baseline: tab.title } });
             });
-        } else {
-            chrome.storage.session.get(key, function (data) {
-                if (data[key]) return;
-                chrome.tabs.get(parseInt(tabId, 10), function (tab) {
-                    if (chrome.runtime.lastError || !tab) return;
-                    chrome.storage.session.set({ [key]: { baseline: tab.title } });
-                });
-            });
-        }
+        });
     }
 }
 
@@ -267,15 +265,15 @@ function triggerStop(tabId, reason) {
 function trackReloadCount(tabId) {
     getSelectedTabs().then(function (tabsData) {
         const tabData = tabsData[tabId];
-        if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'count') return;
+        if (!tabData || tabData.paused) return;
 
         const key = PROGRESS_PREFIX + tabId;
         chrome.storage.session.get(key, function (data) {
             const count = ((data[key] && data[key].count) || 0) + 1;
-            if (count >= tabData.stopAfter.limit) {
+            chrome.storage.session.set({ [key]: { count: count } });
+
+            if (tabData.stopAfter && tabData.stopAfter.type === 'count' && count >= tabData.stopAfter.limit) {
                 triggerStop(tabId, `Stopped: reached ${tabData.stopAfter.limit} reload${tabData.stopAfter.limit === 1 ? '' : 's'}`);
-            } else {
-                chrome.storage.session.set({ [key]: { count: count } });
             }
         });
     });

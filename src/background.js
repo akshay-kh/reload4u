@@ -10,9 +10,17 @@
 // only write `selectedTabsWithIntervals` to storage, and we react to changes.
 // Intervals are stored in seconds; chrome.alarms only understands minutes, so
 // we convert at that boundary.
+//
+// Stop conditions: a tab can optionally carry `stopAfter` ({type:'count',limit}
+// or {type:'title'}). Progress for these lives in storage.session (not sync,
+// which has a write-rate quota) and is reset only when the condition is freshly
+// armed (new tab, resumed from pause, or the condition itself was edited) —
+// never on a worker-restart rebuild, so progress survives that.
 
 const ALARM_PREFIX = 'reloadTab_';
 const KEEPALIVE_ALARM = 'reload4u_keepalive';
+const PROGRESS_PREFIX = 'reload4u_progress_';
+const TITLE_PREFIX = 'reload4u_title_';
 const ALARM_MIN_INTERVAL = 30;   // seconds – chrome.alarms floor (0.5 min)
 const MIN_INTERVAL = 0.5;        // seconds – absolute floor
 const SKIP_IF_LOADING_BELOW = 2; // seconds – below this, don't reload a tab still loading
@@ -64,6 +72,10 @@ function removeFromStorage(tabId) {
     });
 }
 
+function sameStopAfter(a, b) {
+    return JSON.stringify(a || null) === JSON.stringify(b || null);
+}
+
 // ---------- scheduling ----------
 
 function usesTimer(interval) {
@@ -80,10 +92,45 @@ function stopTab(tabId) {
     chrome.storage.session.remove(ALARM_PREFIX + tabId);
 }
 
-function startTab(tabId, tabData) {
+function clearStopConditionState(tabId) {
+    tabId = String(tabId);
+    chrome.storage.session.remove(PROGRESS_PREFIX + tabId);
+    chrome.storage.session.remove(TITLE_PREFIX + tabId);
+}
+
+// Sets up (or carries forward) session-stored progress for a tab's stop
+// condition. `reset` re-arms from scratch (new tab, resumed, condition edited);
+// without it, existing progress is left alone (worker-restart rebuild).
+function armStopCondition(tabId, tabData, reset) {
+    tabId = String(tabId);
+    if (reset) clearStopConditionState(tabId);
+
+    const stopAfter = tabData.stopAfter;
+    if (!stopAfter) return;
+
+    if (stopAfter.type === 'count') {
+        const key = PROGRESS_PREFIX + tabId;
+        chrome.storage.session.get(key, function (data) {
+            if (!data[key]) chrome.storage.session.set({ [key]: { count: 0 } });
+        });
+    } else if (stopAfter.type === 'title') {
+        const key = TITLE_PREFIX + tabId;
+        chrome.storage.session.get(key, function (data) {
+            if (data[key]) return;
+            chrome.tabs.get(parseInt(tabId, 10), function (tab) {
+                if (chrome.runtime.lastError || !tab) return;
+                chrome.storage.session.set({ [key]: { baseline: tab.title } });
+            });
+        });
+    }
+}
+
+function startTab(tabId, tabData, resetCondition) {
     tabId = String(tabId);
     stopTab(tabId);
     if (tabData.paused) return;
+
+    armStopCondition(tabId, tabData, resetCondition !== false);
 
     const interval = Math.max(MIN_INTERVAL, tabData.interval);
 
@@ -125,13 +172,14 @@ function updateKeepalive(tabsData) {
 
 // Runs every time the worker spins up (install, browser start, any event
 // after a shutdown). Only rebuilds missing setInterval timers — alarm-based
-// tabs persist on their own and must not be reset on every wake.
+// tabs persist on their own and must not be reset on every wake. Stop-condition
+// progress is carried forward (resetCondition: false), not reset.
 function hydrateTimers() {
     getSelectedTabs().then(function (tabsData) {
         for (const tabId in tabsData) {
             const d = tabsData[tabId];
             if (!d.paused && usesTimer(d.interval) && !timers[tabId]) {
-                startTab(tabId, d);
+                startTab(tabId, d, false);
             }
         }
         updateKeepalive(tabsData);
@@ -161,7 +209,10 @@ function reloadSpecificTab(tabId, interval) {
 
 function doReload(id) {
     chrome.tabs.reload(id, function () {
-        if (!chrome.runtime.lastError) return;
+        if (!chrome.runtime.lastError) {
+            trackReloadCount(String(id));
+            return;
+        }
         if (removing.has(id)) return;
 
         removing.add(id);
@@ -173,6 +224,61 @@ function doReload(id) {
     });
 }
 
+// ---------- stop conditions ----------
+
+// Pauses a tab and records why, so the popup can show it. A single sync
+// write — never on a per-reload/per-tick basis.
+function triggerStop(tabId, reason) {
+    tabId = String(tabId);
+    getSelectedTabs().then(function (tabsData) {
+        if (!tabsData[tabId] || tabsData[tabId].paused) return;
+        tabsData[tabId].paused = true;
+        tabsData[tabId].stoppedReason = reason;
+        chrome.storage.sync.set({ selectedTabsWithIntervals: tabsData });
+    });
+}
+
+function trackReloadCount(tabId) {
+    getSelectedTabs().then(function (tabsData) {
+        const tabData = tabsData[tabId];
+        if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'count') return;
+
+        const key = PROGRESS_PREFIX + tabId;
+        chrome.storage.session.get(key, function (data) {
+            const count = ((data[key] && data[key].count) || 0) + 1;
+            if (count >= tabData.stopAfter.limit) {
+                triggerStop(tabId, `Stopped: reached ${tabData.stopAfter.limit} reload${tabData.stopAfter.limit === 1 ? '' : 's'}`);
+            } else {
+                chrome.storage.session.set({ [key]: { count: count } });
+            }
+        });
+    });
+}
+
+// Watches every tab's title (cheap — only fires on actual title changes, not
+// on a timer) and stops any watched tab whose title drifted from its baseline.
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
+    if (changeInfo.title === undefined) return;
+    const idStr = String(tabId);
+
+    getSelectedTabs().then(function (tabsData) {
+        const tabData = tabsData[idStr];
+        if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'title') return;
+
+        const key = TITLE_PREFIX + idStr;
+        chrome.storage.session.get(key, function (data) {
+            const baseline = data[key] && data[key].baseline;
+            if (baseline === undefined) {
+                chrome.storage.session.set({ [key]: { baseline: changeInfo.title } });
+                return;
+            }
+            if (changeInfo.title !== baseline) {
+                triggerStop(idStr, 'Stopped: page title changed');
+            }
+        });
+    });
+});
+
 // ---------- listeners ----------
 
 // React to popup/settings changes; only reschedule tabs that actually changed.
@@ -183,13 +289,20 @@ chrome.storage.onChanged.addListener(function (changes, area) {
     const newData = normalize(changes.selectedTabsWithIntervals.newValue);
 
     for (const tabId in oldData) {
-        if (!(tabId in newData)) stopTab(tabId);
+        if (!(tabId in newData)) {
+            stopTab(tabId);
+            clearStopConditionState(tabId);
+        }
     }
     for (const tabId in newData) {
         const o = oldData[tabId];
         const n = newData[tabId];
-        if (!o || o.interval !== n.interval || o.paused !== n.paused) {
-            startTab(tabId, n);
+        const stopAfterChanged = !sameStopAfter(o && o.stopAfter, n.stopAfter);
+        if (!o || o.interval !== n.interval || o.paused !== n.paused || stopAfterChanged) {
+            // Reset progress only on a brand-new tab, a resume, or an edited
+            // condition — not on a bare interval change.
+            const resetCondition = !o || stopAfterChanged || (o.paused && !n.paused);
+            startTab(tabId, n, resetCondition);
         }
     }
     updateKeepalive(newData);

@@ -21,12 +21,20 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 
 ## Storage model
 - `chrome.storage.sync`:
-  - `selectedTabsWithIntervals`: `{ [tabId: string]: { interval: number /* seconds */, paused: boolean } }`
+  - `selectedTabsWithIntervals`: `{ [tabId: string]: { interval: number /* seconds */, paused: boolean,
+    stopAfter?: {type:'count', limit:number} | {type:'title'}, stoppedReason?: string } }`
     (legacy format `{ [tabId]: number }` is migrated on read — keep that migration)
   - `reload4uSettings`: `{ defaultInterval: number /* seconds */ }`
 - `chrome.storage.session`:
   - `reloadTab_<tabId>`: `{ startedAt: number, ms: number }` — written once when a sub-30s timer
     starts, so the popup can compute the countdown. Never write per tick.
+  - `reload4u_progress_<tabId>`: `{ count: number }` — reload counter for `stopAfter.type === 'count'`.
+    Incremented once per successful reload; lives in `session` (no write-rate quota) specifically
+    so it CAN be written every reload, unlike `sync`.
+  - `reload4u_title_<tabId>`: `{ baseline: string }` — captured tab title for `stopAfter.type === 'title'`.
+  - Both progress keys are reset (re-armed) only on a brand-new tab, a resume from pause, or an
+    edited `stopAfter` — never on a worker-restart rebuild (`hydrateTimers()` passes
+    `resetCondition: false` so in-progress counts survive a killed service worker).
 - Intervals are stored in **seconds** (changed from an earlier minutes-based model in the
   "support interval in min and sec units" work). UI may offer a minutes toggle and converts
   to/from seconds for storage. Background converts seconds → minutes only at the

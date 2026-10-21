@@ -166,11 +166,35 @@ function toggleTabPause(tabId) {
     getSelectedTabs().then(function(tabsData) {
         if (tabsData.hasOwnProperty(tabId)) {
             tabsData[tabId].paused = !tabsData[tabId].paused;
+            if (!tabsData[tabId].paused) {
+                // Resuming: clear any previous auto-stop reason and let the
+                // background re-arm the stop condition from scratch.
+                delete tabsData[tabId].stoppedReason;
+            }
             chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
                 console.log(tabsData[tabId].paused ? 'Paused tab:' : 'Resumed tab:', tabId);
                 displaySelectedTabs();
             });
         }
+    });
+}
+
+// Function to update (or clear) a tab's stop condition
+function updateStopCondition(tabId, stopAfter) {
+    // Ensure tabId is a string
+    tabId = String(tabId);
+
+    getSelectedTabs().then(function(tabsData) {
+        if (!tabsData.hasOwnProperty(tabId)) return;
+        if (stopAfter) {
+            tabsData[tabId].stopAfter = stopAfter;
+        } else {
+            delete tabsData[tabId].stopAfter;
+        }
+        delete tabsData[tabId].stoppedReason;
+        chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
+            displaySelectedTabs();
+        });
     });
 }
 
@@ -311,7 +335,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
         }
     } else {
         timerDiv.className = 'text-xs text-yellow-600';
-        timerDiv.textContent = 'Reload paused';
+        timerDiv.textContent = tabData.stoppedReason ? ('⏹ ' + tabData.stoppedReason) : 'Reload paused';
     }
 
     infoSection.appendChild(titleDiv);
@@ -382,8 +406,62 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     controlsDiv.appendChild(intervalSection);
     controlsDiv.appendChild(statusText);
 
+    // Stop-condition controls section
+    const stopDiv = document.createElement('div');
+    stopDiv.className = 'flex items-center gap-2 pt-2 border-t border-gray-100';
+
+    const stopLabel = document.createElement('label');
+    stopLabel.className = 'text-xs text-gray-600';
+    stopLabel.textContent = 'Stop when:';
+
+    const stopSelect = document.createElement('select');
+    stopSelect.className = 'px-2 py-1 text-xs border border-gray-300 rounded focus:border-blue-500 focus:outline-none';
+    stopSelect.disabled = isPaused;
+    [
+        { value: 'none', text: 'Never (manual only)' },
+        { value: 'count', text: 'After N reloads' },
+        { value: 'title', text: 'Tab title changes' }
+    ].forEach(function(opt) {
+        const option = document.createElement('option');
+        option.value = opt.value;
+        option.textContent = opt.text;
+        stopSelect.appendChild(option);
+    });
+
+    const currentType = (tabData.stopAfter && tabData.stopAfter.type) || 'none';
+    stopSelect.value = currentType;
+
+    const countInput = document.createElement('input');
+    countInput.type = 'number';
+    countInput.min = '1';
+    countInput.step = '1';
+    countInput.value = (tabData.stopAfter && tabData.stopAfter.limit) || 5;
+    countInput.className = 'w-14 px-2 py-1 text-xs border border-gray-300 rounded text-center focus:border-blue-500 focus:outline-none';
+    countInput.classList.toggle('hidden', currentType !== 'count');
+    countInput.disabled = isPaused;
+
+    function applyStopCondition() {
+        const type = stopSelect.value;
+        countInput.classList.toggle('hidden', type !== 'count');
+        if (type === 'none') {
+            updateStopCondition(tabId, null);
+        } else if (type === 'count') {
+            updateStopCondition(tabId, { type: 'count', limit: Math.max(1, parseInt(countInput.value, 10) || 1) });
+        } else if (type === 'title') {
+            updateStopCondition(tabId, { type: 'title' });
+        }
+    }
+
+    stopSelect.addEventListener('change', applyStopCondition);
+    countInput.addEventListener('change', applyStopCondition);
+
+    stopDiv.appendChild(stopLabel);
+    stopDiv.appendChild(stopSelect);
+    stopDiv.appendChild(countInput);
+
     tabDiv.appendChild(statusDiv);
     tabDiv.appendChild(controlsDiv);
+    tabDiv.appendChild(stopDiv);
 
     return tabDiv;
 }

@@ -2,6 +2,7 @@
     "name": "Reload 4 U",
     "version": "0.4.0",
     "description": "Reload tab for you!",
+    "minimum_chrome_version": "116",
     "permissions": ["activeTab","storage","tabs","alarms"],
     "background": {
         "scripts": ["assets/background.js"],

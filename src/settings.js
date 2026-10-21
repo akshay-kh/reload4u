@@ -1,11 +1,12 @@
 // Settings page functionality
 let defaultIntervalInput = document.getElementById('defaultInterval');
-let defaultIntervalUnit = document.getElementById('defaultIntervalUnit');
 let minIntervalHint = document.getElementById('minIntervalHint');
 // let showNotificationsInput = document.getElementById('showNotifications');
 // let autoStartInput = document.getElementById('autoStart');
 let saveButton = document.getElementById('saveSettings');
 let saveStatus = document.getElementById('saveStatus');
+
+const MIN_INTERVAL = 0.5; // seconds – absolute floor (background enforces this too)
 
 // Default settings (interval in seconds)
 const DEFAULT_SETTINGS = {
@@ -17,60 +18,14 @@ const DEFAULT_SETTINGS = {
 // Load settings when page loads
 document.addEventListener('DOMContentLoaded', function() {
     loadSettings();
-    updateMinIntervalHint();
 });
-
-// Function to convert seconds to display value
-function convertSecondsToDisplay(seconds) {
-    // Default to seconds
-    if (seconds < 60) {
-        return { value: seconds, unit: 'seconds' };
-    }
-    // If evenly divisible by 60, show in minutes
-    if (seconds % 60 === 0) {
-        return { value: seconds / 60, unit: 'minutes' };
-    }
-    // Otherwise show in seconds
-    return { value: seconds, unit: 'seconds' };
-}
-
-// Function to convert display value to seconds
-function convertDisplayToSeconds(value, unit) {
-    if (unit === 'minutes') {
-        return value * 60;
-    }
-    return value;
-}
-
-// Function to update minimum interval hint
-function updateMinIntervalHint() {
-    const unit = defaultIntervalUnit.value;
-    if (unit === 'minutes') {
-        minIntervalHint.textContent = 'Minimum: 0.5 minutes';
-        defaultIntervalInput.min = '0.5';
-        defaultIntervalInput.step = '0.5';
-    } else {
-        minIntervalHint.textContent = 'Minimum: 30 seconds';
-        defaultIntervalInput.min = '1';
-        defaultIntervalInput.step = '1';
-    }
-}
 
 // Function to load settings from storage
 function loadSettings() {
     chrome.storage.sync.get(['reload4uSettings'], function(data) {
         let settings = data.reload4uSettings || DEFAULT_SETTINGS;
 
-        // Use default if old format (minutes) is detected
-        if (settings.defaultInterval < DEFAULT_SETTINGS.defaultInterval) {
-            settings.defaultInterval = DEFAULT_SETTINGS.defaultInterval;
-        }
-
-        // Convert to display format
-        const display = convertSecondsToDisplay(settings.defaultInterval);
-        defaultIntervalInput.value = display.value;
-        defaultIntervalUnit.value = display.unit;
-        updateMinIntervalHint();
+        defaultIntervalInput.value = Math.max(MIN_INTERVAL, settings.defaultInterval);
 
         //showNotificationsInput.checked = settings.showNotifications;
         //autoStartInput.checked = settings.autoStart;
@@ -81,20 +36,11 @@ function loadSettings() {
 
 // Function to save settings
 function saveSettings() {
-    const inputValue = parseFloat(defaultIntervalInput.value);
-    const unit = defaultIntervalUnit.value;
+    let intervalInSeconds = Math.max(MIN_INTERVAL, parseFloat(defaultIntervalInput.value));
 
-    // Convert to seconds
-    let intervalInSeconds = convertDisplayToSeconds(inputValue, unit);
-
-    // Ensure minimum interval (30 seconds - Chrome alarm API minimum)
-    if (intervalInSeconds < 30) {
-        intervalInSeconds = 30;
-        const display = convertSecondsToDisplay(intervalInSeconds);
-        defaultIntervalInput.value = display.value;
-        defaultIntervalUnit.value = display.unit;
-        updateMinIntervalHint();
-        showSaveStatus('Minimum interval is 30 seconds', false);
+    if (intervalInSeconds !== parseFloat(defaultIntervalInput.value)) {
+        defaultIntervalInput.value = intervalInSeconds;
+        showSaveStatus(`Minimum interval is ${MIN_INTERVAL} seconds`, false);
         return;
     }
 
@@ -120,7 +66,7 @@ function showSaveStatus(message, isSuccess) {
     saveStatus.textContent = isSuccess ? '✅ ' + message : '❌ ' + message;
     saveStatus.className = isSuccess ? 'text-sm text-green-600' : 'text-sm text-red-600';
     saveStatus.classList.remove('hidden');
-    
+
     // Hide status after 3 seconds
     setTimeout(function() {
         saveStatus.classList.add('hidden');
@@ -129,36 +75,22 @@ function showSaveStatus(message, isSuccess) {
 
 // Function to validate interval input
 function validateInterval() {
-    const inputValue = parseFloat(defaultIntervalInput.value);
-    const unit = defaultIntervalUnit.value;
-    const intervalInSeconds = convertDisplayToSeconds(inputValue, unit);
+    const intervalInSeconds = parseFloat(defaultIntervalInput.value);
 
-    if (intervalInSeconds < 30) {
-        const display = convertSecondsToDisplay(30);
-        defaultIntervalInput.value = display.value;
-        defaultIntervalUnit.value = display.unit;
-        updateMinIntervalHint();
-        showSaveStatus('Minimum interval is 30 seconds', false);
+    if (intervalInSeconds < MIN_INTERVAL) {
+        defaultIntervalInput.value = MIN_INTERVAL;
+        showSaveStatus(`Minimum interval is ${MIN_INTERVAL} seconds`, false);
     }
 }
 
 // Event listeners
 saveButton.addEventListener('click', saveSettings);
 
-// Update hint when unit changes
-defaultIntervalUnit.addEventListener('change', function() {
-    updateMinIntervalHint();
-});
-
 // Validate interval on change
 defaultIntervalInput.addEventListener('change', validateInterval);
 
 // Auto-save on change (optional - can be removed if you prefer manual save only)
 defaultIntervalInput.addEventListener('change', function() {
-    setTimeout(saveSettings, 500); // Auto-save after 500ms delay
-});
-
-defaultIntervalUnit.addEventListener('change', function() {
     setTimeout(saveSettings, 500); // Auto-save after 500ms delay
 });
 
@@ -175,7 +107,7 @@ window.getDefaultInterval = function() {
     return new Promise(function(resolve) {
         chrome.storage.sync.get(['reload4uSettings'], function(data) {
             const settings = data.reload4uSettings || DEFAULT_SETTINGS;
-            resolve(settings.defaultInterval);
+            resolve(Math.max(MIN_INTERVAL, settings.defaultInterval));
         });
     });
 };

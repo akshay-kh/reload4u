@@ -2,31 +2,35 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.4.0] - 2025-01-08
+## [0.4.0] - 2026-10-21
 
 ### Added
-- **Flexible Time Unit Selection**: Users can now choose between seconds and minutes for all interval inputs
-- **Unit Selector Dropdown**: Added intuitive unit selector (sec/min) in both settings page and popup
-- **Smart Display Format**: Intervals automatically display in the most readable format (e.g., 60 seconds shows as "1 min")
-- **Dynamic Input Validation**: Minimum interval hint updates based on selected unit (30 seconds or 0.5 minutes)
+- **Sub-30-second intervals**: Reload intervals can now go as low as 0.5 seconds. `chrome.alarms`
+  can't schedule below 30s, so intervals under 30s now run on a `setInterval` timer inside the
+  background service worker instead, with a 30s keepalive alarm to rebuild that timer if the
+  worker is ever terminated by Chrome.
+- **Fast-interval safeguards**: tabs reloading faster than 2s skip a reload if the tab is still
+  mid-load; the popup shows a warning for any tab set below 5s.
 
 ### Changed
-- **Interval Storage Format**: All intervals now stored internally in seconds (breaking change from previous 0.5-minute system)
-- **Improved User Experience**: More intuitive time input with familiar units (seconds/minutes)
-- **Settings Page**: Updated with unit selector for default interval configuration
-- **Popup Interface**: Enhanced interval controls with unit dropdown for each tab
-- **Conversion Logic**: Seamless conversion between user-selected units and internal seconds storage
+- **Popup & settings interval inputs now use plain seconds** (minimum 0.5, step 0.5) instead of the
+  previous seconds/minutes unit dropdown — simpler, and the dropdown had no clean way to express
+  fractional sub-second values.
+- Interval inputs for added/updated tabs no longer create or clear `chrome.alarms` directly from the
+  popup/settings pages; they only write to `storage.sync`, and the background worker is the sole
+  owner of scheduling (alarms or timers) in response to storage changes.
+- **Smart countdown display**: tabs under 2s show a static "every Xs" label instead of a ticking
+  countdown, since the countdown couldn't keep up with sub-second intervals anyway.
 
 ### Technical
-- **Migration Support**: Automatic detection and handling of old interval format (values < 30 reset to default)
+- **Migration Support**: Automatic detection and handling of the legacy bare-number interval format
+  (values < 30 reset to the 30s default, since that long predates sub-30s support)
 - **Chrome Alarms API**: Proper conversion from seconds to minutes when creating alarms (interval / 60)
-- **Consistent Validation**: 30-second minimum enforced regardless of user-selected unit
-- **Code Organization**: Added conversion helper functions (`convertSecondsToDisplay`, `convertDisplayToSeconds`)
+- **manifest.json**: added `minimum_chrome_version: "116"`
 
 ### Migration Notes
-- Existing intervals less than 30 seconds will be automatically reset to 30 seconds (default)
-- Old format data (0.5, 1, 2 for minutes) will be converted or reset to new format
-- All intervals now display intelligently based on their value (60s+ shows in minutes if evenly divisible)
+- Existing per-tab intervals (stored in seconds) load unchanged; only the legacy bare-number format
+  (pre-dating per-tab pause support) is normalized, and only reset to 30s if it was below 30.
 
 ## [0.3.2] - 2025-08-03
 

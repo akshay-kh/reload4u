@@ -36,20 +36,14 @@
                 <input
                   id="defaultInterval"
                   type="number"
-                  min="1"
-                  step="1"
+                  min="0.5"
+                  step="0.5"
                   value="30"
                   class="w-32 px-3 py-2 border border-gray-300 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                <select
-                  id="defaultIntervalUnit"
-                  class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                >
-                  <option value="seconds">Seconds</option>
-                  <option value="minutes">Minutes</option>
-                </select>
+                <span class="text-sm text-gray-700">seconds</span>
                 <span id="minIntervalHint" class="text-sm text-gray-500">
-                  Minimum: 30 seconds
+                  Minimum: 0.5 seconds
                 </span>
               </div>
               <p class="mt-2 text-xs text-gray-500">
@@ -108,7 +102,7 @@
       <div class="mt-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
         <h2 class="text-lg font-semibold text-gray-900 mb-4">About Reload4U</h2>
         <div class="space-y-2 text-sm text-gray-600">
-          <p><strong>Version:</strong> 0.3.1</p>
+          <p><strong>Version:</strong> 0.4.0</p>
           <p><strong>Description:</strong> Auto-reload selected browser tabs at customizable intervals</p>
           <p><strong>Features:</strong> Multiple tab support, individual intervals, pause/resume, visual indicators</p>
         </div>

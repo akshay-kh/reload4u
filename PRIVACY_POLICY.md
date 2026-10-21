@@ -12,7 +12,7 @@ Reload4U ("we", "our", or "the extension") is committed to protecting your priva
 Reload4U stores the following information locally on your device using the browser's storage API:
 
 - **Selected Tab Information**: Tab IDs of tabs you choose to auto-reload
-- **Reload Intervals**: Custom reload intervals you set for each tab (minimum 30 seconds)
+- **Reload Intervals**: Custom reload intervals you set for each tab (minimum 0.5 seconds)
 - **Pause States**: Whether specific tabs are paused or active for reloading
 - **User Preferences**: Your default interval settings
 

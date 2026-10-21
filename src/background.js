@@ -104,25 +104,43 @@ function clearStopConditionState(tabId) {
 // without it, existing progress is left alone (worker-restart rebuild).
 function armStopCondition(tabId, tabData, reset) {
     tabId = String(tabId);
-    if (reset) clearStopConditionState(tabId);
 
     const stopAfter = tabData.stopAfter;
-    if (!stopAfter) return;
+    if (!stopAfter) {
+        if (reset) clearStopConditionState(tabId);
+        return;
+    }
 
     if (stopAfter.type === 'count') {
         const key = PROGRESS_PREFIX + tabId;
-        chrome.storage.session.get(key, function (data) {
-            if (!data[key]) chrome.storage.session.set({ [key]: { count: 0 } });
-        });
+        if (reset) {
+            chrome.storage.session.remove(TITLE_PREFIX + tabId);
+            // Write the reset value directly — a remove() followed by a
+            // separate get()/set() has no ordering guarantee and can leave a
+            // stale prior count in place if the remove hasn't landed yet.
+            chrome.storage.session.set({ [key]: { count: 0 } });
+        } else {
+            chrome.storage.session.get(key, function (data) {
+                if (!data[key]) chrome.storage.session.set({ [key]: { count: 0 } });
+            });
+        }
     } else if (stopAfter.type === 'title') {
         const key = TITLE_PREFIX + tabId;
-        chrome.storage.session.get(key, function (data) {
-            if (data[key]) return;
+        if (reset) {
+            chrome.storage.session.remove(PROGRESS_PREFIX + tabId);
             chrome.tabs.get(parseInt(tabId, 10), function (tab) {
                 if (chrome.runtime.lastError || !tab) return;
                 chrome.storage.session.set({ [key]: { baseline: tab.title } });
             });
-        });
+        } else {
+            chrome.storage.session.get(key, function (data) {
+                if (data[key]) return;
+                chrome.tabs.get(parseInt(tabId, 10), function (tab) {
+                    if (chrome.runtime.lastError || !tab) return;
+                    chrome.storage.session.set({ [key]: { baseline: tab.title } });
+                });
+            });
+        }
     }
 }
 

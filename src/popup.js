@@ -89,6 +89,33 @@ function cleanupCountdownTimer(tabId) {
     }
 }
 
+// Drives a smooth, CSS-animated progress fill for one reload cycle (0% -> 100%
+// over `remainingMs`), then loops to a fresh full-length cycle via `transitionend`.
+// No JS polling needed — the browser animates it at full frame rate.
+function runProgressCycle(barElement, totalMs, remainingMs) {
+    const clampedRemaining = Math.max(0, remainingMs);
+    const elapsedRatio = totalMs > 0 ? Math.min(1, 1 - (clampedRemaining / totalMs)) : 0;
+
+    barElement.style.transition = 'none';
+    barElement.style.width = (elapsedRatio * 100) + '%';
+    void barElement.offsetWidth; // force reflow so the next transition actually animates
+    barElement.style.transition = `width ${clampedRemaining}ms linear`;
+    barElement.style.width = '100%';
+}
+
+function startProgressBar(tabId, barElement, intervalSeconds) {
+    const totalMs = intervalSeconds * 1000;
+
+    barElement.addEventListener('transitionend', function () {
+        runProgressCycle(barElement, totalMs, totalMs);
+    });
+
+    getNextReloadTime(tabId).then(function(nextReloadTime) {
+        const remainingMs = nextReloadTime ? (nextReloadTime - Date.now()) : totalMs;
+        runProgressCycle(barElement, totalMs, remainingMs);
+    });
+}
+
 
 function getSelectedTabs() {
     return new Promise(function(resolve, reject) {
@@ -316,22 +343,34 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     // Countdown timer (only for active tabs)
     const timerDiv = document.createElement('div');
+    let progressTrack = null;
     if (!isPaused) {
         timerDiv.className = 'flex items-center gap-2';
         const timerLabel = document.createElement('span');
         timerLabel.className = 'text-xs text-gray-600';
         timerLabel.textContent = 'Next reload in:';
         const timerDisplay = document.createElement('span');
-        timerDisplay.className = 'text-xs text-green-600 font-mono font-semibold';
+        timerDisplay.className = 'text-xs text-green-600 font-mono font-semibold transition-colors duration-300';
         timerDiv.appendChild(timerLabel);
         timerDiv.appendChild(timerDisplay);
 
+        progressTrack = document.createElement('div');
+        progressTrack.className = 'relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mt-1';
+
         if (tabData.interval < STATIC_LABEL_BELOW) {
-            // Too fast for a meaningful ticking countdown; a static label avoids
-            // a per-second storage/alarm lookup that would never keep up anyway.
+            // Too fast for a meaningful ticking countdown or a synced progress
+            // fill; a static label + indeterminate shimmer still reads as "live".
             timerDisplay.textContent = `every ${tabData.interval}s`;
+            const shimmer = document.createElement('div');
+            shimmer.className = 'absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full reload4u-shimmer';
+            progressTrack.appendChild(shimmer);
         } else {
             createCountdownTimer(tabId, timerDisplay, tabData.interval);
+            const progressFill = document.createElement('div');
+            progressFill.className = 'absolute inset-y-0 left-0 h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full';
+            progressFill.style.width = '0%';
+            progressTrack.appendChild(progressFill);
+            startProgressBar(tabId, progressFill, tabData.interval);
         }
     } else {
         timerDiv.className = 'text-xs text-yellow-600';
@@ -341,6 +380,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     infoSection.appendChild(titleDiv);
     infoSection.appendChild(urlText);
     infoSection.appendChild(timerDiv);
+    if (progressTrack) infoSection.appendChild(progressTrack);
 
     if (!isPaused && tabData.interval < FAST_WARNING_BELOW) {
         const warning = document.createElement('p');

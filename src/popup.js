@@ -9,10 +9,13 @@ let pausedTabsList = document.getElementById('pausedTabsList');
 
 // Store countdown intervals for cleanup
 let countdownIntervals = {};
+// Store reload-count progress-label polling intervals for cleanup
+let progressIntervals = {};
 
 const MIN_INTERVAL = 0.5;       // seconds – absolute floor (background enforces this too)
 const STATIC_LABEL_BELOW = 2;   // seconds – below this, show a static "every Xs" label
 const FAST_WARNING_BELOW = 5;   // seconds – below this, show a cost warning in the UI
+const PROGRESS_PREFIX = 'reload4u_progress_'; // must match background.js
 
 // Function to get default interval from settings
 function getDefaultInterval() {
@@ -89,6 +92,34 @@ function cleanupCountdownTimer(tabId) {
     }
 }
 
+// Shows live "X/N reloads" progress for a tab with a count-based stop condition.
+// Polls storage.session (where the background tracks it) since that storage
+// area doesn't fire storage.onChanged in a way the popup already listens to.
+function updateProgressLabel(tabId, limit, element) {
+    const key = PROGRESS_PREFIX + tabId;
+    chrome.storage.session.get(key, function(data) {
+        const count = (data[key] && data[key].count) || 0;
+        element.textContent = `${count}/${limit} reloads`;
+    });
+}
+
+function startProgressLabel(tabId, limit, element) {
+    if (progressIntervals[tabId]) {
+        clearInterval(progressIntervals[tabId]);
+    }
+    updateProgressLabel(tabId, limit, element);
+    progressIntervals[tabId] = setInterval(function() {
+        updateProgressLabel(tabId, limit, element);
+    }, 1000);
+}
+
+function cleanupProgressLabel(tabId) {
+    if (progressIntervals[tabId]) {
+        clearInterval(progressIntervals[tabId]);
+        delete progressIntervals[tabId];
+    }
+}
+
 // Drives a smooth, CSS-animated progress fill for one reload cycle (0% -> 100%
 // over `remainingMs`), then loops to a fresh full-length cycle via `transitionend`.
 // No JS polling needed — the browser animates it at full frame rate.
@@ -153,6 +184,7 @@ function removeTabFromSelected(tabId) {
             chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
                 // The background worker reacts to this storage change and stops the tab's timer/alarm.
                 cleanupCountdownTimer(tabId);
+                cleanupProgressLabel(tabId);
                 displaySelectedTabs();
                 console.log('Removed tab:', tabId);
             });
@@ -226,9 +258,12 @@ function updateStopCondition(tabId, stopAfter) {
 }
 
 function displaySelectedTabs() {
-    // Clean up all existing countdown timers
+    // Clean up all existing countdown timers and progress-label pollers
     Object.keys(countdownIntervals).forEach(function(tabId) {
         cleanupCountdownTimer(tabId);
+    });
+    Object.keys(progressIntervals).forEach(function(tabId) {
+        cleanupProgressLabel(tabId);
     });
 
     getSelectedTabs().then(function(tabsData) {
@@ -480,14 +515,27 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     countInput.classList.toggle('hidden', currentType !== 'count');
     countInput.disabled = isPaused;
 
+    // Live "X/N reloads" readout for a count-based stop condition.
+    const progressLabel = document.createElement('span');
+    progressLabel.className = 'text-xs text-gray-500 font-mono';
+    progressLabel.classList.toggle('hidden', currentType !== 'count' || isPaused);
+    if (currentType === 'count' && !isPaused) {
+        startProgressLabel(tabId, tabData.stopAfter.limit, progressLabel);
+    }
+
     function applyStopCondition() {
         const type = stopSelect.value;
         countInput.classList.toggle('hidden', type !== 'count');
+        progressLabel.classList.toggle('hidden', type !== 'count');
         if (type === 'none') {
+            cleanupProgressLabel(tabId);
             updateStopCondition(tabId, null);
         } else if (type === 'count') {
-            updateStopCondition(tabId, { type: 'count', limit: Math.max(1, parseInt(countInput.value, 10) || 1) });
+            const limit = Math.max(1, parseInt(countInput.value, 10) || 1);
+            updateStopCondition(tabId, { type: 'count', limit: limit });
+            startProgressLabel(tabId, limit, progressLabel);
         } else if (type === 'title') {
+            cleanupProgressLabel(tabId);
             updateStopCondition(tabId, { type: 'title' });
         }
     }
@@ -498,6 +546,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     stopDiv.appendChild(stopLabel);
     stopDiv.appendChild(stopSelect);
     stopDiv.appendChild(countInput);
+    stopDiv.appendChild(progressLabel);
 
     tabDiv.appendChild(statusDiv);
     tabDiv.appendChild(controlsDiv);
@@ -524,10 +573,13 @@ document.addEventListener('DOMContentLoaded', function() {
     displaySelectedTabs();
 });
 
-// Clean up countdown timers when popup closes
+// Clean up countdown timers and progress-label pollers when popup closes
 window.addEventListener('beforeunload', function() {
     Object.keys(countdownIntervals).forEach(function(tabId) {
         cleanupCountdownTimer(tabId);
+    });
+    Object.keys(progressIntervals).forEach(function(tabId) {
+        cleanupProgressLabel(tabId);
     });
 });
 
@@ -565,9 +617,12 @@ openSettings.onclick = function() {
 };
 
 stopAllTabs.onclick = function () {
-    // Clean up all countdown timers
+    // Clean up all countdown timers and progress-label pollers
     Object.keys(countdownIntervals).forEach(function(tabId) {
         cleanupCountdownTimer(tabId);
+    });
+    Object.keys(progressIntervals).forEach(function(tabId) {
+        cleanupProgressLabel(tabId);
     });
 
     chrome.storage.sync.set({selectedTabsWithIntervals: {}}, function() {

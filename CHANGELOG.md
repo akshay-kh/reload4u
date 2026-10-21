@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-10-21
+
+### Added
+- **Stop conditions**: a watched tab can now auto-pause itself after a set number of reloads,
+  or as soon as its tab title changes — useful for "reload until this updates" workflows without
+  babysitting the popup. Configurable per tab via a new "Stop when:" control.
+- **Toolbar badge**: the extension icon now shows a count of currently-active auto-reloading tabs
+  (hidden when none are active), so you can tell at a glance without opening the popup.
+
+### Changed
+- Paused tabs that were auto-stopped by a condition show why (e.g. "Stopped: reached 5 reloads",
+  "Stopped: page title changed") instead of a generic "Reload paused" label. Resuming a tab clears
+  that reason and restarts its stop-condition progress from zero.
+
+### Technical
+- Reload-count and title-baseline tracking live in `chrome.storage.session` (`reload4u_progress_*`,
+  `reload4u_title_*`), not `sync` — session storage has no write-rate quota, so the per-reload
+  counter increment is safe there but would not be on `sync`.
+- Stop-condition progress survives a killed/restarted service worker (only reset on a new tab,
+  a resume, or an edited condition) via a `resetCondition` flag threaded through `startTab()`.
+- Considered page-content-change detection as a third stop-condition type; deferred because it
+  needs `chrome.scripting` *and* broad host permissions to inject into arbitrary background tabs
+  (not just the active one), which is a bigger ask than the current permission set and needs
+  explicit sign-off plus a privacy-policy update before adding.
+
 ## [0.4.0] - 2026-10-21
 
 ### Added

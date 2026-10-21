@@ -24,6 +24,7 @@ const TITLE_PREFIX = 'reload4u_title_';
 const ALARM_MIN_INTERVAL = 30;   // seconds – chrome.alarms floor (0.5 min)
 const MIN_INTERVAL = 0.5;        // seconds – absolute floor
 const SKIP_IF_LOADING_BELOW = 2; // seconds – below this, don't reload a tab still loading
+const BADGE_COLOR = '#2563eb';
 
 // tabId (string) -> setInterval handle. Lives only as long as the worker does.
 const timers = {};
@@ -170,6 +171,12 @@ function updateKeepalive(tabsData) {
     });
 }
 
+function updateBadge(tabsData) {
+    const activeCount = Object.values(tabsData).filter(function (d) { return !d.paused; }).length;
+    chrome.action.setBadgeText({ text: activeCount > 0 ? String(activeCount) : '' });
+    chrome.action.setBadgeBackgroundColor({ color: BADGE_COLOR });
+}
+
 // Runs every time the worker spins up (install, browser start, any event
 // after a shutdown). Only rebuilds missing setInterval timers — alarm-based
 // tabs persist on their own and must not be reset on every wake. Stop-condition
@@ -183,6 +190,7 @@ function hydrateTimers() {
             }
         }
         updateKeepalive(tabsData);
+        updateBadge(tabsData);
     }).catch(function (err) {
         console.error('Reload4U: failed to hydrate timers', err);
     });
@@ -306,6 +314,7 @@ chrome.storage.onChanged.addListener(function (changes, area) {
         }
     }
     updateKeepalive(newData);
+    updateBadge(newData);
 });
 
 chrome.alarms.onAlarm.addListener(function (alarm) {

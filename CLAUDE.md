@@ -1,7 +1,7 @@
 # Reload4U — Claude Code context
 
 Chrome extension (Manifest V3) that auto-reloads selected tabs at per-tab intervals.
-Repo: https://github.com/akshay-kh/reload4u · Current version: 0.4.0
+Repo: https://github.com/akshay-kh/reload4u · Current version: 0.5.0
 
 ## Stack
 - Plain JavaScript (no framework), Tailwind CSS 3, Vite 5 build
@@ -39,6 +39,9 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
   "support interval in min and sec units" work). UI may offer a minutes toggle and converts
   to/from seconds for storage. Background converts seconds → minutes only at the
   `chrome.alarms` boundary (`periodInMinutes: interval / 60`).
+- Toolbar badge (`chrome.action.setBadgeText`) shows the count of currently-active (non-paused)
+  watched tabs; updated in `updateBadge()` alongside every `storage.onChanged` reaction and on
+  worker hydrate. No new permission — `action` was already declared.
 
 ## Conventions
 - Tab IDs are strings as storage keys; `parseInt` only when calling `chrome.tabs.*`.

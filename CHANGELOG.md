@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-10-21
+
+### Added
+- **Page-content-change stop condition**: a third "Stop when:" option — pauses a tab once its
+  page content changes, not just its title. Useful for pages whose title never updates (SPAs,
+  dashboards) but whose body content does.
+
+### Changed
+- **New permissions**: `scripting` and host permissions (`<all_urls>`) are now requested, used
+  only to inject a small content-hashing script into tabs where you've enabled this specific
+  condition. No other feature uses these permissions.
+- **Privacy policy updated** to disclose this: the injected script computes a one-way hash of a
+  tab's visible text *inside the page* and returns only that hash — raw page content is never
+  read by, transmitted to, or stored by the extension. The hash cannot be reversed into the
+  original text.
+
+### Technical
+- `chrome.scripting.executeScript` runs a self-contained function (`hashPageContent`) in the
+  target tab; the hash is captured as a baseline when the condition is armed and re-checked once
+  the tab finishes loading after each reload (`chrome.tabs.onUpdated`, `status === 'complete'`).
+- Injection failures (chrome:// pages, the Web Store, a tab mid-navigation, etc.) are caught and
+  ignored — the tab stays watched, that check is just skipped for one cycle.
+
 ## [0.5.0] - 2026-10-21
 
 ### Added

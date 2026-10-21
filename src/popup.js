@@ -507,7 +507,8 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     [
         { value: 'none', text: 'Never (manual only)' },
         { value: 'count', text: 'After N reloads' },
-        { value: 'title', text: 'Tab title changes' }
+        { value: 'title', text: 'Tab title changes' },
+        { value: 'content', text: 'Page content changes' }
     ].forEach(function(opt) {
         const option = document.createElement('option');
         option.value = opt.value;
@@ -554,6 +555,9 @@ function createTabElement(tab, tabId, tabData, isPaused) {
             startProgressWatch(tabId, limit, progressLabel, titleCountBadge);
         } else if (type === 'title') {
             updateStopCondition(tabId, { type: 'title' });
+            startProgressWatch(tabId, null, progressLabel, titleCountBadge);
+        } else if (type === 'content') {
+            updateStopCondition(tabId, { type: 'content' });
             startProgressWatch(tabId, null, progressLabel, titleCountBadge);
         }
     }

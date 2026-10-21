@@ -11,16 +11,23 @@
 // Intervals are stored in seconds; chrome.alarms only understands minutes, so
 // we convert at that boundary.
 //
-// Stop conditions: a tab can optionally carry `stopAfter` ({type:'count',limit}
-// or {type:'title'}). Progress for these lives in storage.session (not sync,
-// which has a write-rate quota) and is reset only when the condition is freshly
-// armed (new tab, resumed from pause, or the condition itself was edited) —
-// never on a worker-restart rebuild, so progress survives that.
+// Stop conditions: a tab can optionally carry `stopAfter` ({type:'count',limit},
+// {type:'title'}, or {type:'content'}). Progress for these lives in
+// storage.session (not sync, which has a write-rate quota) and is reset only
+// when the condition is freshly armed (new tab, resumed from pause, or the
+// condition itself was edited) — never on a worker-restart rebuild, so
+// progress survives that.
+//
+// 'content' detection injects a tiny content script (chrome.scripting) into
+// the watched tab after each reload completes, which hashes document.body's
+// text IN THE PAGE and returns only that hash — raw page content never
+// leaves the tab or gets stored/transmitted anywhere.
 
 const ALARM_PREFIX = 'reloadTab_';
 const KEEPALIVE_ALARM = 'reload4u_keepalive';
 const PROGRESS_PREFIX = 'reload4u_progress_';
 const TITLE_PREFIX = 'reload4u_title_';
+const CONTENT_PREFIX = 'reload4u_content_';
 const ALARM_MIN_INTERVAL = 30;   // seconds – chrome.alarms floor (0.5 min)
 const MIN_INTERVAL = 0.5;        // seconds – absolute floor
 const SKIP_IF_LOADING_BELOW = 2; // seconds – below this, don't reload a tab still loading
@@ -97,6 +104,7 @@ function clearStopConditionState(tabId) {
     tabId = String(tabId);
     chrome.storage.session.remove(PROGRESS_PREFIX + tabId);
     chrome.storage.session.remove(TITLE_PREFIX + tabId);
+    chrome.storage.session.remove(CONTENT_PREFIX + tabId);
 }
 
 // Sets up (or carries forward) session-stored progress for a tab. The reload
@@ -121,25 +129,89 @@ function armStopCondition(tabId, tabData, reset) {
     }
 
     const titleKey = TITLE_PREFIX + tabId;
-    if (!stopAfter || stopAfter.type !== 'title') {
-        if (reset) chrome.storage.session.remove(titleKey);
+    const contentKey = CONTENT_PREFIX + tabId;
+
+    if (!stopAfter || stopAfter.type === 'count') {
+        if (reset) {
+            chrome.storage.session.remove(titleKey);
+            chrome.storage.session.remove(contentKey);
+        }
         return;
     }
 
-    if (reset) {
-        chrome.tabs.get(parseInt(tabId, 10), function (tab) {
-            if (chrome.runtime.lastError || !tab) return;
-            chrome.storage.session.set({ [titleKey]: { baseline: tab.title } });
-        });
-    } else {
-        chrome.storage.session.get(titleKey, function (data) {
-            if (data[titleKey]) return;
+    if (stopAfter.type === 'title') {
+        if (reset) {
+            chrome.storage.session.remove(contentKey);
             chrome.tabs.get(parseInt(tabId, 10), function (tab) {
                 if (chrome.runtime.lastError || !tab) return;
                 chrome.storage.session.set({ [titleKey]: { baseline: tab.title } });
             });
-        });
+        } else {
+            chrome.storage.session.get(titleKey, function (data) {
+                if (data[titleKey]) return;
+                chrome.tabs.get(parseInt(tabId, 10), function (tab) {
+                    if (chrome.runtime.lastError || !tab) return;
+                    chrome.storage.session.set({ [titleKey]: { baseline: tab.title } });
+                });
+            });
+        }
+        return;
     }
+
+    if (stopAfter.type === 'content') {
+        if (reset) {
+            chrome.storage.session.remove(titleKey);
+            captureContentHash(tabId, true);
+        } else {
+            chrome.storage.session.get(contentKey, function (data) {
+                if (!data[contentKey]) captureContentHash(tabId, true);
+            });
+        }
+    }
+}
+
+// Runs entirely inside the page: hashes document.body's visible text and
+// returns only the hash. The extension never receives or stores raw content.
+function hashPageContent() {
+    const text = document.body ? document.body.innerText : '';
+    let hash = 5381;
+    for (let i = 0; i < text.length; i++) {
+        hash = ((hash << 5) + hash) + text.charCodeAt(i);
+        hash = hash & hash; // keep it a 32-bit int
+    }
+    return hash;
+}
+
+// Captures (forceBaseline: true) or checks (false) a tab's content hash.
+// Silently no-ops on tabs we can't inject into (chrome://, the Web Store,
+// a pending navigation, etc.) rather than erroring the whole extension.
+function captureContentHash(tabId, forceBaseline) {
+    const id = parseInt(tabId, 10);
+    chrome.scripting.executeScript({
+        target: { tabId: id },
+        func: hashPageContent
+    }).then(function (results) {
+        const hash = results && results[0] && results[0].result;
+        if (hash === undefined) return;
+
+        const key = CONTENT_PREFIX + tabId;
+        if (forceBaseline) {
+            chrome.storage.session.set({ [key]: { hash: hash } });
+            return;
+        }
+        chrome.storage.session.get(key, function (data) {
+            const baseline = data[key] && data[key].hash;
+            if (baseline === undefined) {
+                chrome.storage.session.set({ [key]: { hash: hash } });
+                return;
+            }
+            if (hash !== baseline) {
+                triggerStop(tabId, 'Stopped: page content changed');
+            }
+        });
+    }).catch(function () {
+        // Not injectable — leave the tab watched but skip this check.
+    });
 }
 
 function startTab(tabId, tabData, resetCondition) {
@@ -281,26 +353,36 @@ function trackReloadCount(tabId) {
 
 // Watches every tab's title (cheap — only fires on actual title changes, not
 // on a timer) and stops any watched tab whose title drifted from its baseline.
+// Also triggers a content-hash check once a watched tab finishes loading.
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
-    if (changeInfo.title === undefined) return;
     const idStr = String(tabId);
 
-    getSelectedTabs().then(function (tabsData) {
-        const tabData = tabsData[idStr];
-        if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'title') return;
+    if (changeInfo.title !== undefined) {
+        getSelectedTabs().then(function (tabsData) {
+            const tabData = tabsData[idStr];
+            if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'title') return;
 
-        const key = TITLE_PREFIX + idStr;
-        chrome.storage.session.get(key, function (data) {
-            const baseline = data[key] && data[key].baseline;
-            if (baseline === undefined) {
-                chrome.storage.session.set({ [key]: { baseline: changeInfo.title } });
-                return;
-            }
-            if (changeInfo.title !== baseline) {
-                triggerStop(idStr, 'Stopped: page title changed');
-            }
+            const key = TITLE_PREFIX + idStr;
+            chrome.storage.session.get(key, function (data) {
+                const baseline = data[key] && data[key].baseline;
+                if (baseline === undefined) {
+                    chrome.storage.session.set({ [key]: { baseline: changeInfo.title } });
+                    return;
+                }
+                if (changeInfo.title !== baseline) {
+                    triggerStop(idStr, 'Stopped: page title changed');
+                }
+            });
         });
-    });
+    }
+
+    if (changeInfo.status === 'complete') {
+        getSelectedTabs().then(function (tabsData) {
+            const tabData = tabsData[idStr];
+            if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'content') return;
+            captureContentHash(idStr, false);
+        });
+    }
 });
 
 // ---------- listeners ----------

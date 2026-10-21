@@ -529,8 +529,12 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     // Live reload-count readout, shown regardless of stop-condition type:
     // "X reloads" with no limit, or "X/N reloads" once a count limit is set.
+    // Its own row (above "Stop when:") so it doesn't crowd/overlap that row.
+    const progressDiv = document.createElement('div');
+    progressDiv.className = 'flex items-center justify-end pt-2 border-t border-gray-100';
     const progressLabel = document.createElement('span');
     progressLabel.className = 'text-xs text-gray-500 font-mono';
+    progressDiv.appendChild(progressLabel);
     const initialLimit = currentType === 'count' ? tabData.stopAfter.limit : null;
     if (isPaused) {
         updateProgressDisplays(tabId, initialLimit, progressLabel, titleCountBadge);
@@ -560,10 +564,10 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     stopDiv.appendChild(stopLabel);
     stopDiv.appendChild(stopSelect);
     stopDiv.appendChild(countInput);
-    stopDiv.appendChild(progressLabel);
 
     tabDiv.appendChild(statusDiv);
     tabDiv.appendChild(controlsDiv);
+    tabDiv.appendChild(progressDiv);
     tabDiv.appendChild(stopDiv);
 
     return tabDiv;

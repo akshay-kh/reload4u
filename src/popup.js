@@ -189,10 +189,10 @@ function removeTabFromSelected(tabId) {
         if (tabsData.hasOwnProperty(tabId)) {
             delete tabsData[tabId];
             chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
-                // The background worker reacts to this storage change and stops the tab's timer/alarm.
+                // The background worker reacts to this storage change and stops the tab's
+                // timer/alarm; the storage.onChanged listener below re-renders the popup.
                 cleanupCountdownTimer(tabId);
                 cleanupProgressLabel(tabId);
-                displaySelectedTabs();
                 console.log('Removed tab:', tabId);
             });
         } else {
@@ -215,11 +215,9 @@ function updateTabInterval(tabId, newIntervalInSeconds) {
         if (tabsData.hasOwnProperty(tabId)) {
             tabsData[tabId].interval = interval;
             chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
+                // storage.onChanged re-renders the popup, showing the corrected
+                // value if the interval was clamped.
                 console.log('Updated interval for tab:', tabId, 'to:', interval, 'seconds');
-                // Refresh display to show corrected value if it was adjusted
-                if (interval !== parseFloat(newIntervalInSeconds)) {
-                    displaySelectedTabs();
-                }
             });
         }
     });
@@ -239,7 +237,6 @@ function toggleTabPause(tabId) {
             }
             chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
                 console.log(tabsData[tabId].paused ? 'Paused tab:' : 'Resumed tab:', tabId);
-                displaySelectedTabs();
             });
         }
     });
@@ -258,13 +255,20 @@ function updateStopCondition(tabId, stopAfter) {
             delete tabsData[tabId].stopAfter;
         }
         delete tabsData[tabId].stoppedReason;
-        chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
-            displaySelectedTabs();
-        });
+        chrome.storage.sync.set({selectedTabsWithIntervals: tabsData});
     });
 }
 
+// Bumped on every call; a render only touches the DOM if it's still the
+// latest one by the time its async chrome.tabs.get calls resolve. Needed
+// because storage.onChanged and this function's own callers can both
+// trigger a render for the same underlying change -- without this guard,
+// two overlapping renders each append their own copy of every tab card.
+let renderGeneration = 0;
+
 function displaySelectedTabs() {
+    const myGeneration = ++renderGeneration;
+
     // Clean up all existing countdown timers and progress-label pollers
     Object.keys(countdownIntervals).forEach(function(tabId) {
         cleanupCountdownTimer(tabId);
@@ -274,6 +278,8 @@ function displaySelectedTabs() {
     });
 
     getSelectedTabs().then(function(tabsData) {
+        if (myGeneration !== renderGeneration) return; // superseded
+
         const tabIds = Object.keys(tabsData);
         if (tabIds && tabIds.length > 0) {
             // Clear both lists
@@ -286,7 +292,7 @@ function displaySelectedTabs() {
             const tabPromises = tabIds.map(function(tabId) {
                 return new Promise(function(resolve) {
                     chrome.tabs.get(parseInt(tabId), function(tab) {
-                        if (!chrome.runtime.lastError && tab) {
+                        if (myGeneration === renderGeneration && !chrome.runtime.lastError && tab) {
                             validTabsData[tabId] = tabsData[tabId];
                             const isPaused = tabsData[tabId].paused;
 
@@ -311,6 +317,8 @@ function displaySelectedTabs() {
             });
 
             Promise.all(tabPromises).then(function() {
+                if (myGeneration !== renderGeneration) return; // superseded
+
                 // Update storage to remove invalid tabs
                 if (Object.keys(validTabsData).length !== tabIds.length) {
                     chrome.storage.sync.set({selectedTabsWithIntervals: validTabsData});
@@ -341,6 +349,7 @@ function displaySelectedTabs() {
             pausedTabsSection.classList.add('hidden');
         }
     }).catch(function() {
+        if (myGeneration !== renderGeneration) return; // superseded
         selectedTabsInfo.classList.add('hidden');
         activeTabsSection.classList.add('hidden');
         pausedTabsSection.classList.add('hidden');
@@ -629,8 +638,8 @@ selectTab.onclick = function(){
                         paused: false
                     };
                     chrome.storage.sync.set({selectedTabsWithIntervals: selectedTabsData}, function() {
-                        // The background worker reacts to this storage change and starts the tab's timer/alarm.
-                        displaySelectedTabs();
+                        // The background worker reacts to this storage change and starts the
+                        // tab's timer/alarm; storage.onChanged re-renders the popup.
                         console.log('Added tab:', tabId, 'with interval:', defaultInterval, 'seconds');
                         alert("Tab added to auto-reload list");
                     });
@@ -657,8 +666,8 @@ stopAllTabs.onclick = function () {
     });
 
     chrome.storage.sync.set({selectedTabsWithIntervals: {}}, function() {
-        // The background worker reacts to this storage change and clears every timer/alarm.
-        displaySelectedTabs();
+        // The background worker reacts to this storage change and clears every timer/alarm;
+        // storage.onChanged re-renders the popup.
         alert("All tabs removed from auto-reload");
     });
 };

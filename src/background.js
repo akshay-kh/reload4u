@@ -322,11 +322,20 @@ chrome.storage.onChanged.addListener(function (changes, area) {
         const o = oldData[tabId];
         const n = newData[tabId];
         const stopAfterChanged = !sameStopAfter(o && o.stopAfter, n.stopAfter);
-        if (!o || o.interval !== n.interval || o.paused !== n.paused || stopAfterChanged) {
+        const schedulingChanged = !o || o.interval !== n.interval || o.paused !== n.paused;
+
+        if (schedulingChanged) {
             // Reset progress only on a brand-new tab, a resume, or an edited
             // condition — not on a bare interval change.
             const resetCondition = !o || stopAfterChanged || (o.paused && !n.paused);
             startTab(tabId, n, resetCondition);
+        } else if (stopAfterChanged) {
+            // Only the stop condition itself changed (e.g. editing N, or
+            // switching condition type) — re-arm its bookkeeping in place.
+            // Do NOT call startTab here: it fires an immediate "extra" reload
+            // to match alarm behavior, which would burn one off the new
+            // count limit before any real timer tick happens.
+            armStopCondition(tabId, n, true);
         }
     }
     updateKeepalive(newData);

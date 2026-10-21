@@ -591,6 +591,15 @@ document.addEventListener('DOMContentLoaded', function() {
     displaySelectedTabs();
 });
 
+// Re-render on any storage-driven change, including ones the popup didn't
+// make itself — e.g. the background auto-pausing a tab when a stop condition
+// is reached. Without this, that only shows up after the popup is reopened.
+chrome.storage.onChanged.addListener(function(changes, area) {
+    if (area === 'sync' && changes.selectedTabsWithIntervals) {
+        displaySelectedTabs();
+    }
+});
+
 // Clean up countdown timers and progress-label pollers when popup closes
 window.addEventListener('beforeunload', function() {
     Object.keys(countdownIntervals).forEach(function(tabId) {

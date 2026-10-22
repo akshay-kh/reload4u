@@ -1,3 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Indeterminate shimmer for intervals too fast to show a real progress fill. */
+@keyframes reload4u-shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(250%); }
+}
+
+.reload4u-shimmer {
+    animation: reload4u-shimmer 1.1s ease-in-out infinite;
+}

@@ -1,6 +1,6 @@
 # Privacy Policy for Reload4U Browser Extension
 
-*Last updated: August 11, 2025*
+*Last updated: October 21, 2026*
 
 ## Overview
 
@@ -12,15 +12,29 @@ Reload4U ("we", "our", or "the extension") is committed to protecting your priva
 Reload4U stores the following information locally on your device using the browser's storage API:
 
 - **Selected Tab Information**: Tab IDs of tabs you choose to auto-reload
-- **Reload Intervals**: Custom reload intervals you set for each tab (minimum 30 seconds)
+- **Reload Intervals**: Custom reload intervals you set for each tab (minimum 0.5 seconds)
 - **Pause States**: Whether specific tabs are paused or active for reloading
 - **User Preferences**: Your default interval settings
+- **Stop Conditions** (optional, only if you enable one for a tab): a reload count limit, a
+  captured tab title, or a one-way hash of a tab's visible text (see "Page Content Hashing" below)
+
+### Page Content Hashing (only if you enable "Page content changes" for a tab)
+
+If you choose the "stop when page content changes" option for a tab, the extension injects a
+small script into that tab, after each reload, that computes a one-way hash (a short number, not
+the text itself) of `document.body`'s visible text, entirely inside the page. Only that hash is
+returned to the extension and stored locally (in session storage, cleared when the browser closes)
+so it can tell whether the page changed. **The actual page text is never read, transmitted, or
+stored by the extension** — the hash cannot be reversed back into the original content. This is
+the only feature that touches page content, and it only runs on tabs you've explicitly set this
+option for.
 
 ### Data We Do NOT Collect
 
 - **Personal Information**: We do not collect names, email addresses, or any personal identifiers
 - **Browsing History**: We do not track or store your browsing history
-- **Tab Content**: We do not access, read, or store the content of your web pages
+- **Raw Tab Content**: Outside of the one-way content hash described above (used only when you
+  enable that specific stop condition), we do not read or store the content of your web pages
 - **URLs or Website Data**: We do not collect or store the URLs you visit
 - **Analytics or Tracking Data**: We do not use analytics services or tracking pixels
 
@@ -61,11 +75,17 @@ Reload4U requests the following browser permissions:
 - **`tabs`**: To reload selected tabs and access basic tab information (title, URL for display)
 - **`storage`**: To save your tab selections and preferences locally
 - **`alarms`**: To schedule automatic tab reloading at your specified intervals
+- **`scripting`** and **host permissions** (`<all_urls>`): Only used for the optional "stop when
+  page content changes" condition, to inject the content-hashing script described above into a
+  tab you've selected. Without this permission, that script could only run on the tab you most
+  recently clicked, not on other tabs you're watching in the background.
 
 ### What These Permissions Allow
 
 - **Tab Access**: Only to reload tabs you specifically select and display their titles/URLs in the extension popup
-- **No Content Access**: We cannot read or modify the content of web pages
+- **Limited Content Access**: We can inject a script to compute a one-way content hash, but only
+  on tabs where you've turned on the "page content changes" stop condition, and only that hash
+  — never the page's actual text — ever leaves the page
 - **No Network Access**: The extension does not make network requests or communicate with external servers
 
 ## Third-Party Services

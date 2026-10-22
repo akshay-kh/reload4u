@@ -7,7 +7,7 @@ A Chrome and Firefox extension that automatically reloads selected tabs at custo
 
 ## Features
 
-- Auto-reload tabs at specified intervals (default: 2 seconds)
+- Auto-reload tabs at specified intervals, as low as 0.5 seconds (default: 30 seconds)
 - Visual status indicators with tab badges and countdown timers
 - Customizable settings page for default intervals
 - Support for multiple tabs with individual controls

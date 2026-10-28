@@ -35,3 +35,6 @@ npm-debug.log*
 package-lock.json
 yarn-debug.log*
 yarn-error.log*
+# Test output
+test-results/
+playwright-report/

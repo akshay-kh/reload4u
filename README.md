@@ -89,6 +89,8 @@ reload4u/
 
 - `npm run dev` - Build with file watching for development
 - `npm run build` - Production build
+- `npm test` - Run unit tests (Vitest)
+- `npm run test:e2e` - Build and run end-to-end tests against the real extension in headless Chromium (first run: `npx playwright install chromium`)
 
 ### Making Changes
 

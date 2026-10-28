@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [0.6.2] - 2026-10-28
+## [1.0.0] - 2026-10-28
 
 ### Added
 - **Dark, light, and system-default themes.** A new "Appearance" setting on the Settings page

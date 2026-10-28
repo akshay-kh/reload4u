@@ -1,7 +1,7 @@
 # Reload4U — Claude Code context
 
 Chrome extension (Manifest V3) that auto-reloads selected tabs at per-tab intervals.
-Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.2
+Repo: https://github.com/akshay-kh/reload4u · Current version: 1.0.0
 
 ## Stack
 - Plain JavaScript (no framework), Tailwind CSS 3, Vite 5 build

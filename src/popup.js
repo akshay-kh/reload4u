@@ -27,8 +27,9 @@ function getDefaultInterval() {
     });
 }
 
-// Function to get next reload time for a tab: prefer the alarm (interval >= 30s);
-// fall back to the sub-30s session timer entry written by the background worker.
+// Function to get next reload time for a tab: prefer the alarm (interval >= 30s,
+// or >= 60s on Firefox); fall back to the session timer entry written by the
+// background worker for shorter intervals.
 function getNextReloadTime(tabId) {
     return new Promise(function(resolve) {
         chrome.alarms.get('reloadTab_' + tabId, function(alarm) {

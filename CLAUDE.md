@@ -1,7 +1,7 @@
 # Reload4U — Claude Code context
 
 Chrome extension (Manifest V3) that auto-reloads selected tabs at per-tab intervals.
-Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.1
+Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.2
 
 ## Stack
 - Plain JavaScript (no framework), Tailwind CSS 3, Vite 5 build
@@ -71,10 +71,10 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 - Firefox MV3 `host_permissions` (used by the content-change stop condition) aren't reliably
   granted/displayed at install until **Firefox 127+**. `strict_min_version` is set to "127.0" to
   cover all three Firefox constraints above with one floor.
-- Known remaining gap (not fixed, just documented): Firefox's `chrome.alarms` floor for MV3 is
-  reportedly 1 minute even on modern versions, vs Chrome's 30s. An alarm-scheduled tab configured
-  for 30–59s will likely fire every 60s on Firefox instead of the configured value — degraded
-  cadence, not broken, and not currently browser-detected/compensated for.
+- Firefox's `chrome.alarms` floor for MV3 is 1 minute (vs Chrome's 30s). `background.js` detects
+  Firefox (`IS_FIREFOX`, via the `moz-extension://` URL scheme) and raises `TIMER_THRESHOLD` to 60s
+  there, so 30–59s tabs use the `setInterval` path instead of a clamped alarm. The keepalive alarm
+  is also clamped to 60s on Firefox, so a killed worker can take up to a minute to rebuild timers.
 
 ## Hard constraints
 - `chrome.alarms` minimum period is 30s (0.5 min). Intervals below that use `setInterval`

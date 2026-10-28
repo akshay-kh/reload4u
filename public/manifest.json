@@ -1,6 +1,6 @@
 {
     "name": "Reload 4 U",
-    "version": "0.6.1",
+    "version": "0.6.2",
     "description": "Reload tab for you!",
     "minimum_chrome_version": "120",
     "permissions": ["activeTab","storage","tabs","alarms","scripting"],

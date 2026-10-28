@@ -5,6 +5,8 @@
 //   interval <  30s  -> setInterval inside the worker, plus a 30s keepalive
 //                       alarm that wakes the worker and rebuilds timers if
 //                       Chrome ever terminates it.
+// On Firefox the alarms floor for MV3 is 1 minute rather than 30s, so the
+// cutover is 60s there instead (see TIMER_THRESHOLD).
 //
 // The background is the single owner of scheduling: the popup/settings pages
 // only write `selectedTabsWithIntervals` to storage, and we react to changes.
@@ -30,6 +32,11 @@ const TITLE_PREFIX = 'reload4u_title_';
 const CONTENT_PREFIX = 'reload4u_content_';
 const ALARM_MIN_INTERVAL = 30;   // seconds – chrome.alarms floor (0.5 min)
 const MIN_INTERVAL = 0.5;        // seconds – absolute floor
+// Firefox clamps chrome.alarms periods to 1 minute, so 30–59s intervals
+// would silently fire every 60s. Detected via the extension URL scheme
+// rather than the user agent, which can be spoofed/overridden.
+const IS_FIREFOX = chrome.runtime.getURL('').startsWith('moz-extension://');
+const TIMER_THRESHOLD = IS_FIREFOX ? 60 : ALARM_MIN_INTERVAL; // seconds – below this, use setInterval
 const SKIP_IF_LOADING_BELOW = 2; // seconds – below this, don't reload a tab still loading
 const BADGE_COLOR = '#2563eb';
 
@@ -87,7 +94,7 @@ function sameStopAfter(a, b) {
 // ---------- scheduling ----------
 
 function usesTimer(interval) {
-    return interval < ALARM_MIN_INTERVAL;
+    return interval < TIMER_THRESHOLD;
 }
 
 function stopTab(tabId) {
@@ -243,8 +250,8 @@ function startTab(tabId, tabData, resetCondition) {
     });
 }
 
-// Keep a 30s alarm alive while any sub-30s tab is active, so a terminated
-// worker gets woken up and rebuilds its timers.
+// Keep a 30s alarm alive while any timer-based tab is active, so a terminated
+// worker gets woken up and rebuilds its timers. (Firefox clamps this to 60s.)
 function updateKeepalive(tabsData) {
     const needsKeepalive = Object.values(tabsData).some(function (d) {
         return !d.paused && usesTimer(d.interval);

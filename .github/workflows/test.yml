@@ -1,9 +1,17 @@
 name: Tests
 
+# Runs on every commit pushed to any branch, on every PR, and on merges to
+# master (a merge is a push to master). The README badge tracks master.
 on:
-  pull_request:
   push:
-    branches: [master]
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+# A newer commit on the same branch/PR supersedes an in-progress run.
+concurrency:
+  group: tests-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:

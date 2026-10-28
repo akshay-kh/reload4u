@@ -9,7 +9,8 @@ Repo: https://github.com/akshay-kh/reload4u · Current version: 1.0.0
 - Load `dist/` via `chrome://extensions` → Developer mode → Load unpacked
 - Tests: `npm test` → Vitest unit tests (`tests/unit/`, run `background.js`/`theme.js` against an
   in-memory `chrome.*` fake in `chrome-mock.js`); `npm run test:e2e` → builds, then Playwright loads
-  `dist/` into headless Chromium (`tests/e2e/`). CI runs both on every PR (`.github/workflows/test.yml`).
+  `dist/` into headless Chromium (`tests/e2e/`). CI runs both on every push to any branch and every PR (`.github/workflows/test.yml`);
+  the README "Tests" badge reflects master.
 - Releases: pushing a `v*` tag triggers `.github/workflows/release.yml` (builds + zips `dist/`)
 
 ## Layout

@@ -1,8 +1,11 @@
 // Settings page functionality
+import { applyTheme } from './theme.js';
+
 let defaultIntervalInput = document.getElementById('defaultInterval');
 let minIntervalHint = document.getElementById('minIntervalHint');
 // let showNotificationsInput = document.getElementById('showNotifications');
 // let autoStartInput = document.getElementById('autoStart');
+let themeSelect = document.getElementById('themeSelect');
 let saveButton = document.getElementById('saveSettings');
 let saveStatus = document.getElementById('saveStatus');
 
@@ -11,12 +14,14 @@ const MIN_INTERVAL = 0.5; // seconds – absolute floor (background enforces thi
 // Default settings (interval in seconds)
 const DEFAULT_SETTINGS = {
     defaultInterval: 30,
+    theme: 'system',
     showNotifications: false,
     autoStart: false
 };
 
 // Load settings when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('extVersion').textContent = chrome.runtime.getManifest().version;
     loadSettings();
 });
 
@@ -26,6 +31,7 @@ function loadSettings() {
         let settings = data.reload4uSettings || DEFAULT_SETTINGS;
 
         defaultIntervalInput.value = Math.max(MIN_INTERVAL, settings.defaultInterval);
+        themeSelect.value = settings.theme || 'system';
 
         //showNotificationsInput.checked = settings.showNotifications;
         //autoStartInput.checked = settings.autoStart;
@@ -46,6 +52,7 @@ function saveSettings() {
 
     const settings = {
         defaultInterval: intervalInSeconds,
+        theme: themeSelect.value,
         //showNotifications: showNotificationsInput.checked,
         //autoStart: autoStartInput.checked
     };
@@ -64,7 +71,7 @@ function saveSettings() {
 // Function to show save status
 function showSaveStatus(message, isSuccess) {
     saveStatus.textContent = isSuccess ? '✅ ' + message : '❌ ' + message;
-    saveStatus.className = isSuccess ? 'text-sm text-green-600' : 'text-sm text-red-600';
+    saveStatus.className = isSuccess ? 'text-sm text-green-600 dark:text-green-400' : 'text-sm text-red-600 dark:text-red-400';
     saveStatus.classList.remove('hidden');
 
     // Hide status after 3 seconds
@@ -92,6 +99,12 @@ defaultIntervalInput.addEventListener('change', validateInterval);
 // Auto-save on change (optional - can be removed if you prefer manual save only)
 defaultIntervalInput.addEventListener('change', function() {
     setTimeout(saveSettings, 500); // Auto-save after 500ms delay
+});
+
+// Theme applies instantly (preview) and saves right away.
+themeSelect.addEventListener('change', function() {
+    applyTheme(themeSelect.value);
+    saveSettings();
 });
 
 // showNotificationsInput.addEventListener('change', function() {

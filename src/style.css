@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Native form controls (number inputs, selects, scrollbars) follow the theme. */
+html.dark {
+    color-scheme: dark;
+}
+
 /* Indeterminate shimmer for intervals too fast to show a real progress fill. */
 @keyframes reload4u-shimmer {
     0% { transform: translateX(-100%); }

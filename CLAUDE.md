@@ -14,7 +14,8 @@ Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.2
 src/background.js   MV3 service worker — owns ALL reload scheduling
 src/popup.html/.js  Toolbar popup: add/remove/pause tabs, per-tab interval, countdown
 src/settings.html/.js  Options page: default interval
-src/style.css       Tailwind entry
+src/theme.js        Shared theme applier (imported by popup + settings): toggles `dark` on <html>
+src/style.css       Tailwind entry (darkMode: 'class')
 public/manifest.json  Copied to dist/ as-is (publicDir)
 vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, background, style
 ```
@@ -24,7 +25,8 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
   - `selectedTabsWithIntervals`: `{ [tabId: string]: { interval: number /* seconds */, paused: boolean,
     stopAfter?: {type:'count', limit:number} | {type:'title'} | {type:'content'}, stoppedReason?: string } }`
     (legacy format `{ [tabId]: number }` is migrated on read — keep that migration)
-  - `reload4uSettings`: `{ defaultInterval: number /* seconds */ }`
+  - `reload4uSettings`: `{ defaultInterval: number /* seconds */, theme?: 'system'|'light'|'dark' }`
+    (missing `theme` = `'system'`; settings.js must write both fields together — it replaces the object)
 - `chrome.storage.session`:
   - `reloadTab_<tabId>`: `{ startedAt: number, ms: number }` — written once when a sub-30s timer
     starts, so the popup can compute the countdown. Never write per tick.
@@ -52,6 +54,8 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 ## Conventions
 - Tab IDs are strings as storage keys; `parseInt` only when calling `chrome.tabs.*`.
 - Alarm names: `reloadTab_<tabId>`; keepalive alarm: `reload4u_keepalive`.
+- Dark mode: every color utility needs a `dark:` counterpart (incl. classNames built in popup.js).
+  `theme.js` mirrors the choice to `localStorage` only as a sync anti-flash cache; sync storage is the source of truth.
 - No inline JS in HTML (extension CSP). Use `addEventListener`.
 - Match the existing code style (function expressions, callbacks/Promises, 4-space indent).
 - No new permissions or network access without asking — check `PRIVACY_POLICY.md` is updated to

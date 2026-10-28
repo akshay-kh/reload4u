@@ -1,3 +1,5 @@
+import './theme.js';
+
 let selectTab = document.getElementById('selectThisTab');
 let stopAllTabs = document.getElementById('stopAllTabs');
 let openSettings = document.getElementById('openSettings');
@@ -68,14 +70,14 @@ function createCountdownTimer(tabId, countdownElement, interval) {
                     const minutes = Math.floor(timeLeft / 60);
                     const seconds = timeLeft % 60;
                     countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
-                    countdownElement.className = 'text-xs text-green-600 font-mono';
+                    countdownElement.className = 'text-xs text-green-600 dark:text-green-400 font-mono';
                 } else {
                     countdownElement.textContent = 'Reloading...';
-                    countdownElement.className = 'text-xs text-blue-600 font-mono animate-pulse';
+                    countdownElement.className = 'text-xs text-blue-600 dark:text-blue-400 font-mono animate-pulse';
                 }
             } else {
                 countdownElement.textContent = 'No timer';
-                countdownElement.className = 'text-xs text-gray-500';
+                countdownElement.className = 'text-xs text-gray-500 dark:text-gray-400';
             }
         });
     }
@@ -359,7 +361,7 @@ function displaySelectedTabs() {
 
 function createTabElement(tab, tabId, tabData, isPaused) {
     const tabDiv = document.createElement('div');
-    tabDiv.className = 'p-3 bg-white border border-gray-200 rounded-lg shadow-sm space-y-3';
+    tabDiv.className = 'p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm space-y-3';
 
     // Status and info section
     const statusDiv = document.createElement('div');
@@ -382,12 +384,12 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     }
 
     const titleText = document.createElement('p');
-    titleText.className = 'text-sm font-medium text-gray-900 truncate';
+    titleText.className = 'text-sm font-medium text-gray-900 dark:text-gray-100 truncate';
     titleText.textContent = tab.title;
 
     // Reload-count badge mirrored next to the title, e.g. "(3)".
     const titleCountBadge = document.createElement('span');
-    titleCountBadge.className = 'text-xs text-gray-400 font-mono shrink-0';
+    titleCountBadge.className = 'text-xs text-gray-400 dark:text-gray-500 font-mono shrink-0';
 
     titleDiv.appendChild(statusBadge);
     titleDiv.appendChild(titleCountBadge);
@@ -395,7 +397,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     // URL
     const urlText = document.createElement('p');
-    urlText.className = 'text-xs text-gray-500 truncate mb-2';
+    urlText.className = 'text-xs text-gray-500 dark:text-gray-400 truncate mb-2';
     urlText.textContent = tab.url;
 
     // Countdown timer (only for active tabs)
@@ -404,15 +406,15 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     if (!isPaused) {
         timerDiv.className = 'flex items-center gap-2';
         const timerLabel = document.createElement('span');
-        timerLabel.className = 'text-xs text-gray-600';
+        timerLabel.className = 'text-xs text-gray-600 dark:text-gray-400';
         timerLabel.textContent = 'Next reload in:';
         const timerDisplay = document.createElement('span');
-        timerDisplay.className = 'text-xs text-green-600 font-mono font-semibold transition-colors duration-300';
+        timerDisplay.className = 'text-xs text-green-600 dark:text-green-400 font-mono font-semibold transition-colors duration-300';
         timerDiv.appendChild(timerLabel);
         timerDiv.appendChild(timerDisplay);
 
         progressTrack = document.createElement('div');
-        progressTrack.className = 'relative w-full h-1.5 bg-gray-200 rounded-full overflow-hidden mt-1';
+        progressTrack.className = 'relative w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mt-1';
 
         if (tabData.interval < STATIC_LABEL_BELOW) {
             // Too fast for a meaningful ticking countdown or a synced progress
@@ -430,7 +432,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
             startProgressBar(tabId, progressFill, tabData.interval);
         }
     } else {
-        timerDiv.className = 'text-xs text-yellow-600';
+        timerDiv.className = 'text-xs text-yellow-600 dark:text-yellow-400';
         timerDiv.textContent = tabData.stoppedReason ? ('⏹ ' + tabData.stoppedReason) : 'Reload paused';
     }
 
@@ -441,7 +443,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     if (!isPaused && tabData.interval < FAST_WARNING_BELOW) {
         const warning = document.createElement('p');
-        warning.className = 'text-xs text-orange-600 mt-1';
+        warning.className = 'text-xs text-orange-600 dark:text-orange-400 mt-1';
         warning.textContent = '⚠ Fast intervals use more CPU/network.';
         infoSection.appendChild(warning);
     }
@@ -472,13 +474,13 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     // Interval controls section
     const controlsDiv = document.createElement('div');
-    controlsDiv.className = 'flex items-center justify-between pt-2 border-t border-gray-100';
+    controlsDiv.className = 'flex items-center justify-between pt-2 border-t border-gray-100 dark:border-gray-700';
 
     const intervalSection = document.createElement('div');
     intervalSection.className = 'flex items-center gap-2';
 
     const label = document.createElement('label');
-    label.className = 'text-xs text-gray-600';
+    label.className = 'text-xs text-gray-600 dark:text-gray-400';
     label.textContent = 'Interval (sec):';
 
     const input = document.createElement('input');
@@ -486,7 +488,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     input.min = String(MIN_INTERVAL);
     input.step = '0.5';
     input.value = tabData.interval;
-    input.className = 'w-16 px-2 py-1 text-xs border border-gray-300 rounded text-center focus:border-blue-500 focus:outline-none';
+    input.className = 'w-16 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded text-center focus:border-blue-500 focus:outline-none';
     input.disabled = isPaused;
 
     input.addEventListener('change', function() {
@@ -497,7 +499,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     intervalSection.appendChild(input);
 
     const statusText = document.createElement('div');
-    statusText.className = 'text-xs text-gray-500';
+    statusText.className = 'text-xs text-gray-500 dark:text-gray-400';
     statusText.textContent = isPaused ? 'Paused' : 'Active';
 
     controlsDiv.appendChild(intervalSection);
@@ -505,14 +507,14 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     // Stop-condition controls section
     const stopDiv = document.createElement('div');
-    stopDiv.className = 'flex items-center gap-2 pt-2 border-t border-gray-100';
+    stopDiv.className = 'flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700';
 
     const stopLabel = document.createElement('label');
-    stopLabel.className = 'text-xs text-gray-600';
+    stopLabel.className = 'text-xs text-gray-600 dark:text-gray-400';
     stopLabel.textContent = 'Stop when:';
 
     const stopSelect = document.createElement('select');
-    stopSelect.className = 'px-2 py-1 text-xs border border-gray-300 rounded focus:border-blue-500 focus:outline-none';
+    stopSelect.className = 'px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:border-blue-500 focus:outline-none';
     stopSelect.disabled = isPaused;
     [
         { value: 'none', text: 'Never (manual only)' },
@@ -534,7 +536,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     countInput.min = '1';
     countInput.step = '1';
     countInput.value = (tabData.stopAfter && tabData.stopAfter.limit) || 5;
-    countInput.className = 'w-14 px-2 py-1 text-xs border border-gray-300 rounded text-center focus:border-blue-500 focus:outline-none';
+    countInput.className = 'w-14 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded text-center focus:border-blue-500 focus:outline-none';
     countInput.classList.toggle('hidden', currentType !== 'count');
     countInput.disabled = isPaused;
 
@@ -542,9 +544,9 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     // "X reloads" with no limit, or "X/N reloads" once a count limit is set.
     // Its own row (above "Stop when:") so it doesn't crowd/overlap that row.
     const progressDiv = document.createElement('div');
-    progressDiv.className = 'flex items-center justify-end pt-2 border-t border-gray-100';
+    progressDiv.className = 'flex items-center justify-end pt-2 border-t border-gray-100 dark:border-gray-700';
     const progressLabel = document.createElement('span');
-    progressLabel.className = 'text-xs text-gray-500 font-mono';
+    progressLabel.className = 'text-xs text-gray-500 dark:text-gray-400 font-mono';
     progressDiv.appendChild(progressLabel);
     const initialLimit = currentType === 'count' ? tabData.stopAfter.limit : null;
     if (isPaused) {

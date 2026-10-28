@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [0.6.2] - 2026-10-28
 
+### Added
+- **Dark, light, and system-default themes.** A new "Appearance" setting on the Settings page
+  applies to the popup and the Settings page. "System default" (the default) follows the OS
+  light/dark preference and updates live when it changes; changing the theme while the popup is
+  open updates it immediately.
+
 ### Fixed
 - **Firefox: 30–59 second intervals now run at the configured cadence.** Firefox clamps MV3
   `chrome.alarms` to a 1-minute floor (Chrome's is 30s), so these tabs were firing every 60s.

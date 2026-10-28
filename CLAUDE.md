@@ -1,7 +1,7 @@
 # Reload4U — Claude Code context
 
 Chrome extension (Manifest V3) that auto-reloads selected tabs at per-tab intervals.
-Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.1
+Repo: https://github.com/akshay-kh/reload4u · Current version: 1.0.0
 
 ## Stack
 - Plain JavaScript (no framework), Tailwind CSS 3, Vite 5 build
@@ -14,7 +14,8 @@ Repo: https://github.com/akshay-kh/reload4u · Current version: 0.6.1
 src/background.js   MV3 service worker — owns ALL reload scheduling
 src/popup.html/.js  Toolbar popup: add/remove/pause tabs, per-tab interval, countdown
 src/settings.html/.js  Options page: default interval
-src/style.css       Tailwind entry
+src/theme.js        Shared theme applier (imported by popup + settings): toggles `dark` on <html>
+src/style.css       Tailwind entry (darkMode: 'class')
 public/manifest.json  Copied to dist/ as-is (publicDir)
 vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, background, style
 ```
@@ -24,7 +25,8 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
   - `selectedTabsWithIntervals`: `{ [tabId: string]: { interval: number /* seconds */, paused: boolean,
     stopAfter?: {type:'count', limit:number} | {type:'title'} | {type:'content'}, stoppedReason?: string } }`
     (legacy format `{ [tabId]: number }` is migrated on read — keep that migration)
-  - `reload4uSettings`: `{ defaultInterval: number /* seconds */ }`
+  - `reload4uSettings`: `{ defaultInterval: number /* seconds */, theme?: 'system'|'light'|'dark' }`
+    (missing `theme` = `'system'`; settings.js must write both fields together — it replaces the object)
 - `chrome.storage.session`:
   - `reloadTab_<tabId>`: `{ startedAt: number, ms: number }` — written once when a sub-30s timer
     starts, so the popup can compute the countdown. Never write per tick.
@@ -52,6 +54,8 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 ## Conventions
 - Tab IDs are strings as storage keys; `parseInt` only when calling `chrome.tabs.*`.
 - Alarm names: `reloadTab_<tabId>`; keepalive alarm: `reload4u_keepalive`.
+- Dark mode: every color utility needs a `dark:` counterpart (incl. classNames built in popup.js).
+  `theme.js` mirrors the choice to `localStorage` only as a sync anti-flash cache; sync storage is the source of truth.
 - No inline JS in HTML (extension CSP). Use `addEventListener`.
 - Match the existing code style (function expressions, callbacks/Promises, 4-space indent).
 - No new permissions or network access without asking — check `PRIVACY_POLICY.md` is updated to
@@ -71,10 +75,10 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 - Firefox MV3 `host_permissions` (used by the content-change stop condition) aren't reliably
   granted/displayed at install until **Firefox 127+**. `strict_min_version` is set to "127.0" to
   cover all three Firefox constraints above with one floor.
-- Known remaining gap (not fixed, just documented): Firefox's `chrome.alarms` floor for MV3 is
-  reportedly 1 minute even on modern versions, vs Chrome's 30s. An alarm-scheduled tab configured
-  for 30–59s will likely fire every 60s on Firefox instead of the configured value — degraded
-  cadence, not broken, and not currently browser-detected/compensated for.
+- Firefox's `chrome.alarms` floor for MV3 is 1 minute (vs Chrome's 30s). `background.js` detects
+  Firefox (`IS_FIREFOX`, via the `moz-extension://` URL scheme) and raises `TIMER_THRESHOLD` to 60s
+  there, so 30–59s tabs use the `setInterval` path instead of a clamped alarm. The keepalive alarm
+  is also clamped to 60s on Firefox, so a killed worker can take up to a minute to rebuild timers.
 
 ## Hard constraints
 - `chrome.alarms` minimum period is 30s (0.5 min). Intervals below that use `setInterval`

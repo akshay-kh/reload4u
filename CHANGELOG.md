@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.0] - 2026-10-28
+
+### Added
+- **Dark, light, and system-default themes.** A new "Appearance" setting on the Settings page
+  applies to the popup and the Settings page. "System default" (the default) follows the OS
+  light/dark preference and updates live when it changes; changing the theme while the popup is
+  open updates it immediately.
+
+### Fixed
+- **Firefox: 30–59 second intervals now run at the configured cadence.** Firefox clamps MV3
+  `chrome.alarms` to a 1-minute floor (Chrome's is 30s), so these tabs were firing every 60s.
+  On Firefox, intervals below 60s now use the in-worker timer path (the same one sub-30s tabs
+  use on Chrome) instead of alarms. Chrome behaviour is unchanged. This resolves the known
+  limitation noted in 0.6.1.
+- **Popup no longer shows duplicate tab cards.** A single action (add, remove, pause/resume,
+  editing an interval or stop condition, stop all) could trigger two overlapping popup renders,
+  each appending a card per tab. Renders are now guarded so a superseded one is discarded, and
+  each storage write triggers only one render.
+
 ## [0.6.1] - 2026-10-21
 
 ### Fixed

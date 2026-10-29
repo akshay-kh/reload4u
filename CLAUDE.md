@@ -11,6 +11,9 @@ Repo: https://github.com/akshay-kh/reload4u · Current version: 1.0.0
   in-memory `chrome.*` fake in `chrome-mock.js`); `npm run test:e2e` → builds, then Playwright loads
   `dist/` into headless Chromium (`tests/e2e/`). CI runs both on every push to any branch and every PR (`.github/workflows/test.yml`);
   the README "Tests" badge reflects master.
+- Dependencies: Dependabot (`.github/dependabot.yml`) opens update PRs every Monday for npm
+  (minor+patch grouped, majors separate) and GitHub Actions; CI runs on each.
+  `package-lock.json` is committed and CI/release install with `npm ci`: after changing deps, commit the lockfile too.
 - Releases: pushing a `v*` tag triggers `.github/workflows/release.yml` (builds + zips `dist/`)
 
 ## Layout

@@ -1,0 +1,31 @@
+version: 2
+updates:
+  # npm dev dependencies (Vite, Tailwind, Vitest, Playwright, ...).
+  # Minor and patch bumps are grouped into a single weekly PR; major bumps
+  # still get their own PR so breaking changes can be reviewed one at a time.
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      npm-minor-and-patch:
+        update-types:
+          - minor
+          - patch
+
+  # Actions used in .github/workflows/
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    commit-message:
+      prefix: "ci(deps)"
+    groups:
+      actions:
+        patterns:
+          - "*"

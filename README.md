@@ -119,6 +119,7 @@ The extension requires the following permissions:
 - `storage` - Store user preferences and settings
 - `tabs` - Manage tab reloading functionality
 - `alarms` - Handle timed reload operations
+- `scripting` + access to all sites - Used only by the optional "stop when page content changes" condition, to compute a one-way hash of the page's text inside the page. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
 
 ## Contributing
 
@@ -127,7 +128,13 @@ The extension requires the following permissions:
 3. Make your changes
 4. Commit your changes (`git commit -am 'Add new feature'`)
 5. Push to the branch (`git push origin feature/new-feature`)
-6. Create a Pull Request
+6. Create a Pull Request (the PR template has a short checklist)
+
+Bug reports and feature requests are welcome via [issues](https://github.com/akshay-kh/reload4u/issues/new/choose).
+
+## Security
+
+Please report security vulnerabilities privately. See [SECURITY.md](SECURITY.md).
 
 ## License
 

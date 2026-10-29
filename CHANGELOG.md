@@ -66,37 +66,17 @@ All notable changes to this project will be documented in this file.
 ## [0.5.0] - 2026-10-21
 
 ### Added
-- **Stop conditions**: a watched tab can now auto-pause itself after a set number of reloads,
-  or as soon as its tab title changes — useful for "reload until this updates" workflows without
-  babysitting the popup. Configurable per tab via a new "Stop when:" control.
-- **Toolbar badge**: the extension icon now shows a count of currently-active auto-reloading tabs
-  (hidden when none are active), so you can tell at a glance without opening the popup.
-
-### Changed
-- Paused tabs that were auto-stopped by a condition show why (e.g. "Stopped: reached 5 reloads",
-  "Stopped: page title changed") instead of a generic "Reload paused" label. Resuming a tab clears
-  that reason and restarts its stop-condition progress from zero.
-
-### Technical
-- Reload-count and title-baseline tracking live in `chrome.storage.session` (`reload4u_progress_*`,
-  `reload4u_title_*`), not `sync` — session storage has no write-rate quota, so the per-reload
-  counter increment is safe there but would not be on `sync`.
-- Stop-condition progress survives a killed/restarted service worker (only reset on a new tab,
-  a resume, or an edited condition) via a `resetCondition` flag threaded through `startTab()`.
-- Considered page-content-change detection as a third stop-condition type; deferred because it
-  needs `chrome.scripting` *and* broad host permissions to inject into arbitrary background tabs
-  (not just the active one), which is a bigger ask than the current permission set and needs
-  explicit sign-off plus a privacy-policy update before adding.
-
-## [0.4.0] - 2026-10-21
-
-### Added
 - **Sub-30-second intervals**: Reload intervals can now go as low as 0.5 seconds. `chrome.alarms`
   can't schedule below 30s, so intervals under 30s now run on a `setInterval` timer inside the
   background service worker instead, with a 30s keepalive alarm to rebuild that timer if the
   worker is ever terminated by Chrome.
 - **Fast-interval safeguards**: tabs reloading faster than 2s skip a reload if the tab is still
   mid-load; the popup shows a warning for any tab set below 5s.
+- **Stop conditions**: a watched tab can now auto-pause itself after a set number of reloads,
+  or as soon as its tab title changes — useful for "reload until this updates" workflows without
+  babysitting the popup. Configurable per tab via a new "Stop when:" control.
+- **Toolbar badge**: the extension icon now shows a count of currently-active auto-reloading tabs
+  (hidden when none are active), so you can tell at a glance without opening the popup.
 
 ### Changed
 - **Popup & settings interval inputs now use plain seconds** (minimum 0.5, step 0.5) instead of the
@@ -107,16 +87,50 @@ All notable changes to this project will be documented in this file.
   owner of scheduling (alarms or timers) in response to storage changes.
 - **Smart countdown display**: tabs under 2s show a static "every Xs" label instead of a ticking
   countdown, since the countdown couldn't keep up with sub-second intervals anyway.
+- Paused tabs that were auto-stopped by a condition show why (e.g. "Stopped: reached 5 reloads",
+  "Stopped: page title changed") instead of a generic "Reload paused" label. Resuming a tab clears
+  that reason and restarts its stop-condition progress from zero.
 
 ### Technical
 - **Migration Support**: Automatic detection and handling of the legacy bare-number interval format
   (values < 30 reset to the 30s default, since that long predates sub-30s support)
 - **Chrome Alarms API**: Proper conversion from seconds to minutes when creating alarms (interval / 60)
 - **manifest.json**: added `minimum_chrome_version: "116"`
+- Reload-count and title-baseline tracking live in `chrome.storage.session` (`reload4u_progress_*`,
+  `reload4u_title_*`), not `sync` — session storage has no write-rate quota, so the per-reload
+  counter increment is safe there but would not be on `sync`.
+- Stop-condition progress survives a killed/restarted service worker (only reset on a new tab,
+  a resume, or an edited condition) via a `resetCondition` flag threaded through `startTab()`.
+- Considered page-content-change detection as a third stop-condition type; deferred because it
+  needs `chrome.scripting` *and* broad host permissions to inject into arbitrary background tabs
+  (not just the active one), which is a bigger ask than the current permission set and needs
+  explicit sign-off plus a privacy-policy update before adding.
+
+## [0.4.0] - 2025-12-28
+
+### Added
+- **Flexible Time Unit Selection**: Users can now choose between seconds and minutes for all interval inputs
+- **Unit Selector Dropdown**: Added intuitive unit selector (sec/min) in both settings page and popup
+- **Smart Display Format**: Intervals automatically display in the most readable format (e.g., 60 seconds shows as "1 min")
+- **Dynamic Input Validation**: Minimum interval hint updates based on selected unit (30 seconds or 0.5 minutes)
+
+### Changed
+- **Interval Storage Format**: All intervals now stored internally in seconds (breaking change from previous 0.5-minute system)
+- **Improved User Experience**: More intuitive time input with familiar units (seconds/minutes)
+- **Settings Page**: Updated with unit selector for default interval configuration
+- **Popup Interface**: Enhanced interval controls with unit dropdown for each tab
+- **Conversion Logic**: Seamless conversion between user-selected units and internal seconds storage
+
+### Technical
+- **Migration Support**: Automatic detection and handling of old interval format (values < 30 reset to default)
+- **Chrome Alarms API**: Proper conversion from seconds to minutes when creating alarms (interval / 60)
+- **Consistent Validation**: 30-second minimum enforced regardless of user-selected unit
+- **Code Organization**: Added conversion helper functions (`convertSecondsToDisplay`, `convertDisplayToSeconds`)
 
 ### Migration Notes
-- Existing per-tab intervals (stored in seconds) load unchanged; only the legacy bare-number format
-  (pre-dating per-tab pause support) is normalized, and only reset to 30s if it was below 30.
+- Existing intervals less than 30 seconds will be automatically reset to 30 seconds (default)
+- Old format data (0.5, 1, 2 for minutes) will be converted or reset to new format
+- All intervals now display intelligently based on their value (60s+ shows in minutes if evenly divisible)
 
 ## [0.3.2] - 2025-08-03
 

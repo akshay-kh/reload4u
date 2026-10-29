@@ -11,6 +11,11 @@ updates:
     open-pull-requests-limit: 5
     commit-message:
       prefix: "chore(deps)"
+    ignore:
+      # Tailwind 4 is a rewrite (CSS-based config, @tailwindcss/postcss) and
+      # needs Firefox 128+, above our strict_min_version of 127. Migrate by hand.
+      - dependency-name: tailwindcss
+        update-types: ["version-update:semver-major"]
     groups:
       npm-minor-and-patch:
         update-types:

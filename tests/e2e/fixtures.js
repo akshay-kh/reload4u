@@ -21,7 +21,8 @@ export const test = base.extend({
             served++;
             route.fulfill({
                 contentType: 'text/html',
-                body: '<title>Target page</title><p id="load">' + served + '</p>'
+                body: '<title>Target page</title><p id="load">' + served + '</p>' +
+                    '<input id="field"><div style="height:4000px"></div>'
             });
         });
         await use(context);

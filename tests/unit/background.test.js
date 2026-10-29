@@ -261,3 +261,201 @@ describe('closed tabs', function () {
         expect(syncTabs()['20']).toBeUndefined();
     });
 });
+
+describe('per-tab options', function () {
+    it('bypasses the cache only when hard reload is on', async function () {
+        await loadBackground();
+        chrome.addTab(21);
+        chrome.addTab(22);
+        await setTabs({
+            '21': { interval: 60, paused: false, hardReload: true },
+            '22': { interval: 60, paused: false }
+        });
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_21' });
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_22' });
+        await flush();
+
+        expect(chrome.tabs.reloadProps[21]).toEqual({ bypassCache: true });
+        expect(chrome.tabs.reloadProps[22]).toEqual({ bypassCache: false });
+    });
+
+    it('randomizes each sub-30s delay between interval and intervalMax', async function () {
+        vi.spyOn(Math, 'random').mockReturnValue(0.5);
+        await loadBackground();
+        chrome.addTab(23);
+        await setTabs({ '23': { interval: 4, intervalMax: 8, paused: false } });
+
+        expect(chrome.alarms.all.reloadTab_23).toBeUndefined();
+        expect(chrome.storage.session.data.reloadTab_23).toMatchObject({ ms: 6000 });
+        expect(chrome.alarms.all.reload4u_keepalive).toBeDefined();
+        expect(chrome.tabs.reloads[23]).toBe(1); // immediate first reload
+
+        await vi.advanceTimersByTimeAsync(5999);
+        expect(chrome.tabs.reloads[23]).toBe(1);
+        await vi.advanceTimersByTimeAsync(1);
+        expect(chrome.tabs.reloads[23]).toBe(2);
+    });
+
+    it('uses one-shot alarms for long random delays and reschedules after each', async function () {
+        vi.spyOn(Math, 'random').mockReturnValue(0);
+        await loadBackground();
+        chrome.addTab(24);
+        await setTabs({ '24': { interval: 60, intervalMax: 120, paused: false } });
+
+        const first = chrome.alarms.all.reloadTab_24;
+        expect(first.periodInMinutes).toBeUndefined();
+        expect(first.when).toBeGreaterThan(Date.now());
+
+        delete chrome.alarms.all.reloadTab_24; // one-shot alarms are gone once fired
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_24' });
+        await flush();
+        expect(chrome.tabs.reloads[24]).toBe(2); // immediate + alarm
+        expect(chrome.alarms.all.reloadTab_24).toBeDefined();
+    });
+
+    it('skips a reload while the page has unsaved input', async function () {
+        let busy = true;
+        await loadBackground({ page: { inspectPage: function () { return { busy: busy, x: 0, y: 0 }; } } });
+        chrome.addTab(25);
+        await setTabs({ '25': { interval: 60, paused: false, protectTyping: true } });
+
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_25' });
+        await flush();
+        expect(chrome.tabs.reloads[25]).toBeUndefined();
+
+        busy = false;
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_25' });
+        await flush();
+        expect(chrome.tabs.reloads[25]).toBe(1);
+    });
+
+    it('reloads anyway when the page cannot be inspected', async function () {
+        await loadBackground({ page: { inspectPage: function () { throw new Error('cannot inject'); } } });
+        chrome.scripting.executeScript = function () { return Promise.reject(new Error('cannot inject')); };
+        chrome.addTab(26);
+        await setTabs({ '26': { interval: 60, paused: false, protectTyping: true } });
+
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_26' });
+        await flush();
+        expect(chrome.tabs.reloads[26]).toBe(1);
+    });
+
+    it('saves the scroll position before a reload and restores it after', async function () {
+        await loadBackground({ page: { inspectPage: function () { return { busy: false, x: 0, y: 840 }; } } });
+        chrome.addTab(27);
+        await setTabs({ '27': { interval: 60, paused: false, keepScroll: true } });
+
+        chrome.alarms.onAlarm.emit({ name: 'reloadTab_27' });
+        await flush();
+        expect(chrome.storage.session.data.reload4u_scroll_27).toEqual({ x: 0, y: 840 });
+
+        chrome.tabs.onUpdated.emit(27, { status: 'complete' });
+        await flush();
+        const restore = chrome.scripting.calls.find(function (c) { return c.func === 'restoreScroll'; });
+        expect(restore).toMatchObject({ tabId: 27, args: [0, 840] });
+        expect(chrome.storage.session.data.reload4u_scroll_27).toBeUndefined();
+    });
+});
+
+describe('text stop condition', function () {
+    it('stops when the text appears', async function () {
+        let found = false;
+        await loadBackground({ page: { pageHasText: function () { return found; } } });
+        chrome.addTab(28);
+        await setTabs({ '28': { interval: 60, paused: false, stopAfter: { type: 'text', text: 'In stock', when: 'appears' } } });
+
+        chrome.tabs.onUpdated.emit(28, { status: 'complete' });
+        await flush();
+        expect(syncTabs()['28'].paused).toBe(false);
+
+        found = true;
+        chrome.tabs.onUpdated.emit(28, { status: 'complete' });
+        await flush();
+        expect(syncTabs()['28'].paused).toBe(true);
+        expect(syncTabs()['28'].stoppedReason).toBe('Stopped: "In stock" appeared');
+        const check = chrome.scripting.calls.find(function (c) { return c.func === 'pageHasText'; });
+        expect(check.args).toEqual(['In stock']);
+    });
+
+    it('stops when the text disappears', async function () {
+        await loadBackground({ page: { pageHasText: function () { return false; } } });
+        chrome.addTab(29);
+        await setTabs({ '29': { interval: 60, paused: false, stopAfter: { type: 'text', text: 'Sold out', when: 'disappears' } } });
+
+        chrome.tabs.onUpdated.emit(29, { status: 'complete' });
+        await flush();
+        expect(syncTabs()['29'].stoppedReason).toBe('Stopped: "Sold out" disappeared');
+    });
+});
+
+describe('notifications', function () {
+    it('notifies when a stop condition fires, if turned on', async function () {
+        const seed = { sync: { reload4uSettings: { defaultInterval: 30, notifyOnStop: true } } };
+        await loadBackground({ notifications: true }, seed);
+        chrome.addTab(30, { title: 'Tickets' });
+        await setTabs({ '30': { interval: 5, paused: false, stopAfter: { type: 'count', limit: 1 } } });
+        await flush();
+
+        expect(chrome.notifications.created.reload4u_stop_30).toMatchObject({
+            title: 'Reload4U: Tickets',
+            message: 'Stopped: reached 1 reload. Click to open the tab.'
+        });
+    });
+
+    it('stays quiet when turned off', async function () {
+        await loadBackground({ notifications: true });
+        chrome.addTab(31);
+        await setTabs({ '31': { interval: 5, paused: false, stopAfter: { type: 'count', limit: 1 } } });
+        await flush();
+
+        expect(syncTabs()['31'].paused).toBe(true);
+        expect(chrome.notifications.created).toEqual({});
+    });
+});
+
+describe('keyboard shortcut', function () {
+    it('adds the tab at the default interval, then pauses and resumes it', async function () {
+        const seed = { sync: { reload4uSettings: { defaultInterval: 45 } } };
+        await loadBackground(undefined, seed);
+        chrome.addTab(32);
+
+        chrome.commands.onCommand.emit('toggle-current-tab', { id: 32 });
+        await flush();
+        expect(syncTabs()['32']).toEqual({ interval: 45, paused: false });
+
+        chrome.commands.onCommand.emit('toggle-current-tab', { id: 32 });
+        await flush();
+        expect(syncTabs()['32'].paused).toBe(true);
+
+        chrome.commands.onCommand.emit('toggle-current-tab', { id: 32 });
+        await flush();
+        expect(syncTabs()['32'].paused).toBe(false);
+    });
+});
+
+describe('context menu', function () {
+    it('creates the menu on install', async function () {
+        await loadBackground();
+        chrome.runtime.onInstalled.emit({ reason: 'install' });
+        await flush();
+
+        expect(Object.keys(chrome.contextMenus.items)).toEqual(expect.arrayContaining([
+            'reload4u', 'reload4u_every_10', 'reload4u_every_300', 'reload4u_stop'
+        ]));
+        expect(chrome.contextMenus.items.reload4u_every_60.title).toBe('Auto-reload every 1 minute');
+    });
+
+    it('sets an interval while keeping other options, and stops the tab', async function () {
+        await loadBackground();
+        chrome.addTab(33);
+        await setTabs({ '33': { interval: 5, paused: true, stoppedReason: 'x', hardReload: true } });
+
+        chrome.contextMenus.onClicked.emit({ menuItemId: 'reload4u_every_300' }, { id: 33 });
+        await flush();
+        expect(syncTabs()['33']).toEqual({ interval: 300, paused: false, hardReload: true });
+
+        chrome.contextMenus.onClicked.emit({ menuItemId: 'reload4u_stop' }, { id: 33 });
+        await flush();
+        expect(syncTabs()['33']).toBeUndefined();
+    });
+});

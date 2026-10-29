@@ -23,13 +23,29 @@
 // 'content' detection injects a tiny content script (chrome.scripting) into
 // the watched tab after each reload completes, which hashes document.body's
 // text IN THE PAGE and returns only that hash — raw page content never
-// leaves the tab or gets stored/transmitted anywhere.
+// leaves the tab or gets stored/transmitted anywhere. 'text' detection works
+// the same way but returns only whether the user's search text was found.
+//
+// Per-tab options (all optional): `hardReload` bypasses the cache,
+// `intervalMax` randomizes each delay between `interval` and itself,
+// `protectTyping` skips a reload while a text field has unsaved input, and
+// `keepScroll` restores the scroll position after the reload. The last two
+// inject a function that reports only "is a field being edited" and the
+// scroll offsets — never page text.
 
 const ALARM_PREFIX = 'reloadTab_';
 const KEEPALIVE_ALARM = 'reload4u_keepalive';
 const PROGRESS_PREFIX = 'reload4u_progress_';
 const TITLE_PREFIX = 'reload4u_title_';
 const CONTENT_PREFIX = 'reload4u_content_';
+const SCROLL_PREFIX = 'reload4u_scroll_';
+const NOTIFICATION_PREFIX = 'reload4u_stop_';
+const COMMAND_TOGGLE = 'toggle-current-tab';
+const MENU_PARENT = 'reload4u';
+const MENU_INTERVAL_PREFIX = 'reload4u_every_';
+const MENU_STOP = 'reload4u_stop';
+const MENU_INTERVALS = [10, 30, 60, 300]; // seconds
+const DEFAULT_INTERVAL = 30;     // seconds – used when settings have none
 const ALARM_MIN_INTERVAL = 30;   // seconds – chrome.alarms floor (0.5 min)
 const MIN_INTERVAL = 0.5;        // seconds – absolute floor
 // Firefox clamps chrome.alarms periods to 1 minute, so 30–59s intervals
@@ -47,7 +63,12 @@ const removing = new Set();
 
 chrome.runtime.onInstalled.addListener(function () {
     console.log('Reload4U extension installed');
+    createContextMenus();
 });
+
+// Chrome keeps menus across restarts; Firefox event pages may not, so
+// rebuild them on startup too (removeAll makes this idempotent).
+chrome.runtime.onStartup && chrome.runtime.onStartup.addListener(createContextMenus);
 
 // ---------- storage helpers ----------
 
@@ -91,15 +112,53 @@ function sameStopAfter(a, b) {
     return JSON.stringify(a || null) === JSON.stringify(b || null);
 }
 
+function getDefaultInterval() {
+    return new Promise(function (resolve) {
+        chrome.storage.sync.get('reload4uSettings', function (data) {
+            const settings = data.reload4uSettings || {};
+            resolve(Math.max(MIN_INTERVAL, settings.defaultInterval || DEFAULT_INTERVAL));
+        });
+    });
+}
+
+// Read-modify-write of one tab's entry; `update` gets the existing entry (or
+// undefined) and returns the new one, or null to remove the tab.
+function updateTab(tabId, update) {
+    tabId = String(tabId);
+    return getSelectedTabs().then(function (tabsData) {
+        const next = update(tabsData[tabId]);
+        if (next) {
+            tabsData[tabId] = next;
+        } else if (tabId in tabsData) {
+            delete tabsData[tabId];
+        } else {
+            return;
+        }
+        return chrome.storage.sync.set({ selectedTabsWithIntervals: tabsData });
+    });
+}
+
+function resumed(tabData) {
+    tabData.paused = false;
+    delete tabData.stoppedReason;
+    return tabData;
+}
+
 // ---------- scheduling ----------
 
 function usesTimer(interval) {
     return interval < TIMER_THRESHOLD;
 }
 
+function isRandom(tabData) {
+    return typeof tabData.intervalMax === 'number' && tabData.intervalMax > tabData.interval;
+}
+
 function stopTab(tabId) {
     tabId = String(tabId);
     if (timers[tabId]) {
+        // Handles from setInterval and setTimeout share one pool, so
+        // clearInterval also cancels a randomized tab's pending timeout.
         clearInterval(timers[tabId]);
         delete timers[tabId];
     }
@@ -112,6 +171,7 @@ function clearStopConditionState(tabId) {
     chrome.storage.session.remove(PROGRESS_PREFIX + tabId);
     chrome.storage.session.remove(TITLE_PREFIX + tabId);
     chrome.storage.session.remove(CONTENT_PREFIX + tabId);
+    chrome.storage.session.remove(SCROLL_PREFIX + tabId);
 }
 
 // Sets up (or carries forward) session-stored progress for a tab. The reload
@@ -138,7 +198,9 @@ function armStopCondition(tabId, tabData, reset) {
     const titleKey = TITLE_PREFIX + tabId;
     const contentKey = CONTENT_PREFIX + tabId;
 
-    if (!stopAfter || stopAfter.type === 'count') {
+    // 'count' and 'text' need no baseline: count uses the progress key above,
+    // and text is checked against the user's search string after each reload.
+    if (!stopAfter || stopAfter.type === 'count' || stopAfter.type === 'text') {
         if (reset) {
             chrome.storage.session.remove(titleKey);
             chrome.storage.session.remove(contentKey);
@@ -221,6 +283,97 @@ function captureContentHash(tabId, forceBaseline) {
     });
 }
 
+// Runs inside the page: reports only whether `needle` occurs in the visible
+// text (case-insensitive). The text itself never leaves the page.
+function pageHasText(needle) {
+    const text = document.body ? document.body.innerText : '';
+    return text.toLowerCase().indexOf(String(needle).toLowerCase()) !== -1;
+}
+
+function checkPageText(tabId, stopAfter) {
+    if (!stopAfter.text) return;
+    chrome.scripting.executeScript({
+        target: { tabId: parseInt(tabId, 10) },
+        func: pageHasText,
+        args: [stopAfter.text]
+    }).then(function (results) {
+        const found = results && results[0] && results[0].result;
+        if (typeof found !== 'boolean') return;
+        if (stopAfter.when === 'disappears' && !found) {
+            triggerStop(tabId, `Stopped: "${stopAfter.text}" disappeared`);
+        } else if (stopAfter.when !== 'disappears' && found) {
+            triggerStop(tabId, `Stopped: "${stopAfter.text}" appeared`);
+        }
+    }).catch(function () {
+        // Not injectable — leave the tab watched but skip this check.
+    });
+}
+
+// Runs inside the page before a reload: is the user mid-edit (a text field
+// holding input that differs from what the page loaded with, or a focused
+// rich-text editor), and where is the page scrolled to? Returns only that.
+function inspectPage() {
+    const TEXT_TYPES = ['text', 'search', 'email', 'url', 'tel', 'password', 'number'];
+    let busy = false;
+    const active = document.activeElement;
+    if (active && active.isContentEditable && document.hasFocus()) busy = true;
+    const fields = document.querySelectorAll('input, textarea');
+    for (let i = 0; !busy && i < fields.length; i++) {
+        const f = fields[i];
+        const isText = f.tagName === 'TEXTAREA' || TEXT_TYPES.indexOf(f.type) !== -1;
+        if (isText && f.value !== '' && f.value !== f.defaultValue) busy = true;
+    }
+    return { busy: busy, x: window.scrollX, y: window.scrollY };
+}
+
+// Runs inside the page after a reload. Re-applied briefly because content
+// that loads late can shift or shorten the page; stops as soon as the user
+// scrolls, clicks or types themselves.
+function restoreScroll(x, y) {
+    let touched = false;
+    ['wheel', 'touchstart', 'keydown', 'mousedown'].forEach(function (type) {
+        window.addEventListener(type, function () { touched = true; }, { once: true, passive: true });
+    });
+    function apply() { if (!touched) window.scrollTo(x, y); }
+    apply();
+    setTimeout(apply, 300);
+    setTimeout(apply, 1000);
+}
+
+function randomDelay(tabData) {
+    const min = Math.max(MIN_INTERVAL, tabData.interval);
+    return min + Math.random() * (tabData.intervalMax - min);
+}
+
+// A randomized tab can't use a repeating alarm or setInterval, so each reload
+// schedules the next one: a one-shot alarm when the delay allows it, else a
+// timeout. Replaces whatever was pending, so a double call is harmless.
+function scheduleRandom(tabId, tabData) {
+    tabId = String(tabId);
+    if (timers[tabId]) {
+        clearTimeout(timers[tabId]);
+        delete timers[tabId];
+    }
+    chrome.alarms.clear(ALARM_PREFIX + tabId);
+
+    const delay = randomDelay(tabData);
+    const ms = Math.round(delay * 1000);
+    if (usesTimer(delay)) {
+        timers[tabId] = setTimeout(function () {
+            delete timers[tabId];
+            reloadSpecificTab(tabId, delay);
+            scheduleRandom(tabId, tabData);
+        }, ms);
+    } else {
+        chrome.alarms.create(ALARM_PREFIX + tabId, { when: Date.now() + ms });
+    }
+    // One write per reload (session storage has no write quota) so the popup
+    // can show the countdown to this particular delay.
+    chrome.storage.session.set({
+        [ALARM_PREFIX + tabId]: { startedAt: Date.now(), ms: ms }
+    });
+}
+
 function startTab(tabId, tabData, resetCondition) {
     tabId = String(tabId);
     stopTab(tabId);
@@ -229,6 +382,12 @@ function startTab(tabId, tabData, resetCondition) {
     armStopCondition(tabId, tabData, resetCondition !== false);
 
     const interval = Math.max(MIN_INTERVAL, tabData.interval);
+
+    if (isRandom(tabData)) {
+        reloadSpecificTab(tabId, interval); // match alarm behaviour (`when: Date.now()`)
+        scheduleRandom(tabId, tabData);
+        return;
+    }
 
     if (!usesTimer(interval)) {
         chrome.alarms.create(ALARM_PREFIX + tabId, {
@@ -280,7 +439,16 @@ function hydrateTimers() {
     getSelectedTabs().then(function (tabsData) {
         for (const tabId in tabsData) {
             const d = tabsData[tabId];
-            if (!d.paused && usesTimer(d.interval) && !timers[tabId]) {
+            if (d.paused || timers[tabId]) continue;
+            if (isRandom(d)) {
+                // Its next reload may be a pending one-shot alarm, which
+                // survives the worker; only reschedule if nothing is pending.
+                chrome.alarms.get(ALARM_PREFIX + tabId, function (alarm) {
+                    if (alarm || timers[tabId]) return;
+                    armStopCondition(tabId, d, false);
+                    scheduleRandom(tabId, d);
+                });
+            } else if (usesTimer(d.interval)) {
                 startTab(tabId, d, false);
             }
         }
@@ -295,23 +463,55 @@ hydrateTimers();
 
 // ---------- reload ----------
 
+// Reads the tab's current options on every reload (sync reads have no quota),
+// so toggling an option takes effect without rescheduling.
 function reloadSpecificTab(tabId, interval) {
+    tabId = String(tabId);
     const id = parseInt(tabId, 10);
 
-    if (interval !== undefined && interval < SKIP_IF_LOADING_BELOW) {
-        chrome.tabs.get(id, function (tab) {
-            if (chrome.runtime.lastError) return; // let the reload attempt below handle removal
-            if (tab && tab.status === 'loading') return;
-            doReload(id);
-        });
-        return;
-    }
+    getSelectedTabs().then(function (tabsData) {
+        const tabData = tabsData[tabId];
+        if (!tabData || tabData.paused) return;
 
-    doReload(id);
+        if (interval !== undefined && interval < SKIP_IF_LOADING_BELOW) {
+            chrome.tabs.get(id, function (tab) {
+                if (chrome.runtime.lastError) return; // let the reload attempt below handle removal
+                if (tab && tab.status === 'loading') return;
+                prepareAndReload(id, tabData);
+            });
+            return;
+        }
+
+        prepareAndReload(id, tabData);
+    }).catch(function (err) {
+        console.error('Reload4U: failed to read tab options', err);
+    });
 }
 
-function doReload(id) {
-    chrome.tabs.reload(id, function () {
+// The typing guard and scroll memory need one look at the page first. If the
+// page can't be inspected (chrome:// pages, the Web Store), reload anyway.
+function prepareAndReload(id, tabData) {
+    if (!tabData.protectTyping && !tabData.keepScroll) {
+        doReload(id, tabData);
+        return;
+    }
+    chrome.scripting.executeScript({
+        target: { tabId: id },
+        func: inspectPage
+    }).then(function (results) {
+        const state = results && results[0] && results[0].result;
+        if (state && tabData.protectTyping && state.busy) return; // try again next time
+        if (state && tabData.keepScroll) {
+            chrome.storage.session.set({ [SCROLL_PREFIX + id]: { x: state.x, y: state.y } });
+        }
+        doReload(id, tabData);
+    }).catch(function () {
+        doReload(id, tabData);
+    });
+}
+
+function doReload(id, tabData) {
+    chrome.tabs.reload(id, { bypassCache: !!(tabData && tabData.hardReload) }, function () {
         if (!chrome.runtime.lastError) {
             trackReloadCount(String(id));
             return;
@@ -338,7 +538,50 @@ function triggerStop(tabId, reason) {
         tabsData[tabId].paused = true;
         tabsData[tabId].stoppedReason = reason;
         chrome.storage.sync.set({ selectedTabsWithIntervals: tabsData });
+        notifyStop(tabId, reason);
     });
+}
+
+// ---------- notifications ----------
+//
+// `notifications` is an optional permission, requested from the settings page
+// when the user turns alerts on, so chrome.notifications may be missing.
+
+function notifyStop(tabId, reason) {
+    chrome.storage.sync.get('reload4uSettings', function (data) {
+        const settings = data.reload4uSettings || {};
+        if (!settings.notifyOnStop || !chrome.notifications) return;
+        chrome.tabs.get(parseInt(tabId, 10), function (tab) {
+            if (chrome.runtime.lastError || !tab) return;
+            chrome.notifications.create(NOTIFICATION_PREFIX + tabId, {
+                type: 'basic',
+                iconUrl: chrome.runtime.getURL('images/icon128.png'),
+                title: 'Reload4U: ' + (tab.title || tab.url),
+                message: reason + '. Click to open the tab.'
+            });
+        });
+    });
+}
+
+let notificationClicksHandled = false;
+
+function handleNotificationClicks() {
+    if (notificationClicksHandled || !chrome.notifications) return;
+    notificationClicksHandled = true;
+    chrome.notifications.onClicked.addListener(function (notificationId) {
+        if (!notificationId.startsWith(NOTIFICATION_PREFIX)) return;
+        const id = parseInt(notificationId.slice(NOTIFICATION_PREFIX.length), 10);
+        chrome.tabs.update(id, { active: true }, function (tab) {
+            if (chrome.runtime.lastError || !tab) return;
+            chrome.windows.update(tab.windowId, { focused: true });
+        });
+        chrome.notifications.clear(notificationId);
+    });
+}
+
+handleNotificationClicks();
+if (chrome.permissions && chrome.permissions.onAdded) {
+    chrome.permissions.onAdded.addListener(handleNotificationClicks);
 }
 
 function trackReloadCount(tabId) {
@@ -386,8 +629,25 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
     if (changeInfo.status === 'complete') {
         getSelectedTabs().then(function (tabsData) {
             const tabData = tabsData[idStr];
-            if (!tabData || tabData.paused || !tabData.stopAfter || tabData.stopAfter.type !== 'content') return;
-            captureContentHash(idStr, false);
+            if (!tabData) return;
+
+            if (tabData.keepScroll) {
+                const scrollKey = SCROLL_PREFIX + idStr;
+                chrome.storage.session.get(scrollKey, function (data) {
+                    const pos = data[scrollKey];
+                    if (!pos) return;
+                    chrome.storage.session.remove(scrollKey);
+                    chrome.scripting.executeScript({
+                        target: { tabId: tabId },
+                        func: restoreScroll,
+                        args: [pos.x, pos.y]
+                    }).catch(function () {});
+                });
+            }
+
+            if (tabData.paused || !tabData.stopAfter) return;
+            if (tabData.stopAfter.type === 'content') captureContentHash(idStr, false);
+            if (tabData.stopAfter.type === 'text') checkPageText(idStr, tabData.stopAfter);
         });
     }
 });
@@ -411,7 +671,8 @@ chrome.storage.onChanged.addListener(function (changes, area) {
         const o = oldData[tabId];
         const n = newData[tabId];
         const stopAfterChanged = !sameStopAfter(o && o.stopAfter, n.stopAfter);
-        const schedulingChanged = !o || o.interval !== n.interval || o.paused !== n.paused;
+        const schedulingChanged = !o || o.interval !== n.interval || o.paused !== n.paused ||
+            o.intervalMax !== n.intervalMax;
 
         if (schedulingChanged) {
             // Reset progress only on a brand-new tab, a resume, or an edited
@@ -437,7 +698,12 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
         return;
     }
     if (alarm.name.startsWith(ALARM_PREFIX)) {
-        reloadSpecificTab(alarm.name.slice(ALARM_PREFIX.length));
+        const tabId = alarm.name.slice(ALARM_PREFIX.length);
+        reloadSpecificTab(tabId);
+        getSelectedTabs().then(function (tabsData) {
+            const d = tabsData[tabId];
+            if (d && !d.paused && isRandom(d)) scheduleRandom(tabId, d);
+        });
     }
 });
 
@@ -445,3 +711,87 @@ chrome.alarms.onAlarm.addListener(function (alarm) {
 chrome.tabs.onRemoved.addListener(function (tabId) {
     removeFromStorage(tabId);
 });
+
+// ---------- keyboard shortcut ----------
+
+// Starts watching the tab at the default interval, or pauses/resumes it if
+// it's already watched.
+function toggleWatch(tabId) {
+    return getDefaultInterval().then(function (defaultInterval) {
+        return updateTab(tabId, function (existing) {
+            if (!existing) return { interval: defaultInterval, paused: false };
+            if (existing.paused) return resumed(existing);
+            existing.paused = true;
+            return existing;
+        });
+    });
+}
+
+if (chrome.commands) {
+    chrome.commands.onCommand.addListener(function (command, tab) {
+        if (command !== COMMAND_TOGGLE) return;
+        if (tab && tab.id !== undefined) {
+            toggleWatch(tab.id);
+            return;
+        }
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+            if (tabs && tabs[0]) toggleWatch(tabs[0].id);
+        });
+    });
+}
+
+// ---------- context menu ----------
+
+function formatSeconds(seconds) {
+    if (seconds < 60) return seconds + ' seconds';
+    const minutes = seconds / 60;
+    return minutes + (minutes === 1 ? ' minute' : ' minutes');
+}
+
+function createContextMenus() {
+    if (!chrome.contextMenus) return;
+    // Firefox can also show it when right-clicking a tab in the tab strip.
+    const contexts = IS_FIREFOX ? ['page', 'tab'] : ['page'];
+    chrome.contextMenus.removeAll(function () {
+        chrome.contextMenus.create({ id: MENU_PARENT, title: 'Reload4U', contexts: contexts });
+        MENU_INTERVALS.forEach(function (seconds) {
+            chrome.contextMenus.create({
+                id: MENU_INTERVAL_PREFIX + seconds,
+                parentId: MENU_PARENT,
+                title: 'Auto-reload every ' + formatSeconds(seconds),
+                contexts: contexts
+            });
+        });
+        chrome.contextMenus.create({
+            id: MENU_PARENT + '_separator',
+            parentId: MENU_PARENT,
+            type: 'separator',
+            contexts: contexts
+        });
+        chrome.contextMenus.create({
+            id: MENU_STOP,
+            parentId: MENU_PARENT,
+            title: 'Stop auto-reloading this tab',
+            contexts: contexts
+        });
+    });
+}
+
+if (chrome.contextMenus) {
+    chrome.contextMenus.onClicked.addListener(function (info, tab) {
+        if (!tab || tab.id === undefined) return;
+        if (info.menuItemId === MENU_STOP) {
+            removeFromStorage(tab.id);
+            return;
+        }
+        if (typeof info.menuItemId !== 'string' || !info.menuItemId.startsWith(MENU_INTERVAL_PREFIX)) return;
+        const interval = Number(info.menuItemId.slice(MENU_INTERVAL_PREFIX.length));
+        // Keeps the tab's other options (stop condition, hard reload, ...).
+        updateTab(tab.id, function (existing) {
+            const next = resumed(existing || {});
+            next.interval = interval;
+            if (!isRandom(next)) delete next.intervalMax;
+            return next;
+        });
+    });
+}

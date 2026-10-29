@@ -3,8 +3,8 @@ import { applyTheme } from './theme.js';
 
 let defaultIntervalInput = document.getElementById('defaultInterval');
 let minIntervalHint = document.getElementById('minIntervalHint');
-// let showNotificationsInput = document.getElementById('showNotifications');
-// let autoStartInput = document.getElementById('autoStart');
+let notifyOnStopInput = document.getElementById('notifyOnStop');
+let shortcutKeys = document.getElementById('shortcutKeys');
 let themeSelect = document.getElementById('themeSelect');
 let saveButton = document.getElementById('saveSettings');
 let saveStatus = document.getElementById('saveStatus');
@@ -15,14 +15,14 @@ const MIN_INTERVAL = 0.5; // seconds – absolute floor (background enforces thi
 const DEFAULT_SETTINGS = {
     defaultInterval: 30,
     theme: 'system',
-    showNotifications: false,
-    autoStart: false
+    notifyOnStop: false
 };
 
 // Load settings when page loads
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('extVersion').textContent = chrome.runtime.getManifest().version;
     loadSettings();
+    showShortcut();
 });
 
 // Function to load settings from storage
@@ -32,9 +32,7 @@ function loadSettings() {
 
         defaultIntervalInput.value = Math.max(MIN_INTERVAL, settings.defaultInterval);
         themeSelect.value = settings.theme || 'system';
-
-        //showNotificationsInput.checked = settings.showNotifications;
-        //autoStartInput.checked = settings.autoStart;
+        notifyOnStopInput.checked = !!settings.notifyOnStop;
 
         console.log('Settings loaded:', settings);
     });
@@ -53,8 +51,7 @@ function saveSettings() {
     const settings = {
         defaultInterval: intervalInSeconds,
         theme: themeSelect.value,
-        //showNotifications: showNotificationsInput.checked,
-        //autoStart: autoStartInput.checked
+        notifyOnStop: notifyOnStopInput.checked
     };
 
     chrome.storage.sync.set({reload4uSettings: settings}, function() {
@@ -107,13 +104,31 @@ themeSelect.addEventListener('change', function() {
     saveSettings();
 });
 
-// showNotificationsInput.addEventListener('change', function() {
-//     setTimeout(saveSettings, 100);
-// });
+// `notifications` is an optional permission: ask for it when alerts are
+// turned on (this click is the user gesture the browser requires).
+notifyOnStopInput.addEventListener('change', function() {
+    if (!notifyOnStopInput.checked) {
+        saveSettings();
+        return;
+    }
+    chrome.permissions.request({ permissions: ['notifications'] }, function(granted) {
+        if (!granted) {
+            notifyOnStopInput.checked = false;
+            showSaveStatus('Notification permission was not granted', false);
+            return;
+        }
+        saveSettings();
+    });
+});
 
-// autoStartInput.addEventListener('change', function() {
-//     setTimeout(saveSettings, 100);
-// });
+// Shows the shortcut actually assigned (the user may have changed or cleared it).
+function showShortcut() {
+    if (!chrome.commands || !chrome.commands.getAll) return;
+    chrome.commands.getAll(function(commands) {
+        const toggle = (commands || []).find(function(c) { return c.name === 'toggle-current-tab'; });
+        if (toggle) shortcutKeys.textContent = toggle.shortcut || 'Not set';
+    });
+}
 
 // Export function to get default interval (for use in popup)
 window.getDefaultInterval = function() {

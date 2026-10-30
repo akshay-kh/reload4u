@@ -72,36 +72,39 @@
           </p>
         </div>
 
-        <!-- Future Settings Section -->
-        <!-- <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Preferences</h2>
-          
-          <div class="space-y-4">
-            <div class="flex items-center justify-between">
-              <div>
-                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Show notifications</label>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Get notified when tabs are reloaded</p>
-              </div>
-              <input 
-                id="showNotifications" 
-                type="checkbox" 
-                class="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded"
-              >
+        <!-- Notifications Setting -->
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notifications</h2>
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <label for="notifyOnStop" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+                Notify me when a tab stops
+              </label>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Shows a desktop notification when a "Stop when" condition is reached. Click it to jump to the tab.
+                Your browser will ask for permission the first time.
+              </p>
             </div>
-            
-            <div class="flex items-center justify-between">
-              <div>
-                <label class="text-sm font-medium text-gray-700 dark:text-gray-300">Auto-start on browser startup</label>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Resume auto-reload for previously selected tabs</p>
-              </div>
-              <input 
-                id="autoStart" 
-                type="checkbox" 
-                class="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded"
-              >
-            </div>
+            <input
+              id="notifyOnStop"
+              type="checkbox"
+              class="h-4 w-4 shrink-0 accent-blue-600"
+            >
           </div>
-        </div> -->
+        </div>
+
+        <!-- Keyboard Shortcut -->
+        <div class="mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Keyboard Shortcut</h2>
+          <p class="text-sm text-gray-700 dark:text-gray-300">
+            <kbd id="shortcutKeys" class="px-2 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded">Alt+Shift+U</kbd>
+            starts auto-reloading the current tab, or pauses/resumes it if it's already on the list.
+          </p>
+          <p id="shortcutHint" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            To change it, open <code>chrome://extensions/shortcuts</code> in Chrome, or
+            <code>about:addons</code> → ⚙️ → Manage Extension Shortcuts in Firefox.
+          </p>
+        </div>
 
         <!-- Save Button -->
         <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
@@ -123,7 +126,7 @@
         <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
           <p><strong>Version:</strong> <span id="extVersion"></span></p>
           <p><strong>Description:</strong> Auto-reload selected browser tabs at customizable intervals</p>
-          <p><strong>Features:</strong> Multiple tab support, individual intervals, pause/resume, visual indicators</p>
+          <p><strong>Features:</strong> Per-tab intervals, pause/resume, stop conditions, notifications, random intervals, keyboard shortcut, right-click menu</p>
         </div>
         
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">

@@ -2,6 +2,31 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2026-10-30
+
+### Added
+- **Stop when text appears or disappears.** Two new "Stop when" choices take a word or phrase
+  (e.g. "In stock" appearing, or "Sold out" disappearing) and check for it, case-insensitively,
+  after each reload. The check runs inside the page and returns only found / not found.
+- **Notifications.** Turn on "Notify me when a tab stops" in Settings to get a desktop
+  notification when a stop condition is reached; clicking it switches to the tab. Uses the
+  optional `notifications` permission, which the browser asks for only when you turn this on.
+- **Per-tab "More options"** in the popup:
+  - **Hard reload (skip cache)**
+  - **Keep scroll position** — restores where you were scrolled to after each reload
+  - **Don't reload while I'm typing on the page** — skips a reload while a text field holds
+    unsaved input, so a half-filled form isn't wiped
+  - **Randomize, up to N sec** — each reload waits a random time between the interval and N
+- **Keyboard shortcut** (default **Alt+Shift+U**): starts auto-reloading the current tab at the
+  default interval, or pauses/resumes it. Shown, and changeable, from the Settings page.
+- **Right-click menu**: "Reload4U → Auto-reload every 10 seconds / 30 seconds / 1 minute /
+  5 minutes", or "Stop auto-reloading this tab". On Firefox it's also on the tab strip's menu.
+- **Pause All / Resume All** buttons in the popup.
+
+### Changed
+- New `contextMenus` permission (no install warning) for the right-click menu.
+- The store description now says what the extension does.
+
 ## [1.0.0] - 2026-10-28
 
 ### Added

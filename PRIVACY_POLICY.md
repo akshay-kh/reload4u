@@ -1,6 +1,6 @@
 # Privacy Policy for Reload4U Browser Extension
 
-*Last updated: October 21, 2026*
+*Last updated: October 30, 2026*
 
 ## Overview
 
@@ -14,9 +14,14 @@ Reload4U stores the following information locally on your device using the brows
 - **Selected Tab Information**: Tab IDs of tabs you choose to auto-reload
 - **Reload Intervals**: Custom reload intervals you set for each tab (minimum 0.5 seconds)
 - **Pause States**: Whether specific tabs are paused or active for reloading
-- **User Preferences**: Your default interval settings
+- **User Preferences**: Your default interval, theme, and whether notifications are on
+- **Per-Tab Options** (optional): hard reload, keep scroll position, don't reload while typing,
+  and a random interval range
 - **Stop Conditions** (optional, only if you enable one for a tab): a reload count limit, a
-  captured tab title, or a one-way hash of a tab's visible text (see "Page Content Hashing" below)
+  captured tab title, a one-way hash of a tab's visible text (see "Page Content Hashing" below),
+  or a word or phrase you type to look for
+- **Scroll Position** (only if you turn on "Keep scroll position" for a tab): the tab's scroll
+  offsets, kept in session storage for the moment between a reload and the page finishing loading
 
 ### Page Content Hashing (only if you enable "Page content changes" for a tab)
 
@@ -25,16 +30,35 @@ small script into that tab, after each reload, that computes a one-way hash (a s
 the text itself) of `document.body`'s visible text, entirely inside the page. Only that hash is
 returned to the extension and stored locally (in session storage, cleared when the browser closes)
 so it can tell whether the page changed. **The actual page text is never read, transmitted, or
-stored by the extension** — the hash cannot be reversed back into the original content. This is
-the only feature that touches page content, and it only runs on tabs you've explicitly set this
-option for.
+stored by the extension** — the hash cannot be reversed back into the original content.
+
+### Other In-Page Checks (only for tabs where you turn them on)
+
+A few other optional features run a small function inside a tab, following the same rule — the
+page's text stays in the page, and only a minimal answer comes back:
+
+- **"Text appears / disappears" stop condition**: searches the page's visible text for the word
+  or phrase you entered and returns only **yes or no**.
+- **"Don't reload while I'm typing"**: before each reload, checks whether a text field holds input
+  that differs from what the page loaded with, and returns only **yes or no**. The field contents
+  are never read by the extension.
+- **"Keep scroll position"**: reads the page's **scroll offsets** (two numbers) before a reload and
+  scrolls back to them afterwards.
+
+These run only on tabs where you've turned the specific option on.
+
+### Notifications (only if you turn them on)
+
+If you turn on "Notify me when a tab stops" in Settings, the extension shows a desktop
+notification containing the tab's title and why it stopped. It's displayed by your browser and
+operating system on your device; nothing is sent anywhere.
 
 ### Data We Do NOT Collect
 
 - **Personal Information**: We do not collect names, email addresses, or any personal identifiers
 - **Browsing History**: We do not track or store your browsing history
-- **Raw Tab Content**: Outside of the one-way content hash described above (used only when you
-  enable that specific stop condition), we do not read or store the content of your web pages
+- **Raw Tab Content**: We do not read or store the content of your web pages. The optional
+  in-page checks described above return only a hash, a yes/no answer, or scroll offsets
 - **URLs or Website Data**: We do not collect or store the URLs you visit
 - **Analytics or Tracking Data**: We do not use analytics services or tracking pixels
 
@@ -75,17 +99,23 @@ Reload4U requests the following browser permissions:
 - **`tabs`**: To reload selected tabs and access basic tab information (title, URL for display)
 - **`storage`**: To save your tab selections and preferences locally
 - **`alarms`**: To schedule automatic tab reloading at your specified intervals
-- **`scripting`** and **host permissions** (`<all_urls>`): Only used for the optional "stop when
-  page content changes" condition, to inject the content-hashing script described above into a
-  tab you've selected. Without this permission, that script could only run on the tab you most
+- **`contextMenus`**: To add the "Reload4U" entry to the right-click menu
+- **`scripting`** and **host permissions** (`<all_urls>`): Only used for the optional in-page
+  checks described above (content hash, text search, typing check, scroll position), on tabs
+  where you've turned them on. Without this permission, they could only run on the tab you most
   recently clicked, not on other tabs you're watching in the background.
+
+### Optional Permissions
+
+- **`notifications`**: Requested only when you turn on notifications in Settings, to show a
+  desktop notification when a tab stops. You can turn it off at any time.
 
 ### What These Permissions Allow
 
 - **Tab Access**: Only to reload tabs you specifically select and display their titles/URLs in the extension popup
-- **Limited Content Access**: We can inject a script to compute a one-way content hash, but only
-  on tabs where you've turned on the "page content changes" stop condition, and only that hash
-  — never the page's actual text — ever leaves the page
+- **Limited Content Access**: We can run the small in-page checks described above, but only on
+  tabs where you've turned on the matching option, and only a hash, yes/no answer, or scroll
+  offsets — never the page's actual text — ever leaves the page
 - **No Network Access**: The extension does not make network requests or communicate with external servers
 
 ## Third-Party Services

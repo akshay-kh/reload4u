@@ -1,9 +1,10 @@
 {
     "name": "Reload 4 U",
-    "version": "1.0.0",
-    "description": "Reload tab for you!",
+    "version": "1.1.0",
+    "description": "Auto-reload any tab on its own timer, from every 0.5 seconds to hours. Pause, resume, and stop automatically when the page changes.",
     "minimum_chrome_version": "120",
-    "permissions": ["activeTab","storage","tabs","alarms","scripting"],
+    "permissions": ["activeTab","storage","tabs","alarms","scripting","contextMenus"],
+    "optional_permissions": ["notifications"],
     "host_permissions": ["<all_urls>"],
     "background": {
         "scripts": ["assets/background.js"],
@@ -13,6 +14,12 @@
       "default_popup": "popup.html"
     },
     "options_page": "settings.html",
+    "commands": {
+      "toggle-current-tab": {
+        "suggested_key": { "default": "Alt+Shift+U" },
+        "description": "Start auto-reloading the current tab, or pause/resume it"
+      }
+    },
     "icons": {
       "16": "images/icon16.png",
       "32": "images/icon32.png",

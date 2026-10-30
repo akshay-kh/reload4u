@@ -2,6 +2,8 @@ import './theme.js';
 
 let selectTab = document.getElementById('selectThisTab');
 let stopAllTabs = document.getElementById('stopAllTabs');
+let pauseAllTabs = document.getElementById('pauseAllTabs');
+let resumeAllTabs = document.getElementById('resumeAllTabs');
 let openSettings = document.getElementById('openSettings');
 let selectedTabsInfo = document.getElementById('selectedTabsInfo');
 let activeTabsSection = document.getElementById('activeTabsSection');
@@ -217,6 +219,10 @@ function updateTabInterval(tabId, newIntervalInSeconds) {
     getSelectedTabs().then(function(tabsData) {
         if (tabsData.hasOwnProperty(tabId)) {
             tabsData[tabId].interval = interval;
+            // A random range whose upper end is no longer above the interval is meaningless.
+            if (tabsData[tabId].intervalMax <= interval) {
+                delete tabsData[tabId].intervalMax;
+            }
             chrome.storage.sync.set({selectedTabsWithIntervals: tabsData}, function() {
                 // storage.onChanged re-renders the popup, showing the corrected
                 // value if the interval was clamped.
@@ -245,6 +251,34 @@ function toggleTabPause(tabId) {
     });
 }
 
+// Pauses or resumes every watched tab in a single write.
+function setAllPaused(paused) {
+    getSelectedTabs().then(function(tabsData) {
+        Object.keys(tabsData).forEach(function(tabId) {
+            tabsData[tabId].paused = paused;
+            if (!paused) delete tabsData[tabId].stoppedReason;
+        });
+        chrome.storage.sync.set({selectedTabsWithIntervals: tabsData});
+    });
+}
+
+// Merges per-tab options; a value of `undefined` removes that option.
+function updateTabOptions(tabId, patch) {
+    tabId = String(tabId);
+
+    getSelectedTabs().then(function(tabsData) {
+        if (!tabsData.hasOwnProperty(tabId)) return;
+        Object.keys(patch).forEach(function(key) {
+            if (patch[key] === undefined) {
+                delete tabsData[tabId][key];
+            } else {
+                tabsData[tabId][key] = patch[key];
+            }
+        });
+        chrome.storage.sync.set({selectedTabsWithIntervals: tabsData});
+    });
+}
+
 // Function to update (or clear) a tab's stop condition
 function updateStopCondition(tabId, stopAfter) {
     // Ensure tabId is a string
@@ -268,6 +302,10 @@ function updateStopCondition(tabId, stopAfter) {
 // trigger a render for the same underlying change -- without this guard,
 // two overlapping renders each append their own copy of every tab card.
 let renderGeneration = 0;
+
+// Tab IDs whose "More options" section is expanded, so it stays open across
+// the re-render that every storage change triggers.
+const openOptions = new Set();
 
 function displaySelectedTabs() {
     const myGeneration = ++renderGeneration;
@@ -416,10 +454,18 @@ function createTabElement(tab, tabId, tabData, isPaused) {
         progressTrack = document.createElement('div');
         progressTrack.className = 'relative w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden mt-1';
 
-        if (tabData.interval < STATIC_LABEL_BELOW) {
-            // Too fast for a meaningful ticking countdown or a synced progress
-            // fill; a static label + indeterminate shimmer still reads as "live".
-            timerDisplay.textContent = `every ${tabData.interval}s`;
+        const randomized = tabData.intervalMax > tabData.interval;
+        if (tabData.interval < STATIC_LABEL_BELOW || randomized) {
+            // Too fast for a meaningful ticking countdown, or (random) each
+            // cycle has a different length so a synced fill can't loop; a
+            // shimmer still reads as "live".
+            if (randomized && tabData.interval >= STATIC_LABEL_BELOW) {
+                createCountdownTimer(tabId, timerDisplay, tabData.interval);
+            } else {
+                timerDisplay.textContent = randomized
+                    ? `every ${tabData.interval}–${tabData.intervalMax}s`
+                    : `every ${tabData.interval}s`;
+            }
             const shimmer = document.createElement('div');
             shimmer.className = 'absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full reload4u-shimmer';
             progressTrack.appendChild(shimmer);
@@ -507,7 +553,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     // Stop-condition controls section
     const stopDiv = document.createElement('div');
-    stopDiv.className = 'flex items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700';
+    stopDiv.className = 'flex flex-wrap items-center gap-2 pt-2 border-t border-gray-100 dark:border-gray-700';
 
     const stopLabel = document.createElement('label');
     stopLabel.className = 'text-xs text-gray-600 dark:text-gray-400';
@@ -520,7 +566,9 @@ function createTabElement(tab, tabId, tabData, isPaused) {
         { value: 'none', text: 'Never (manual only)' },
         { value: 'count', text: 'After N reloads' },
         { value: 'title', text: 'Tab title changes' },
-        { value: 'content', text: 'Page content changes' }
+        { value: 'content', text: 'Page content changes' },
+        { value: 'textAppears', text: 'Text appears on page' },
+        { value: 'textDisappears', text: 'Text disappears from page' }
     ].forEach(function(opt) {
         const option = document.createElement('option');
         option.value = opt.value;
@@ -528,7 +576,12 @@ function createTabElement(tab, tabId, tabData, isPaused) {
         stopSelect.appendChild(option);
     });
 
-    const currentType = (tabData.stopAfter && tabData.stopAfter.type) || 'none';
+    // The select splits the stored {type:'text', when} into two choices.
+    let currentType = (tabData.stopAfter && tabData.stopAfter.type) || 'none';
+    if (currentType === 'text') {
+        currentType = tabData.stopAfter.when === 'disappears' ? 'textDisappears' : 'textAppears';
+    }
+    const isTextType = function(type) { return type === 'textAppears' || type === 'textDisappears'; };
     stopSelect.value = currentType;
 
     const countInput = document.createElement('input');
@@ -539,6 +592,14 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     countInput.className = 'w-14 px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded text-center focus:border-blue-500 focus:outline-none';
     countInput.classList.toggle('hidden', currentType !== 'count');
     countInput.disabled = isPaused;
+
+    const textInput = document.createElement('input');
+    textInput.type = 'text';
+    textInput.placeholder = 'e.g. In stock';
+    textInput.value = (tabData.stopAfter && tabData.stopAfter.text) || '';
+    textInput.className = 'w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:border-blue-500 focus:outline-none';
+    textInput.classList.toggle('hidden', !isTextType(currentType));
+    textInput.disabled = isPaused;
 
     // Live reload-count readout, shown regardless of stop-condition type:
     // "X reloads" with no limit, or "X/N reloads" once a count limit is set.
@@ -558,7 +619,17 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     function applyStopCondition() {
         const type = stopSelect.value;
         countInput.classList.toggle('hidden', type !== 'count');
-        if (type === 'none') {
+        textInput.classList.toggle('hidden', !isTextType(type));
+        if (isTextType(type)) {
+            const text = textInput.value.trim();
+            if (!text) {
+                // Nothing to look for yet; wait for the user to type it.
+                textInput.focus();
+                return;
+            }
+            updateStopCondition(tabId, { type: 'text', text: text, when: type === 'textDisappears' ? 'disappears' : 'appears' });
+            startProgressWatch(tabId, null, progressLabel, titleCountBadge);
+        } else if (type === 'none') {
             updateStopCondition(tabId, null);
             startProgressWatch(tabId, null, progressLabel, titleCountBadge);
         } else if (type === 'count') {
@@ -576,17 +647,95 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     stopSelect.addEventListener('change', applyStopCondition);
     countInput.addEventListener('change', applyStopCondition);
+    textInput.addEventListener('change', applyStopCondition);
 
     stopDiv.appendChild(stopLabel);
     stopDiv.appendChild(stopSelect);
     stopDiv.appendChild(countInput);
+    stopDiv.appendChild(textInput);
 
     tabDiv.appendChild(statusDiv);
     tabDiv.appendChild(controlsDiv);
     tabDiv.appendChild(progressDiv);
     tabDiv.appendChild(stopDiv);
+    tabDiv.appendChild(createOptionsElement(tabId, tabData, isPaused));
 
     return tabDiv;
+}
+
+function createCheckboxRow(labelText, checked, disabled, onChange) {
+    const row = document.createElement('label');
+    row.className = 'flex items-center gap-2 text-xs text-gray-700 dark:text-gray-300';
+    const box = document.createElement('input');
+    box.type = 'checkbox';
+    box.checked = checked;
+    box.disabled = disabled;
+    box.className = 'h-3.5 w-3.5 accent-blue-600';
+    box.addEventListener('change', function() { onChange(box.checked); });
+    const text = document.createElement('span');
+    text.textContent = labelText;
+    row.appendChild(box);
+    row.appendChild(text);
+    return { row: row, box: box };
+}
+
+// Collapsible per-tab options; everything here is read by the background at
+// reload time, except the random range, which reschedules the tab.
+function createOptionsElement(tabId, tabData, isPaused) {
+    const details = document.createElement('details');
+    details.className = 'pt-2 border-t border-gray-100 dark:border-gray-700';
+    details.open = openOptions.has(tabId);
+    details.addEventListener('toggle', function() {
+        if (details.open) openOptions.add(tabId); else openOptions.delete(tabId);
+    });
+
+    const summary = document.createElement('summary');
+    summary.className = 'text-xs text-gray-600 dark:text-gray-400 cursor-pointer select-none';
+    summary.textContent = 'More options';
+    details.appendChild(summary);
+
+    const body = document.createElement('div');
+    body.className = 'mt-2 space-y-1.5';
+
+    body.appendChild(createCheckboxRow('Hard reload (skip cache)', !!tabData.hardReload, isPaused, function(checked) {
+        updateTabOptions(tabId, { hardReload: checked || undefined });
+    }).row);
+    body.appendChild(createCheckboxRow('Keep scroll position', !!tabData.keepScroll, isPaused, function(checked) {
+        updateTabOptions(tabId, { keepScroll: checked || undefined });
+    }).row);
+    body.appendChild(createCheckboxRow("Don't reload while I'm typing on the page", !!tabData.protectTyping, isPaused, function(checked) {
+        updateTabOptions(tabId, { protectTyping: checked || undefined });
+    }).row);
+
+    // Random interval: "Randomize, up to [N] sec" — N must exceed the interval.
+    const randomized = tabData.intervalMax > tabData.interval;
+    const maxInput = document.createElement('input');
+    maxInput.type = 'number';
+    maxInput.min = String(tabData.interval + MIN_INTERVAL);
+    maxInput.step = '0.5';
+    maxInput.value = randomized ? tabData.intervalMax : Math.round(tabData.interval * 1.5 * 2) / 2;
+    maxInput.disabled = isPaused || !randomized;
+    maxInput.className = 'w-16 px-2 py-0.5 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded text-center focus:border-blue-500 focus:outline-none disabled:opacity-50';
+
+    function randomMax() {
+        return Math.max(tabData.interval + MIN_INTERVAL, parseFloat(maxInput.value) || 0);
+    }
+
+    const random = createCheckboxRow('Randomize, up to', randomized, isPaused, function(checked) {
+        maxInput.disabled = !checked;
+        updateTabOptions(tabId, { intervalMax: checked ? randomMax() : undefined });
+    });
+    const unit = document.createElement('span');
+    unit.textContent = 'sec';
+    random.row.appendChild(maxInput);
+    random.row.appendChild(unit);
+    maxInput.addEventListener('change', function() {
+        if (random.box.checked) updateTabOptions(tabId, { intervalMax: randomMax() });
+    });
+    body.appendChild(random.row);
+
+    details.appendChild(body);
+    return details;
 }
 
 // Make functions globally available
@@ -652,6 +801,14 @@ selectTab.onclick = function(){
             });
         });
     });
+};
+
+pauseAllTabs.onclick = function() {
+    setAllPaused(true);
+};
+
+resumeAllTabs.onclick = function() {
+    setAllPaused(false);
 };
 
 // Open settings page

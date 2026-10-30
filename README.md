@@ -10,6 +10,10 @@ A Chrome and Firefox extension that automatically reloads selected tabs at custo
 
 - Dark, light, and system-default themes
 - Auto-reload tabs at specified intervals, as low as 0.5 seconds (default: 30 seconds)
+- Stop automatically after N reloads, or when the title, the page content, or a specific piece of text changes
+- Optional desktop notification when a tab stops
+- Per-tab options: hard reload, keep scroll position, don't reload while typing, random interval
+- Keyboard shortcut (Alt+Shift+U), right-click menu, and Pause All / Resume All
 - Visual status indicators with tab badges and countdown timers
 - Customizable settings page for default intervals
 - Support for multiple tabs with individual controls
@@ -119,7 +123,9 @@ The extension requires the following permissions:
 - `storage` - Store user preferences and settings
 - `tabs` - Manage tab reloading functionality
 - `alarms` - Handle timed reload operations
-- `scripting` + access to all sites - Used only by the optional "stop when page content changes" condition, to compute a one-way hash of the page's text inside the page. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+- `contextMenus` - The "Reload4U" right-click menu
+- `scripting` + access to all sites - Used only by optional per-tab features that run a small function inside the page: the "page content changes" and "text appears/disappears" stop conditions, "keep scroll position", and "don't reload while I'm typing". Each returns only a hash, a yes/no, or scroll offsets, never page text. See [PRIVACY_POLICY.md](PRIVACY_POLICY.md).
+- `notifications` (optional) - Only requested if you turn on notifications in Settings
 
 ## Contributing
 

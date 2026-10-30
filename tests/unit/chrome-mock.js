@@ -78,6 +78,7 @@ export function createChromeMock(options) {
     const storageOnChanged = createEvent();
     const tabs = {};          // id (number) -> tab object
     const reloads = {};       // id (number) -> reload count
+    const reloadProps = {};   // id (number) -> props passed to the last reload
     const alarms = {};        // name -> alarm info
     const badge = { text: '' };
 
@@ -89,6 +90,7 @@ export function createChromeMock(options) {
             },
             getManifest: function () { return { version: '1.0.0' }; },
             onInstalled: createEvent(),
+            onStartup: createEvent(),
             openOptionsPage: function () {}
         },
         storage: {
@@ -121,7 +123,10 @@ export function createChromeMock(options) {
                     cb(Object.assign({}, tabs[id]));
                 });
             },
-            reload: function (id, cb) {
+            reloadProps: reloadProps,
+            reload: function (id, props, cb) {
+                if (typeof props === 'function') { cb = props; props = undefined; }
+                reloadProps[id] = props;
                 later(function () {
                     if (!tabs[id]) {
                         chrome.runtime.lastError = { message: 'No tab with id: ' + id };
@@ -134,20 +139,53 @@ export function createChromeMock(options) {
                 });
             },
             query: function (q, cb) { later(function () { cb(Object.values(tabs)); }); },
+            update: function (id, props, cb) {
+                later(function () { if (cb) cb(tabs[id] ? Object.assign({ windowId: 1 }, tabs[id]) : undefined); });
+            },
             onUpdated: createEvent(),
             onRemoved: createEvent()
         },
         scripting: {
-            executeScript: function () {
-                return Promise.resolve([{ result: options.contentHash !== undefined ? options.contentHash() : 0 }]);
+            calls: [],
+            // Answers by injected function name; `options.page` overrides per function.
+            executeScript: function (details) {
+                chrome.scripting.calls.push({ func: details.func.name, args: details.args, tabId: details.target.tabId });
+                const page = options.page || {};
+                if (page[details.func.name]) {
+                    return Promise.resolve([{ result: page[details.func.name].apply(null, details.args || []) }]);
+                }
+                if (details.func.name === 'hashPageContent') {
+                    return Promise.resolve([{ result: options.contentHash !== undefined ? options.contentHash() : 0 }]);
+                }
+                return Promise.resolve([{ result: undefined }]);
             }
         },
+        commands: { onCommand: createEvent() },
+        contextMenus: {
+            items: {},
+            removeAll: function (cb) {
+                Object.keys(chrome.contextMenus.items).forEach(function (k) { delete chrome.contextMenus.items[k]; });
+                later(function () { if (cb) cb(); });
+            },
+            create: function (item) { chrome.contextMenus.items[item.id] = item; },
+            onClicked: createEvent()
+        },
+        windows: { update: function () {} },
         action: {
             badge: badge,
             setBadgeText: function (d) { badge.text = d.text; },
             setBadgeBackgroundColor: function () {}
         }
     };
+
+    if (options.notifications) {
+        chrome.notifications = {
+            created: {},
+            create: function (id, opts) { chrome.notifications.created[id] = opts; },
+            clear: function (id) { delete chrome.notifications.created[id]; },
+            onClicked: createEvent()
+        };
+    }
 
     chrome.addTab = function (id, props) {
         tabs[id] = Object.assign({ id: id, title: 'Tab ' + id, url: 'https://example.com/' + id, status: 'complete' }, props);

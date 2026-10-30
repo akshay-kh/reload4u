@@ -1,7 +1,7 @@
 # Reload4U — Claude Code context
 
 Chrome extension (Manifest V3) that auto-reloads selected tabs at per-tab intervals.
-Repo: https://github.com/akshay-kh/reload4u · Current version: 1.0.0
+Repo: https://github.com/akshay-kh/reload4u · Current version: 1.1.0
 
 ## Stack
 - Plain JavaScript (no framework), Tailwind CSS 3, Vite 5 build
@@ -30,10 +30,17 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 ## Storage model
 - `chrome.storage.sync`:
   - `selectedTabsWithIntervals`: `{ [tabId: string]: { interval: number /* seconds */, paused: boolean,
-    stopAfter?: {type:'count', limit:number} | {type:'title'} | {type:'content'}, stoppedReason?: string } }`
+    stopAfter?: {type:'count', limit:number} | {type:'title'} | {type:'content'}
+      | {type:'text', text:string, when:'appears'|'disappears'}, stoppedReason?: string,
+    hardReload?: true, keepScroll?: true, protectTyping?: true,
+    intervalMax?: number /* seconds; random delay in [interval, intervalMax] when > interval */ } }`
     (legacy format `{ [tabId]: number }` is migrated on read — keep that migration)
-  - `reload4uSettings`: `{ defaultInterval: number /* seconds */, theme?: 'system'|'light'|'dark' }`
-    (missing `theme` = `'system'`; settings.js must write both fields together — it replaces the object)
+    The per-tab options are read from storage at reload time; only `interval`, `intervalMax` and
+    `paused` changes reschedule a tab. Randomized tabs schedule one delay at a time (`scheduleRandom`:
+    one-shot alarm, or `setTimeout` below `TIMER_THRESHOLD`) and rewrite `reloadTab_<tabId>` each time.
+  - `reload4uSettings`: `{ defaultInterval: number /* seconds */, theme?: 'system'|'light'|'dark',
+    notifyOnStop?: boolean }` (missing `theme` = `'system'`; settings.js must write all fields
+    together — it replaces the object)
 - `chrome.storage.session`:
   - `reloadTab_<tabId>`: `{ startedAt: number, ms: number }` — written once when a sub-30s timer
     starts, so the popup can compute the countdown. Never write per tick.
@@ -46,6 +53,8 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
     `stopAfter.type === 'content'`. Computed entirely inside the page via
     `chrome.scripting.executeScript`; only the hash crosses back into the extension, never raw
     content. Re-checked once the tab reaches `status === 'complete'` after each reload.
+  - `reload4u_scroll_<tabId>`: `{ x, y }` — saved just before a reload when `keepScroll` is on,
+    consumed (and removed) when the tab reaches `status === 'complete'`.
   - The `title`/`content` keys are mutually exclusive per tab and reset (re-armed) only on a
     brand-new tab, a resume from pause, or an edited `stopAfter` — never on a worker-restart
     rebuild (`hydrateTimers()` passes `resetCondition: false` so in-progress state survives a
@@ -66,8 +75,14 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
 - No inline JS in HTML (extension CSP). Use `addEventListener`.
 - Match the existing code style (function expressions, callbacks/Promises, 4-space indent).
 - No new permissions or network access without asking — check `PRIVACY_POLICY.md` is updated to
-  disclose any new one (as of 0.6.0: `scripting` + `host_permissions: ["<all_urls>"]`, used only
-  for the content-change stop condition's in-page hashing — see `captureContentHash()`).
+  disclose any new one. `scripting` + `host_permissions: ["<all_urls>"]` are used only by opt-in
+  per-tab in-page functions (`hashPageContent`, `pageHasText`, `inspectPage`, `restoreScroll`),
+  each of which returns only a hash, a boolean, or scroll offsets — never page text.
+  `contextMenus` (1.1.0) has no install warning. `notifications` is an **optional** permission,
+  requested from settings.js when the user enables alerts — adding a warning-bearing required
+  permission would disable the extension for existing Chrome users until they re-approve.
+- Keyboard command `toggle-current-tab` (Alt+Shift+U). Chrome silently drops a suggested key that
+  clashes with a browser shortcut (Alt+Shift+R did); the e2e test asserts the key is assigned.
 - Keep `CHANGELOG.md` updated for user-visible changes; bump version in BOTH
   `package.json` and `public/manifest.json`.
 

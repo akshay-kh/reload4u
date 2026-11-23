@@ -4,13 +4,13 @@
   "description": "This a chrome extension to reload selected tabs, with intervals as low as 0.5 seconds",
   "main": "popup.js",
   "devDependencies": {
-    "@playwright/test": "^1.65.0",
-    "autoprefixer": "^10.4.0",
+    "@playwright/test": "^1.65.1",
+    "autoprefixer": "^10.7.0",
     "jsdom": "^31.0.1",
-    "postcss": "^8.4.0",
+    "postcss": "^8.5.33",
     "tailwindcss": "^3.3.2",
     "vite": "^8.3.8",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.1"
   },
   "scripts": {
     "dev": "vite build --watch",

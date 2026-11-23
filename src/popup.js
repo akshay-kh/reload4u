@@ -1,4 +1,5 @@
 import './theme.js';
+import { t, applyI18n } from './i18n.js';
 
 let selectTab = document.getElementById('selectThisTab');
 let stopAllTabs = document.getElementById('stopAllTabs');
@@ -74,11 +75,11 @@ function createCountdownTimer(tabId, countdownElement, interval) {
                     countdownElement.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
                     countdownElement.className = 'text-xs text-green-600 dark:text-green-400 font-mono';
                 } else {
-                    countdownElement.textContent = 'Reloading...';
+                    countdownElement.textContent = t('reloading');
                     countdownElement.className = 'text-xs text-blue-600 dark:text-blue-400 font-mono animate-pulse';
                 }
             } else {
-                countdownElement.textContent = 'No timer';
+                countdownElement.textContent = t('noTimer');
                 countdownElement.className = 'text-xs text-gray-500 dark:text-gray-400';
             }
         });
@@ -107,7 +108,7 @@ function updateProgressDisplays(tabId, limit, labelElement, titleBadgeElement) {
     chrome.storage.session.get(key, function(data) {
         const count = (data[key] && data[key].count) || 0;
         if (labelElement) {
-            labelElement.textContent = limit ? `${count}/${limit} reloads` : `${count} reloads`;
+            labelElement.textContent = limit ? t('reloadCountOfLimit', [count, limit]) : t('reloadCount', count);
         }
         if (titleBadgeElement) {
             titleBadgeElement.textContent = count > 0 ? `(${count})` : '';
@@ -415,10 +416,10 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     const statusBadge = document.createElement('span');
     if (isPaused) {
         statusBadge.className = 'w-2 h-2 bg-yellow-500 rounded-full';
-        statusBadge.title = 'Paused';
+        statusBadge.title = t('statusPaused');
     } else {
         statusBadge.className = 'w-2 h-2 bg-green-500 rounded-full animate-pulse';
-        statusBadge.title = 'Active';
+        statusBadge.title = t('statusActive');
     }
 
     const titleText = document.createElement('p');
@@ -445,7 +446,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
         timerDiv.className = 'flex items-center gap-2';
         const timerLabel = document.createElement('span');
         timerLabel.className = 'text-xs text-gray-600 dark:text-gray-400';
-        timerLabel.textContent = 'Next reload in:';
+        timerLabel.textContent = t('nextReloadIn');
         const timerDisplay = document.createElement('span');
         timerDisplay.className = 'text-xs text-green-600 dark:text-green-400 font-mono font-semibold transition-colors duration-300';
         timerDiv.appendChild(timerLabel);
@@ -463,8 +464,8 @@ function createTabElement(tab, tabId, tabData, isPaused) {
                 createCountdownTimer(tabId, timerDisplay, tabData.interval);
             } else {
                 timerDisplay.textContent = randomized
-                    ? `every ${tabData.interval}–${tabData.intervalMax}s`
-                    : `every ${tabData.interval}s`;
+                    ? t('everySecondsRange', [tabData.interval, tabData.intervalMax])
+                    : t('everySeconds', tabData.interval);
             }
             const shimmer = document.createElement('div');
             shimmer.className = 'absolute inset-y-0 left-0 w-1/3 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-full reload4u-shimmer';
@@ -479,7 +480,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
         }
     } else {
         timerDiv.className = 'text-xs text-yellow-600 dark:text-yellow-400';
-        timerDiv.textContent = tabData.stoppedReason ? ('⏹ ' + tabData.stoppedReason) : 'Reload paused';
+        timerDiv.textContent = tabData.stoppedReason ? t('stoppedReason', tabData.stoppedReason) : t('reloadPaused');
     }
 
     infoSection.appendChild(titleDiv);
@@ -490,7 +491,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
     if (!isPaused && tabData.interval < FAST_WARNING_BELOW) {
         const warning = document.createElement('p');
         warning.className = 'text-xs text-orange-600 dark:text-orange-400 mt-1';
-        warning.textContent = '⚠ Fast intervals use more CPU/network.';
+        warning.textContent = t('fastIntervalWarning');
         infoSection.appendChild(warning);
     }
 
@@ -500,14 +501,14 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     const pauseBtn = document.createElement('button');
     pauseBtn.className = `px-2 py-1 text-xs text-white rounded transition-colors ${isPaused ? 'bg-green-500 hover:bg-green-600' : 'bg-yellow-500 hover:bg-yellow-600'}`;
-    pauseBtn.textContent = isPaused ? 'Resume' : 'Pause';
+    pauseBtn.textContent = isPaused ? t('resume') : t('pause');
     pauseBtn.addEventListener('click', function() {
         toggleTabPause(tabId);
     });
 
     const removeBtn = document.createElement('button');
     removeBtn.className = 'px-2 py-1 text-xs bg-red-500 hover:bg-red-600 text-white rounded transition-colors';
-    removeBtn.textContent = 'Remove';
+    removeBtn.textContent = t('remove');
     removeBtn.addEventListener('click', function() {
         removeTabFromSelected(tabId);
     });
@@ -527,7 +528,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     const label = document.createElement('label');
     label.className = 'text-xs text-gray-600 dark:text-gray-400';
-    label.textContent = 'Interval (sec):';
+    label.textContent = t('intervalLabel');
 
     const input = document.createElement('input');
     input.type = 'number';
@@ -546,7 +547,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     const statusText = document.createElement('div');
     statusText.className = 'text-xs text-gray-500 dark:text-gray-400';
-    statusText.textContent = isPaused ? 'Paused' : 'Active';
+    statusText.textContent = isPaused ? t('statusPaused') : t('statusActive');
 
     controlsDiv.appendChild(intervalSection);
     controlsDiv.appendChild(statusText);
@@ -557,18 +558,18 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     const stopLabel = document.createElement('label');
     stopLabel.className = 'text-xs text-gray-600 dark:text-gray-400';
-    stopLabel.textContent = 'Stop when:';
+    stopLabel.textContent = t('stopWhen');
 
     const stopSelect = document.createElement('select');
     stopSelect.className = 'px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:border-blue-500 focus:outline-none';
     stopSelect.disabled = isPaused;
     [
-        { value: 'none', text: 'Never (manual only)' },
-        { value: 'count', text: 'After N reloads' },
-        { value: 'title', text: 'Tab title changes' },
-        { value: 'content', text: 'Page content changes' },
-        { value: 'textAppears', text: 'Text appears on page' },
-        { value: 'textDisappears', text: 'Text disappears from page' }
+        { value: 'none', text: t('stopNever') },
+        { value: 'count', text: t('stopAfterCount') },
+        { value: 'title', text: t('stopTitleChanges') },
+        { value: 'content', text: t('stopContentChanges') },
+        { value: 'textAppears', text: t('stopTextAppears') },
+        { value: 'textDisappears', text: t('stopTextDisappears') }
     ].forEach(function(opt) {
         const option = document.createElement('option');
         option.value = opt.value;
@@ -595,7 +596,7 @@ function createTabElement(tab, tabId, tabData, isPaused) {
 
     const textInput = document.createElement('input');
     textInput.type = 'text';
-    textInput.placeholder = 'e.g. In stock';
+    textInput.placeholder = t('stopTextPlaceholder');
     textInput.value = (tabData.stopAfter && tabData.stopAfter.text) || '';
     textInput.className = 'w-full px-2 py-1 text-xs border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded focus:border-blue-500 focus:outline-none';
     textInput.classList.toggle('hidden', !isTextType(currentType));
@@ -691,19 +692,19 @@ function createOptionsElement(tabId, tabData, isPaused) {
 
     const summary = document.createElement('summary');
     summary.className = 'text-xs text-gray-600 dark:text-gray-400 cursor-pointer select-none';
-    summary.textContent = 'More options';
+    summary.textContent = t('moreOptions');
     details.appendChild(summary);
 
     const body = document.createElement('div');
     body.className = 'mt-2 space-y-1.5';
 
-    body.appendChild(createCheckboxRow('Hard reload (skip cache)', !!tabData.hardReload, isPaused, function(checked) {
+    body.appendChild(createCheckboxRow(t('optionHardReload'), !!tabData.hardReload, isPaused, function(checked) {
         updateTabOptions(tabId, { hardReload: checked || undefined });
     }).row);
-    body.appendChild(createCheckboxRow('Keep scroll position', !!tabData.keepScroll, isPaused, function(checked) {
+    body.appendChild(createCheckboxRow(t('optionKeepScroll'), !!tabData.keepScroll, isPaused, function(checked) {
         updateTabOptions(tabId, { keepScroll: checked || undefined });
     }).row);
-    body.appendChild(createCheckboxRow("Don't reload while I'm typing on the page", !!tabData.protectTyping, isPaused, function(checked) {
+    body.appendChild(createCheckboxRow(t('optionProtectTyping'), !!tabData.protectTyping, isPaused, function(checked) {
         updateTabOptions(tabId, { protectTyping: checked || undefined });
     }).row);
 
@@ -721,12 +722,12 @@ function createOptionsElement(tabId, tabData, isPaused) {
         return Math.max(tabData.interval + MIN_INTERVAL, parseFloat(maxInput.value) || 0);
     }
 
-    const random = createCheckboxRow('Randomize, up to', randomized, isPaused, function(checked) {
+    const random = createCheckboxRow(t('optionRandomize'), randomized, isPaused, function(checked) {
         maxInput.disabled = !checked;
         updateTabOptions(tabId, { intervalMax: checked ? randomMax() : undefined });
     });
     const unit = document.createElement('span');
-    unit.textContent = 'sec';
+    unit.textContent = t('unitSecShort');
     random.row.appendChild(maxInput);
     random.row.appendChild(unit);
     maxInput.addEventListener('change', function() {
@@ -745,6 +746,8 @@ window.toggleTabPause = toggleTabPause;
 
 // Clear any old storage format and display selected tabs info when popup opens
 document.addEventListener('DOMContentLoaded', function() {
+    applyI18n();
+
     // Clean up any old storage format to prevent conflicts
     chrome.storage.sync.get(['selectedTabs'], function(data) {
         if (data.selectedTabs) {
@@ -793,10 +796,10 @@ selectTab.onclick = function(){
                         // The background worker reacts to this storage change and starts the
                         // tab's timer/alarm; storage.onChanged re-renders the popup.
                         console.log('Added tab:', tabId, 'with interval:', defaultInterval, 'seconds');
-                        alert("Tab added to auto-reload list");
+                        alert(t('alertTabAdded'));
                     });
                 } else {
-                    alert("This tab is already selected for auto-reload");
+                    alert(t('alertTabAlreadyAdded'));
                 }
             });
         });
@@ -828,6 +831,6 @@ stopAllTabs.onclick = function () {
     chrome.storage.sync.set({selectedTabsWithIntervals: {}}, function() {
         // The background worker reacts to this storage change and clears every timer/alarm;
         // storage.onChanged re-renders the popup.
-        alert("All tabs removed from auto-reload");
+        alert(t('alertAllRemoved'));
     });
 };

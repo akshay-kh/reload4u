@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Автоперезагрузка любой вкладки по своему таймеру: от 0,5 секунды до часов. Пауза, возобновление и остановка при изменении страницы."
+    },
+    "commandToggleDescription": {
+        "message": "Запустить автоперезагрузку текущей вкладки или поставить её на паузу/возобновить"
+    },
+    "popupTagline": {
+        "message": "Выберите вкладку для автоперезагрузки."
+    },
+    "openSettings": {
+        "message": "⚙️ Настройки"
+    },
+    "openSettingsTitle": {
+        "message": "Открыть настройки"
+    },
+    "pauseAll": {
+        "message": "⏸ Приостановить все"
+    },
+    "resumeAll": {
+        "message": "▶ Возобновить все"
+    },
+    "activeTabsHeading": {
+        "message": "Вкладки с автоперезагрузкой"
+    },
+    "pausedTabsHeading": {
+        "message": "Вкладки на паузе"
+    },
+    "selectThisTab": {
+        "message": "Выбрать эту вкладку"
+    },
+    "stopAll": {
+        "message": "Остановить всю автоперезагрузку"
+    },
+    "statusActive": {
+        "message": "Активна"
+    },
+    "statusPaused": {
+        "message": "На паузе"
+    },
+    "nextReloadIn": {
+        "message": "Следующая перезагрузка через:"
+    },
+    "reloading": {
+        "message": "Перезагрузка..."
+    },
+    "noTimer": {
+        "message": "Нет таймера"
+    },
+    "reloadPaused": {
+        "message": "Перезагрузка приостановлена"
+    },
+    "everySeconds": {
+        "message": "каждые $SECONDS$ с",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "каждые $MIN$–$MAX$ с",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Короткие интервалы повышают нагрузку на процессор и сеть."
+    },
+    "reloadCount": {
+        "message": "Перезагрузок: $COUNT$",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "Перезагрузок: $COUNT$/$LIMIT$",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Возобновить"
+    },
+    "pause": {
+        "message": "Пауза"
+    },
+    "remove": {
+        "message": "Удалить"
+    },
+    "intervalLabel": {
+        "message": "Интервал (с):"
+    },
+    "stopWhen": {
+        "message": "Остановить, когда:"
+    },
+    "stopNever": {
+        "message": "Никогда (только вручную)"
+    },
+    "stopAfterCount": {
+        "message": "После N перезагрузок"
+    },
+    "stopTitleChanges": {
+        "message": "Изменится заголовок вкладки"
+    },
+    "stopContentChanges": {
+        "message": "Изменится содержимое страницы"
+    },
+    "stopTextAppears": {
+        "message": "На странице появится текст"
+    },
+    "stopTextDisappears": {
+        "message": "Текст исчезнет со страницы"
+    },
+    "stopTextPlaceholder": {
+        "message": "напр. В наличии"
+    },
+    "moreOptions": {
+        "message": "Дополнительно"
+    },
+    "optionHardReload": {
+        "message": "Жёсткая перезагрузка (без кэша)"
+    },
+    "optionKeepScroll": {
+        "message": "Сохранять положение прокрутки"
+    },
+    "optionProtectTyping": {
+        "message": "Не перезагружать, пока я ввожу текст на странице"
+    },
+    "optionRandomize": {
+        "message": "Случайно, до"
+    },
+    "unitSecShort": {
+        "message": "с"
+    },
+    "alertTabAdded": {
+        "message": "Вкладка добавлена в список автоперезагрузки"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Эта вкладка уже выбрана для автоперезагрузки"
+    },
+    "alertAllRemoved": {
+        "message": "Все вкладки удалены из автоперезагрузки"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Остановлено: выполнена 1 перезагрузка"
+    },
+    "stoppedCountOther": {
+        "message": "Остановлено: выполнено перезагрузок — $COUNT$",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Остановлено: изменился заголовок страницы"
+    },
+    "stoppedContentChanged": {
+        "message": "Остановлено: изменилось содержимое страницы"
+    },
+    "stoppedTextAppeared": {
+        "message": "Остановлено: появился текст «$TEXT$»",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Остановлено: исчез текст «$TEXT$»",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Нажмите, чтобы открыть вкладку.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Автоперезагрузка: $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Остановить автоперезагрузку этой вкладки"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ с",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 мин"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ мин",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Настройки Reload4U"
+    },
+    "settingsSubtitle": {
+        "message": "Настройте параметры автоперезагрузки"
+    },
+    "defaultSettingsHeading": {
+        "message": "Настройки по умолчанию"
+    },
+    "defaultIntervalLabel": {
+        "message": "Интервал перезагрузки по умолчанию"
+    },
+    "unitSeconds": {
+        "message": "секунд"
+    },
+    "minimumIntervalHint": {
+        "message": "Минимум: $SECONDS$ с",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "Минимальный интервал — $SECONDS$ с",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Этот интервал используется по умолчанию при добавлении новых вкладок в автоперезагрузку."
+    },
+    "appearanceHeading": {
+        "message": "Оформление"
+    },
+    "themeLabel": {
+        "message": "Тема"
+    },
+    "themeSystem": {
+        "message": "Как в системе"
+    },
+    "themeLight": {
+        "message": "Светлая"
+    },
+    "themeDark": {
+        "message": "Тёмная"
+    },
+    "themeHelp": {
+        "message": "Применяется к всплывающему окну и этой странице настроек. «Как в системе» следует настройке вашей ОС."
+    },
+    "notificationsHeading": {
+        "message": "Уведомления"
+    },
+    "notifyOnStopLabel": {
+        "message": "Уведомлять, когда вкладка остановится"
+    },
+    "notifyOnStopHelp": {
+        "message": "Показывает уведомление на рабочем столе при выполнении условия «Остановить, когда». Нажмите на него, чтобы перейти к вкладке. В первый раз браузер запросит разрешение."
+    },
+    "notifyPermissionDenied": {
+        "message": "Разрешение на уведомления не предоставлено"
+    },
+    "shortcutHeading": {
+        "message": "Сочетание клавиш"
+    },
+    "shortcutDescription": {
+        "message": "запускает автоперезагрузку текущей вкладки или ставит её на паузу/возобновляет, если она уже в списке."
+    },
+    "shortcutNotSet": {
+        "message": "Не задано"
+    },
+    "shortcutChangeHint": {
+        "message": "Чтобы изменить:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Управление быстрыми клавишами расширений"
+    },
+    "saveButton": {
+        "message": "Сохранить настройки"
+    },
+    "saveSuccess": {
+        "message": "Настройки успешно сохранены!"
+    },
+    "saveError": {
+        "message": "Ошибка при сохранении настроек!"
+    },
+    "aboutHeading": {
+        "message": "О Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Версия:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Описание:"
+    },
+    "aboutDescription": {
+        "message": "Автоматически перезагружает выбранные вкладки браузера через настраиваемые интервалы"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Возможности:"
+    },
+    "aboutFeatures": {
+        "message": "Интервалы для каждой вкладки, пауза/возобновление, условия остановки, уведомления, случайные интервалы, сочетание клавиш, контекстное меню"
+    },
+    "madeWith": {
+        "message": "Сделано с ❤️ для продуктивной работы в браузере"
+    }
+}

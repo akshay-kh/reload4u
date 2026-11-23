@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "ಯಾವುದೇ ಟ್ಯಾಬ್ ಅನ್ನು ಅದರದೇ ಟೈಮರ್‌ನಲ್ಲಿ ಸ್ವಯಂ ರೀಲೋಡ್ ಮಾಡಿ, 0.5 ಸೆಕೆಂಡ್‌ನಿಂದ ಗಂಟೆಗಳವರೆಗೆ. ವಿರಾಮ, ಮುಂದುವರಿಕೆ, ಪುಟ ಬದಲಾದಾಗ ನಿಲುಗಡೆ."
+    },
+    "commandToggleDescription": {
+        "message": "ಪ್ರಸ್ತುತ ಟ್ಯಾಬ್‌ನ ಸ್ವಯಂ ರೀಲೋಡ್ ಆರಂಭಿಸಿ, ಅಥವಾ ವಿರಾಮ/ಮುಂದುವರಿಸಿ"
+    },
+    "popupTagline": {
+        "message": "ಸ್ವಯಂ ರೀಲೋಡ್ ಮಾಡಲು ಒಂದು ಟ್ಯಾಬ್ ಆಯ್ಕೆಮಾಡಿ."
+    },
+    "openSettings": {
+        "message": "⚙️ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+    },
+    "openSettingsTitle": {
+        "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ತೆರೆಯಿರಿ"
+    },
+    "pauseAll": {
+        "message": "⏸ ಎಲ್ಲವನ್ನೂ ವಿರಾಮಗೊಳಿಸಿ"
+    },
+    "resumeAll": {
+        "message": "▶ ಎಲ್ಲವನ್ನೂ ಮುಂದುವರಿಸಿ"
+    },
+    "activeTabsHeading": {
+        "message": "ಸ್ವಯಂ ರೀಲೋಡ್ ಟ್ಯಾಬ್‌ಗಳು"
+    },
+    "pausedTabsHeading": {
+        "message": "ವಿರಾಮಗೊಳಿಸಿದ ಟ್ಯಾಬ್‌ಗಳು"
+    },
+    "selectThisTab": {
+        "message": "ಈ ಟ್ಯಾಬ್ ಆಯ್ಕೆಮಾಡಿ"
+    },
+    "stopAll": {
+        "message": "ಎಲ್ಲಾ ಸ್ವಯಂ ರೀಲೋಡ್ ನಿಲ್ಲಿಸಿ"
+    },
+    "statusActive": {
+        "message": "ಸಕ್ರಿಯ"
+    },
+    "statusPaused": {
+        "message": "ವಿರಾಮದಲ್ಲಿದೆ"
+    },
+    "nextReloadIn": {
+        "message": "ಮುಂದಿನ ರೀಲೋಡ್:"
+    },
+    "reloading": {
+        "message": "ರೀಲೋಡ್ ಆಗುತ್ತಿದೆ..."
+    },
+    "noTimer": {
+        "message": "ಟೈಮರ್ ಇಲ್ಲ"
+    },
+    "reloadPaused": {
+        "message": "ರೀಲೋಡ್ ವಿರಾಮದಲ್ಲಿದೆ"
+    },
+    "everySeconds": {
+        "message": "ಪ್ರತಿ $SECONDS$ ಸೆ",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "ಪ್ರತಿ $MIN$–$MAX$ ಸೆ",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ ಕಡಿಮೆ ಅಂತರಗಳು ಹೆಚ್ಚು CPU/ನೆಟ್‌ವರ್ಕ್ ಬಳಸುತ್ತವೆ."
+    },
+    "reloadCount": {
+        "message": "$COUNT$ ರೀಲೋಡ್‌ಗಳು",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ ರೀಲೋಡ್‌ಗಳು",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "ಮುಂದುವರಿಸಿ"
+    },
+    "pause": {
+        "message": "ವಿರಾಮ"
+    },
+    "remove": {
+        "message": "ತೆಗೆದುಹಾಕಿ"
+    },
+    "intervalLabel": {
+        "message": "ಅಂತರ (ಸೆ):"
+    },
+    "stopWhen": {
+        "message": "ನಿಲ್ಲಿಸುವುದು:"
+    },
+    "stopNever": {
+        "message": "ಎಂದಿಗೂ ಇಲ್ಲ (ಕೈಯಾರೆ ಮಾತ್ರ)"
+    },
+    "stopAfterCount": {
+        "message": "N ರೀಲೋಡ್‌ಗಳ ನಂತರ"
+    },
+    "stopTitleChanges": {
+        "message": "ಟ್ಯಾಬ್ ಶೀರ್ಷಿಕೆ ಬದಲಾದಾಗ"
+    },
+    "stopContentChanges": {
+        "message": "ಪುಟದ ವಿಷಯ ಬದಲಾದಾಗ"
+    },
+    "stopTextAppears": {
+        "message": "ಪುಟದಲ್ಲಿ ಪಠ್ಯ ಕಾಣಿಸಿಕೊಂಡಾಗ"
+    },
+    "stopTextDisappears": {
+        "message": "ಪುಟದಿಂದ ಪಠ್ಯ ಮಾಯವಾದಾಗ"
+    },
+    "stopTextPlaceholder": {
+        "message": "ಉದಾ. ಸ್ಟಾಕ್‌ನಲ್ಲಿದೆ"
+    },
+    "moreOptions": {
+        "message": "ಹೆಚ್ಚಿನ ಆಯ್ಕೆಗಳು"
+    },
+    "optionHardReload": {
+        "message": "ಹಾರ್ಡ್ ರೀಲೋಡ್ (ಕ್ಯಾಶ್ ಬಿಟ್ಟುಬಿಡಿ)"
+    },
+    "optionKeepScroll": {
+        "message": "ಸ್ಕ್ರಾಲ್ ಸ್ಥಾನ ಉಳಿಸಿಕೊಳ್ಳಿ"
+    },
+    "optionProtectTyping": {
+        "message": "ಪುಟದಲ್ಲಿ ಟೈಪ್ ಮಾಡುತ್ತಿರುವಾಗ ರೀಲೋಡ್ ಮಾಡಬೇಡಿ"
+    },
+    "optionRandomize": {
+        "message": "ಯಾದೃಚ್ಛಿಕ, ಗರಿಷ್ಠ"
+    },
+    "unitSecShort": {
+        "message": "ಸೆ"
+    },
+    "alertTabAdded": {
+        "message": "ಟ್ಯಾಬ್ ಅನ್ನು ಸ್ವಯಂ ರೀಲೋಡ್ ಪಟ್ಟಿಗೆ ಸೇರಿಸಲಾಗಿದೆ"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "ಈ ಟ್ಯಾಬ್ ಈಗಾಗಲೇ ಸ್ವಯಂ ರೀಲೋಡ್‌ಗಾಗಿ ಆಯ್ಕೆಯಾಗಿದೆ"
+    },
+    "alertAllRemoved": {
+        "message": "ಎಲ್ಲಾ ಟ್ಯಾಬ್‌ಗಳನ್ನು ಸ್ವಯಂ ರೀಲೋಡ್‌ನಿಂದ ತೆಗೆದುಹಾಕಲಾಗಿದೆ"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "ನಿಲ್ಲಿಸಲಾಗಿದೆ: 1 ರೀಲೋಡ್ ತಲುಪಿದೆ"
+    },
+    "stoppedCountOther": {
+        "message": "ನಿಲ್ಲಿಸಲಾಗಿದೆ: $COUNT$ ರೀಲೋಡ್‌ಗಳನ್ನು ತಲುಪಿದೆ",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "ನಿಲ್ಲಿಸಲಾಗಿದೆ: ಪುಟದ ಶೀರ್ಷಿಕೆ ಬದಲಾಗಿದೆ"
+    },
+    "stoppedContentChanged": {
+        "message": "ನಿಲ್ಲಿಸಲಾಗಿದೆ: ಪುಟದ ವಿಷಯ ಬದಲಾಗಿದೆ"
+    },
+    "stoppedTextAppeared": {
+        "message": "ನಿಲ್ಲಿಸಲಾಗಿದೆ: “$TEXT$” ಕಾಣಿಸಿಕೊಂಡಿದೆ",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "ನಿಲ್ಲಿಸಲಾಗಿದೆ: “$TEXT$” ಮಾಯವಾಗಿದೆ",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. ಟ್ಯಾಬ್ ತೆರೆಯಲು ಕ್ಲಿಕ್ ಮಾಡಿ.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "ಸ್ವಯಂ ರೀಲೋಡ್: ಪ್ರತಿ $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "ಈ ಟ್ಯಾಬ್‌ನ ಸ್ವಯಂ ರೀಲೋಡ್ ನಿಲ್ಲಿಸಿ"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ ಸೆಕೆಂಡ್",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 ನಿಮಿಷ"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ ನಿಮಿಷ",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Reload4U ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+    },
+    "settingsSubtitle": {
+        "message": "ನಿಮ್ಮ ಸ್ವಯಂ ರೀಲೋಡ್ ಆದ್ಯತೆಗಳನ್ನು ಕಾನ್ಫಿಗರ್ ಮಾಡಿ"
+    },
+    "defaultSettingsHeading": {
+        "message": "ಡೀಫಾಲ್ಟ್ ಸೆಟ್ಟಿಂಗ್‌ಗಳು"
+    },
+    "defaultIntervalLabel": {
+        "message": "ಡೀಫಾಲ್ಟ್ ರೀಲೋಡ್ ಅಂತರ"
+    },
+    "unitSeconds": {
+        "message": "ಸೆಕೆಂಡ್"
+    },
+    "minimumIntervalHint": {
+        "message": "ಕನಿಷ್ಠ: $SECONDS$ ಸೆಕೆಂಡ್",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "ಕನಿಷ್ಠ ಅಂತರ $SECONDS$ ಸೆಕೆಂಡ್",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "ಸ್ವಯಂ ರೀಲೋಡ್‌ಗೆ ಹೊಸ ಟ್ಯಾಬ್‌ಗಳನ್ನು ಸೇರಿಸುವಾಗ ಈ ಅಂತರವನ್ನು ಡೀಫಾಲ್ಟ್ ಆಗಿ ಬಳಸಲಾಗುತ್ತದೆ."
+    },
+    "appearanceHeading": {
+        "message": "ಗೋಚರತೆ"
+    },
+    "themeLabel": {
+        "message": "ಥೀಮ್"
+    },
+    "themeSystem": {
+        "message": "ಸಿಸ್ಟಂ ಡೀಫಾಲ್ಟ್"
+    },
+    "themeLight": {
+        "message": "ಲೈಟ್"
+    },
+    "themeDark": {
+        "message": "ಡಾರ್ಕ್"
+    },
+    "themeHelp": {
+        "message": "ಪಾಪ್‌ಅಪ್ ಮತ್ತು ಈ ಸೆಟ್ಟಿಂಗ್ಸ್ ಪುಟಕ್ಕೆ ಅನ್ವಯಿಸುತ್ತದೆ. “ಸಿಸ್ಟಂ ಡೀಫಾಲ್ಟ್” ನಿಮ್ಮ OS ಸೆಟ್ಟಿಂಗ್ ಅನ್ನು ಅನುಸರಿಸುತ್ತದೆ."
+    },
+    "notificationsHeading": {
+        "message": "ಅಧಿಸೂಚನೆಗಳು"
+    },
+    "notifyOnStopLabel": {
+        "message": "ಟ್ಯಾಬ್ ನಿಂತಾಗ ನನಗೆ ತಿಳಿಸಿ"
+    },
+    "notifyOnStopHelp": {
+        "message": "“ನಿಲ್ಲಿಸುವುದು” ಷರತ್ತು ಪೂರೈಸಿದಾಗ ಡೆಸ್ಕ್‌ಟಾಪ್ ಅಧಿಸೂಚನೆ ತೋರಿಸುತ್ತದೆ. ಟ್ಯಾಬ್‌ಗೆ ಹೋಗಲು ಅದನ್ನು ಕ್ಲಿಕ್ ಮಾಡಿ. ಮೊದಲ ಬಾರಿ ನಿಮ್ಮ ಬ್ರೌಸರ್ ಅನುಮತಿ ಕೇಳುತ್ತದೆ."
+    },
+    "notifyPermissionDenied": {
+        "message": "ಅಧಿಸೂಚನೆ ಅನುಮತಿ ನೀಡಲಾಗಿಲ್ಲ"
+    },
+    "shortcutHeading": {
+        "message": "ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್‌ಕಟ್"
+    },
+    "shortcutDescription": {
+        "message": "ಪ್ರಸ್ತುತ ಟ್ಯಾಬ್‌ನ ಸ್ವಯಂ ರೀಲೋಡ್ ಆರಂಭಿಸುತ್ತದೆ, ಅಥವಾ ಅದು ಈಗಾಗಲೇ ಪಟ್ಟಿಯಲ್ಲಿದ್ದರೆ ವಿರಾಮ/ಮುಂದುವರಿಸುತ್ತದೆ."
+    },
+    "shortcutNotSet": {
+        "message": "ಹೊಂದಿಸಿಲ್ಲ"
+    },
+    "shortcutChangeHint": {
+        "message": "ಬದಲಾಯಿಸಲು:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → ಎಕ್ಸ್‌ಟೆನ್ಶನ್ ಶಾರ್ಟ್‌ಕಟ್‌ಗಳನ್ನು ನಿರ್ವಹಿಸಿ"
+    },
+    "saveButton": {
+        "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಉಳಿಸಿ"
+    },
+    "saveSuccess": {
+        "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಯಶಸ್ವಿಯಾಗಿ ಉಳಿಸಲಾಗಿದೆ!"
+    },
+    "saveError": {
+        "message": "ಸೆಟ್ಟಿಂಗ್‌ಗಳನ್ನು ಉಳಿಸುವಲ್ಲಿ ದೋಷ!"
+    },
+    "aboutHeading": {
+        "message": "Reload4U ಬಗ್ಗೆ"
+    },
+    "aboutVersion": {
+        "message": "ಆವೃತ್ತಿ:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "ವಿವರಣೆ:"
+    },
+    "aboutDescription": {
+        "message": "ಆಯ್ದ ಬ್ರೌಸರ್ ಟ್ಯಾಬ್‌ಗಳನ್ನು ನಿಮಗಿಷ್ಟದ ಅಂತರದಲ್ಲಿ ಸ್ವಯಂ ರೀಲೋಡ್ ಮಾಡುತ್ತದೆ"
+    },
+    "aboutFeaturesLabel": {
+        "message": "ವೈಶಿಷ್ಟ್ಯಗಳು:"
+    },
+    "aboutFeatures": {
+        "message": "ಪ್ರತಿ ಟ್ಯಾಬ್‌ಗೆ ಅಂತರ, ವಿರಾಮ/ಮುಂದುವರಿಕೆ, ನಿಲ್ಲಿಸುವ ಷರತ್ತುಗಳು, ಅಧಿಸೂಚನೆಗಳು, ಯಾದೃಚ್ಛಿಕ ಅಂತರಗಳು, ಕೀಬೋರ್ಡ್ ಶಾರ್ಟ್‌ಕಟ್, ರೈಟ್-ಕ್ಲಿಕ್ ಮೆನು"
+    },
+    "madeWith": {
+        "message": "ಉತ್ತಮ ಬ್ರೌಸರ್ ಉತ್ಪಾದಕತೆಗಾಗಿ ❤️ ನೊಂದಿಗೆ ಮಾಡಲಾಗಿದೆ"
+    }
+}

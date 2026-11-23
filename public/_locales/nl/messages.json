@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Herlaad elk tabblad automatisch met een eigen timer, van 0,5 seconde tot uren. Pauzeer, hervat en stop bij paginawijziging."
+    },
+    "commandToggleDescription": {
+        "message": "Het huidige tabblad automatisch herladen, of pauzeren/hervatten"
+    },
+    "popupTagline": {
+        "message": "Selecteer een tabblad om het automatisch te herladen."
+    },
+    "openSettings": {
+        "message": "⚙️ Instellingen"
+    },
+    "openSettingsTitle": {
+        "message": "Instellingen openen"
+    },
+    "pauseAll": {
+        "message": "⏸ Alles pauzeren"
+    },
+    "resumeAll": {
+        "message": "▶ Alles hervatten"
+    },
+    "activeTabsHeading": {
+        "message": "Tabbladen met automatisch herladen"
+    },
+    "pausedTabsHeading": {
+        "message": "Gepauzeerde tabbladen"
+    },
+    "selectThisTab": {
+        "message": "Dit tabblad selecteren"
+    },
+    "stopAll": {
+        "message": "Alle automatische herlaadacties stoppen"
+    },
+    "statusActive": {
+        "message": "Actief"
+    },
+    "statusPaused": {
+        "message": "Gepauzeerd"
+    },
+    "nextReloadIn": {
+        "message": "Volgende keer herladen over:"
+    },
+    "reloading": {
+        "message": "Herladen..."
+    },
+    "noTimer": {
+        "message": "Geen timer"
+    },
+    "reloadPaused": {
+        "message": "Herladen gepauzeerd"
+    },
+    "everySeconds": {
+        "message": "elke $SECONDS$ s",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "elke $MIN$–$MAX$ s",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Korte intervallen gebruiken meer cpu/netwerk."
+    },
+    "reloadCount": {
+        "message": "$COUNT$ keer herladen",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ keer herladen",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Hervatten"
+    },
+    "pause": {
+        "message": "Pauzeren"
+    },
+    "remove": {
+        "message": "Verwijderen"
+    },
+    "intervalLabel": {
+        "message": "Interval (s):"
+    },
+    "stopWhen": {
+        "message": "Stoppen wanneer:"
+    },
+    "stopNever": {
+        "message": "Nooit (alleen handmatig)"
+    },
+    "stopAfterCount": {
+        "message": "Na N keer herladen"
+    },
+    "stopTitleChanges": {
+        "message": "Tabbladtitel verandert"
+    },
+    "stopContentChanges": {
+        "message": "Pagina-inhoud verandert"
+    },
+    "stopTextAppears": {
+        "message": "Tekst verschijnt op de pagina"
+    },
+    "stopTextDisappears": {
+        "message": "Tekst verdwijnt van de pagina"
+    },
+    "stopTextPlaceholder": {
+        "message": "bijv. Op voorraad"
+    },
+    "moreOptions": {
+        "message": "Meer opties"
+    },
+    "optionHardReload": {
+        "message": "Geforceerd herladen (cache negeren)"
+    },
+    "optionKeepScroll": {
+        "message": "Scrollpositie behouden"
+    },
+    "optionProtectTyping": {
+        "message": "Niet herladen terwijl ik op de pagina typ"
+    },
+    "optionRandomize": {
+        "message": "Willekeurig, tot"
+    },
+    "unitSecShort": {
+        "message": "s"
+    },
+    "alertTabAdded": {
+        "message": "Tabblad toegevoegd aan de lijst voor automatisch herladen"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Dit tabblad is al geselecteerd voor automatisch herladen"
+    },
+    "alertAllRemoved": {
+        "message": "Alle tabbladen zijn verwijderd uit automatisch herladen"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Gestopt: 1 keer herladen bereikt"
+    },
+    "stoppedCountOther": {
+        "message": "Gestopt: $COUNT$ keer herladen bereikt",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Gestopt: paginatitel is veranderd"
+    },
+    "stoppedContentChanged": {
+        "message": "Gestopt: pagina-inhoud is veranderd"
+    },
+    "stoppedTextAppeared": {
+        "message": "Gestopt: ‘$TEXT$’ verscheen",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Gestopt: ‘$TEXT$’ verdween",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Klik om het tabblad te openen.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Automatisch herladen elke $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Automatisch herladen van dit tabblad stoppen"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ seconden",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 minuut"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ minuten",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Reload4U-instellingen"
+    },
+    "settingsSubtitle": {
+        "message": "Stel je voorkeuren voor automatisch herladen in"
+    },
+    "defaultSettingsHeading": {
+        "message": "Standaardinstellingen"
+    },
+    "defaultIntervalLabel": {
+        "message": "Standaard herlaadinterval"
+    },
+    "unitSeconds": {
+        "message": "seconden"
+    },
+    "minimumIntervalHint": {
+        "message": "Minimum: $SECONDS$ seconden",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "Het minimale interval is $SECONDS$ seconden",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Dit interval wordt standaard gebruikt wanneer je nieuwe tabbladen toevoegt aan automatisch herladen."
+    },
+    "appearanceHeading": {
+        "message": "Weergave"
+    },
+    "themeLabel": {
+        "message": "Thema"
+    },
+    "themeSystem": {
+        "message": "Systeemstandaard"
+    },
+    "themeLight": {
+        "message": "Licht"
+    },
+    "themeDark": {
+        "message": "Donker"
+    },
+    "themeHelp": {
+        "message": "Geldt voor de popup en deze instellingenpagina. ‘Systeemstandaard’ volgt de instelling van je besturingssysteem."
+    },
+    "notificationsHeading": {
+        "message": "Meldingen"
+    },
+    "notifyOnStopLabel": {
+        "message": "Waarschuw me wanneer een tabblad stopt"
+    },
+    "notifyOnStopHelp": {
+        "message": "Toont een bureaubladmelding wanneer aan een ‘Stoppen wanneer’-voorwaarde is voldaan. Klik erop om naar het tabblad te gaan. Je browser vraagt de eerste keer om toestemming."
+    },
+    "notifyPermissionDenied": {
+        "message": "Toestemming voor meldingen is niet verleend"
+    },
+    "shortcutHeading": {
+        "message": "Sneltoets"
+    },
+    "shortcutDescription": {
+        "message": "start het automatisch herladen van het huidige tabblad, of pauzeert/hervat het als het al in de lijst staat."
+    },
+    "shortcutNotSet": {
+        "message": "Niet ingesteld"
+    },
+    "shortcutChangeHint": {
+        "message": "Om te wijzigen:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Sneltoetsen voor extensies beheren"
+    },
+    "saveButton": {
+        "message": "Instellingen opslaan"
+    },
+    "saveSuccess": {
+        "message": "Instellingen succesvol opgeslagen!"
+    },
+    "saveError": {
+        "message": "Fout bij het opslaan van de instellingen!"
+    },
+    "aboutHeading": {
+        "message": "Over Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Versie:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Beschrijving:"
+    },
+    "aboutDescription": {
+        "message": "Herlaadt geselecteerde browsertabbladen automatisch met aanpasbare intervallen"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Functies:"
+    },
+    "aboutFeatures": {
+        "message": "Intervallen per tabblad, pauzeren/hervatten, stopvoorwaarden, meldingen, willekeurige intervallen, sneltoets, rechtsklikmenu"
+    },
+    "madeWith": {
+        "message": "Gemaakt met ❤️ voor meer productiviteit in de browser"
+    }
+}

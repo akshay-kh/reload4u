@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "원하는 탭을 각자의 타이머로 자동 새로고침합니다. 0.5초부터 몇 시간까지. 일시정지, 재개, 페이지 변경 시 자동 중지."
+    },
+    "commandToggleDescription": {
+        "message": "현재 탭 자동 새로고침을 시작하거나 일시정지/재개"
+    },
+    "popupTagline": {
+        "message": "자동 새로고침할 탭을 선택하세요."
+    },
+    "openSettings": {
+        "message": "⚙️ 설정"
+    },
+    "openSettingsTitle": {
+        "message": "설정 열기"
+    },
+    "pauseAll": {
+        "message": "⏸ 모두 일시정지"
+    },
+    "resumeAll": {
+        "message": "▶ 모두 재개"
+    },
+    "activeTabsHeading": {
+        "message": "자동 새로고침 중인 탭"
+    },
+    "pausedTabsHeading": {
+        "message": "일시정지된 탭"
+    },
+    "selectThisTab": {
+        "message": "이 탭 선택"
+    },
+    "stopAll": {
+        "message": "모든 자동 새로고침 중지"
+    },
+    "statusActive": {
+        "message": "활성"
+    },
+    "statusPaused": {
+        "message": "일시정지됨"
+    },
+    "nextReloadIn": {
+        "message": "다음 새로고침까지:"
+    },
+    "reloading": {
+        "message": "새로고침 중..."
+    },
+    "noTimer": {
+        "message": "타이머 없음"
+    },
+    "reloadPaused": {
+        "message": "새로고침 일시정지됨"
+    },
+    "everySeconds": {
+        "message": "$SECONDS$초마다",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "$MIN$~$MAX$초마다",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ 짧은 간격은 CPU/네트워크를 더 많이 사용합니다."
+    },
+    "reloadCount": {
+        "message": "$COUNT$회 새로고침",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$회 새로고침",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "재개"
+    },
+    "pause": {
+        "message": "일시정지"
+    },
+    "remove": {
+        "message": "제거"
+    },
+    "intervalLabel": {
+        "message": "간격(초):"
+    },
+    "stopWhen": {
+        "message": "중지 조건:"
+    },
+    "stopNever": {
+        "message": "안 함(수동만)"
+    },
+    "stopAfterCount": {
+        "message": "N번 새로고침 후"
+    },
+    "stopTitleChanges": {
+        "message": "탭 제목이 바뀔 때"
+    },
+    "stopContentChanges": {
+        "message": "페이지 내용이 바뀔 때"
+    },
+    "stopTextAppears": {
+        "message": "페이지에 텍스트가 나타날 때"
+    },
+    "stopTextDisappears": {
+        "message": "페이지에서 텍스트가 사라질 때"
+    },
+    "stopTextPlaceholder": {
+        "message": "예: 재고 있음"
+    },
+    "moreOptions": {
+        "message": "추가 옵션"
+    },
+    "optionHardReload": {
+        "message": "강력 새로고침(캐시 무시)"
+    },
+    "optionKeepScroll": {
+        "message": "스크롤 위치 유지"
+    },
+    "optionProtectTyping": {
+        "message": "페이지에서 입력 중에는 새로고침하지 않기"
+    },
+    "optionRandomize": {
+        "message": "무작위, 최대"
+    },
+    "unitSecShort": {
+        "message": "초"
+    },
+    "alertTabAdded": {
+        "message": "탭을 자동 새로고침 목록에 추가했습니다"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "이 탭은 이미 자동 새로고침으로 선택되어 있습니다"
+    },
+    "alertAllRemoved": {
+        "message": "모든 탭을 자동 새로고침에서 제거했습니다"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "중지됨: 새로고침 1회 도달"
+    },
+    "stoppedCountOther": {
+        "message": "중지됨: 새로고침 $COUNT$회 도달",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "중지됨: 페이지 제목이 바뀌었습니다"
+    },
+    "stoppedContentChanged": {
+        "message": "중지됨: 페이지 내용이 바뀌었습니다"
+    },
+    "stoppedTextAppeared": {
+        "message": "중지됨: “$TEXT$” 나타남",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "중지됨: “$TEXT$” 사라짐",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. 클릭하여 탭을 엽니다.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "$DURATION$마다 자동 새로고침",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "이 탭의 자동 새로고침 중지"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$초",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1분"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$분",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Reload4U 설정"
+    },
+    "settingsSubtitle": {
+        "message": "자동 새로고침 환경설정을 구성합니다"
+    },
+    "defaultSettingsHeading": {
+        "message": "기본 설정"
+    },
+    "defaultIntervalLabel": {
+        "message": "기본 새로고침 간격"
+    },
+    "unitSeconds": {
+        "message": "초"
+    },
+    "minimumIntervalHint": {
+        "message": "최소: $SECONDS$초",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "최소 간격은 $SECONDS$초입니다",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "자동 새로고침에 새 탭을 추가할 때 이 간격이 기본값으로 사용됩니다."
+    },
+    "appearanceHeading": {
+        "message": "모양"
+    },
+    "themeLabel": {
+        "message": "테마"
+    },
+    "themeSystem": {
+        "message": "시스템 기본값"
+    },
+    "themeLight": {
+        "message": "밝게"
+    },
+    "themeDark": {
+        "message": "어둡게"
+    },
+    "themeHelp": {
+        "message": "팝업과 이 설정 페이지에 적용됩니다. “시스템 기본값”은 OS 설정을 따릅니다."
+    },
+    "notificationsHeading": {
+        "message": "알림"
+    },
+    "notifyOnStopLabel": {
+        "message": "탭이 중지되면 알림"
+    },
+    "notifyOnStopHelp": {
+        "message": "“중지 조건”에 도달하면 데스크톱 알림을 표시합니다. 클릭하면 해당 탭으로 이동합니다. 처음에는 브라우저가 권한을 요청합니다."
+    },
+    "notifyPermissionDenied": {
+        "message": "알림 권한이 허용되지 않았습니다"
+    },
+    "shortcutHeading": {
+        "message": "키보드 단축키"
+    },
+    "shortcutDescription": {
+        "message": "현재 탭의 자동 새로고침을 시작하거나, 이미 목록에 있으면 일시정지/재개합니다."
+    },
+    "shortcutNotSet": {
+        "message": "설정 안 됨"
+    },
+    "shortcutChangeHint": {
+        "message": "변경하려면:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → 확장 프로그램 단축키 관리"
+    },
+    "saveButton": {
+        "message": "설정 저장"
+    },
+    "saveSuccess": {
+        "message": "설정을 저장했습니다!"
+    },
+    "saveError": {
+        "message": "설정 저장 중 오류가 발생했습니다!"
+    },
+    "aboutHeading": {
+        "message": "Reload4U 정보"
+    },
+    "aboutVersion": {
+        "message": "버전:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "설명:"
+    },
+    "aboutDescription": {
+        "message": "선택한 브라우저 탭을 원하는 간격으로 자동 새로고침합니다"
+    },
+    "aboutFeaturesLabel": {
+        "message": "기능:"
+    },
+    "aboutFeatures": {
+        "message": "탭별 간격, 일시정지/재개, 중지 조건, 알림, 무작위 간격, 키보드 단축키, 오른쪽 클릭 메뉴"
+    },
+    "madeWith": {
+        "message": "더 나은 브라우저 생산성을 위해 ❤️로 만들었습니다"
+    }
+}

@@ -1,5 +1,6 @@
 // Settings page functionality
 import { applyTheme } from './theme.js';
+import { t, applyI18n } from './i18n.js';
 
 let defaultIntervalInput = document.getElementById('defaultInterval');
 let minIntervalHint = document.getElementById('minIntervalHint');
@@ -20,6 +21,9 @@ const DEFAULT_SETTINGS = {
 
 // Load settings when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    applyI18n();
+    document.title = t('settingsTitle');
+    minIntervalHint.textContent = t('minimumIntervalHint', MIN_INTERVAL);
     document.getElementById('extVersion').textContent = chrome.runtime.getManifest().version;
     loadSettings();
     showShortcut();
@@ -44,7 +48,7 @@ function saveSettings() {
 
     if (intervalInSeconds !== parseFloat(defaultIntervalInput.value)) {
         defaultIntervalInput.value = intervalInSeconds;
-        showSaveStatus(`Minimum interval is ${MIN_INTERVAL} seconds`, false);
+        showSaveStatus(t('minimumIntervalError', MIN_INTERVAL), false);
         return;
     }
 
@@ -57,10 +61,10 @@ function saveSettings() {
     chrome.storage.sync.set({reload4uSettings: settings}, function() {
         if (chrome.runtime.lastError) {
             console.error('Error saving settings:', chrome.runtime.lastError);
-            showSaveStatus('Error saving settings!', false);
+            showSaveStatus(t('saveError'), false);
         } else {
             console.log('Settings saved:', settings);
-            showSaveStatus('Settings saved successfully!', true);
+            showSaveStatus(t('saveSuccess'), true);
         }
     });
 }
@@ -83,7 +87,7 @@ function validateInterval() {
 
     if (intervalInSeconds < MIN_INTERVAL) {
         defaultIntervalInput.value = MIN_INTERVAL;
-        showSaveStatus(`Minimum interval is ${MIN_INTERVAL} seconds`, false);
+        showSaveStatus(t('minimumIntervalError', MIN_INTERVAL), false);
     }
 }
 
@@ -114,7 +118,7 @@ notifyOnStopInput.addEventListener('change', function() {
     chrome.permissions.request({ permissions: ['notifications'] }, function(granted) {
         if (!granted) {
             notifyOnStopInput.checked = false;
-            showSaveStatus('Notification permission was not granted', false);
+            showSaveStatus(t('notifyPermissionDenied'), false);
             return;
         }
         saveSettings();
@@ -126,7 +130,7 @@ function showShortcut() {
     if (!chrome.commands || !chrome.commands.getAll) return;
     chrome.commands.getAll(function(commands) {
         const toggle = (commands || []).find(function(c) { return c.name === 'toggle-current-tab'; });
-        if (toggle) shortcutKeys.textContent = toggle.shortcut || 'Not set';
+        if (toggle) shortcutKeys.textContent = toggle.shortcut || t('shortcutNotSet');
     });
 }
 

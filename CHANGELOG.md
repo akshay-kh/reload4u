@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- **Localization.** The popup, settings page, right-click menu, notifications, stop reasons, and
+  the store listing now follow the browser's language. Ships with English, Spanish, French,
+  German, Italian, Dutch, Russian, Ukrainian, Japanese, Korean, Hindi and Kannada; other
+  languages fall back to English.
+
 ## [1.1.0] - 2026-10-30
 
 ### Added

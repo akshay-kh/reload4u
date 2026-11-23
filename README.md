@@ -82,9 +82,11 @@ reload4u/
 │   ├── popup.js         # Popup functionality
 │   ├── settings.html    # Settings page
 │   ├── settings.js      # Settings functionality
+│   ├── i18n.js          # chrome.i18n helper for UI strings
 │   └── style.css        # Styles
 ├── public/              # Static assets
 │   ├── manifest.json    # Extension manifest
+│   ├── _locales/        # Translations (<lang>/messages.json)
 │   └── images/          # Extension icons
 ├── dist/                # Built extension (generated)
 └── package.json         # Dependencies and scripts

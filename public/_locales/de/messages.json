@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Lade jeden Tab mit eigenem Timer neu, von 0,5 s bis Stunden. Pausieren, fortsetzen und bei Seitenänderung stoppen."
+    },
+    "commandToggleDescription": {
+        "message": "Automatisches Neuladen des aktuellen Tabs starten oder pausieren/fortsetzen"
+    },
+    "popupTagline": {
+        "message": "Wähle einen Tab, um ihn automatisch neu zu laden."
+    },
+    "openSettings": {
+        "message": "⚙️ Einstellungen"
+    },
+    "openSettingsTitle": {
+        "message": "Einstellungen öffnen"
+    },
+    "pauseAll": {
+        "message": "⏸ Alle pausieren"
+    },
+    "resumeAll": {
+        "message": "▶ Alle fortsetzen"
+    },
+    "activeTabsHeading": {
+        "message": "Tabs mit automatischem Neuladen"
+    },
+    "pausedTabsHeading": {
+        "message": "Pausierte Tabs"
+    },
+    "selectThisTab": {
+        "message": "Diesen Tab auswählen"
+    },
+    "stopAll": {
+        "message": "Automatisches Neuladen überall stoppen"
+    },
+    "statusActive": {
+        "message": "Aktiv"
+    },
+    "statusPaused": {
+        "message": "Pausiert"
+    },
+    "nextReloadIn": {
+        "message": "Nächstes Neuladen in:"
+    },
+    "reloading": {
+        "message": "Lädt neu..."
+    },
+    "noTimer": {
+        "message": "Kein Timer"
+    },
+    "reloadPaused": {
+        "message": "Neuladen pausiert"
+    },
+    "everySeconds": {
+        "message": "alle $SECONDS$ s",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "alle $MIN$–$MAX$ s",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Kurze Intervalle verbrauchen mehr CPU/Netzwerk."
+    },
+    "reloadCount": {
+        "message": "$COUNT$ Neuladevorgänge",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ Neuladevorgänge",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Fortsetzen"
+    },
+    "pause": {
+        "message": "Pausieren"
+    },
+    "remove": {
+        "message": "Entfernen"
+    },
+    "intervalLabel": {
+        "message": "Intervall (s):"
+    },
+    "stopWhen": {
+        "message": "Stoppen, wenn:"
+    },
+    "stopNever": {
+        "message": "Nie (nur manuell)"
+    },
+    "stopAfterCount": {
+        "message": "Nach N Neuladevorgängen"
+    },
+    "stopTitleChanges": {
+        "message": "Tab-Titel sich ändert"
+    },
+    "stopContentChanges": {
+        "message": "Seiteninhalt sich ändert"
+    },
+    "stopTextAppears": {
+        "message": "Text auf der Seite erscheint"
+    },
+    "stopTextDisappears": {
+        "message": "Text von der Seite verschwindet"
+    },
+    "stopTextPlaceholder": {
+        "message": "z. B. Auf Lager"
+    },
+    "moreOptions": {
+        "message": "Weitere Optionen"
+    },
+    "optionHardReload": {
+        "message": "Hartes Neuladen (Cache umgehen)"
+    },
+    "optionKeepScroll": {
+        "message": "Scrollposition beibehalten"
+    },
+    "optionProtectTyping": {
+        "message": "Nicht neu laden, während ich auf der Seite tippe"
+    },
+    "optionRandomize": {
+        "message": "Zufällig, bis zu"
+    },
+    "unitSecShort": {
+        "message": "s"
+    },
+    "alertTabAdded": {
+        "message": "Tab zur Liste für automatisches Neuladen hinzugefügt"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Dieser Tab ist bereits für automatisches Neuladen ausgewählt"
+    },
+    "alertAllRemoved": {
+        "message": "Alle Tabs wurden vom automatischen Neuladen entfernt"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Gestoppt: 1 Neuladevorgang erreicht"
+    },
+    "stoppedCountOther": {
+        "message": "Gestoppt: $COUNT$ Neuladevorgänge erreicht",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Gestoppt: Seitentitel hat sich geändert"
+    },
+    "stoppedContentChanged": {
+        "message": "Gestoppt: Seiteninhalt hat sich geändert"
+    },
+    "stoppedTextAppeared": {
+        "message": "Gestoppt: „$TEXT$“ ist erschienen",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Gestoppt: „$TEXT$“ ist verschwunden",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Klicke, um den Tab zu öffnen.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Automatisch neu laden: $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Automatisches Neuladen dieses Tabs stoppen"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ Sekunden",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 Minute"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ Minuten",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Reload4U-Einstellungen"
+    },
+    "settingsSubtitle": {
+        "message": "Lege deine Einstellungen für das automatische Neuladen fest"
+    },
+    "defaultSettingsHeading": {
+        "message": "Standardeinstellungen"
+    },
+    "defaultIntervalLabel": {
+        "message": "Standard-Neuladeintervall"
+    },
+    "unitSeconds": {
+        "message": "Sekunden"
+    },
+    "minimumIntervalHint": {
+        "message": "Minimum: $SECONDS$ Sekunden",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "Das Mindestintervall beträgt $SECONDS$ Sekunden",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Dieses Intervall wird standardmäßig verwendet, wenn neue Tabs zum automatischen Neuladen hinzugefügt werden."
+    },
+    "appearanceHeading": {
+        "message": "Darstellung"
+    },
+    "themeLabel": {
+        "message": "Design"
+    },
+    "themeSystem": {
+        "message": "Systemstandard"
+    },
+    "themeLight": {
+        "message": "Hell"
+    },
+    "themeDark": {
+        "message": "Dunkel"
+    },
+    "themeHelp": {
+        "message": "Gilt für das Popup und diese Einstellungsseite. „Systemstandard“ folgt der Einstellung deines Betriebssystems."
+    },
+    "notificationsHeading": {
+        "message": "Benachrichtigungen"
+    },
+    "notifyOnStopLabel": {
+        "message": "Benachrichtige mich, wenn ein Tab stoppt"
+    },
+    "notifyOnStopHelp": {
+        "message": "Zeigt eine Desktop-Benachrichtigung, wenn eine „Stoppen, wenn“-Bedingung erreicht ist. Klicke darauf, um zum Tab zu springen. Dein Browser fragt beim ersten Mal nach der Berechtigung."
+    },
+    "notifyPermissionDenied": {
+        "message": "Die Benachrichtigungsberechtigung wurde nicht erteilt"
+    },
+    "shortcutHeading": {
+        "message": "Tastenkürzel"
+    },
+    "shortcutDescription": {
+        "message": "startet das automatische Neuladen des aktuellen Tabs oder pausiert/setzt es fort, wenn er bereits in der Liste ist."
+    },
+    "shortcutNotSet": {
+        "message": "Nicht festgelegt"
+    },
+    "shortcutChangeHint": {
+        "message": "So änderst du es:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Erweiterungs-Tastenkürzel verwalten"
+    },
+    "saveButton": {
+        "message": "Einstellungen speichern"
+    },
+    "saveSuccess": {
+        "message": "Einstellungen erfolgreich gespeichert!"
+    },
+    "saveError": {
+        "message": "Fehler beim Speichern der Einstellungen!"
+    },
+    "aboutHeading": {
+        "message": "Über Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Version:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Beschreibung:"
+    },
+    "aboutDescription": {
+        "message": "Lädt ausgewählte Browser-Tabs in anpassbaren Intervallen automatisch neu"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Funktionen:"
+    },
+    "aboutFeatures": {
+        "message": "Intervalle pro Tab, Pausieren/Fortsetzen, Stoppbedingungen, Benachrichtigungen, zufällige Intervalle, Tastenkürzel, Kontextmenü"
+    },
+    "madeWith": {
+        "message": "Mit ❤️ für mehr Produktivität im Browser gemacht"
+    }
+}

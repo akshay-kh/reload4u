@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Recarga cualquier pestaña con su propio temporizador, de 0,5 s a horas. Pausa, reanuda y detén al cambiar la página."
+    },
+    "commandToggleDescription": {
+        "message": "Empezar a recargar automáticamente la pestaña actual, o pausarla/reanudarla"
+    },
+    "popupTagline": {
+        "message": "Selecciona una pestaña para recargarla automáticamente."
+    },
+    "openSettings": {
+        "message": "⚙️ Ajustes"
+    },
+    "openSettingsTitle": {
+        "message": "Abrir ajustes"
+    },
+    "pauseAll": {
+        "message": "⏸ Pausar todo"
+    },
+    "resumeAll": {
+        "message": "▶ Reanudar todo"
+    },
+    "activeTabsHeading": {
+        "message": "Pestañas con recarga automática"
+    },
+    "pausedTabsHeading": {
+        "message": "Pestañas en pausa"
+    },
+    "selectThisTab": {
+        "message": "Seleccionar esta pestaña"
+    },
+    "stopAll": {
+        "message": "Detener toda la recarga automática"
+    },
+    "statusActive": {
+        "message": "Activa"
+    },
+    "statusPaused": {
+        "message": "En pausa"
+    },
+    "nextReloadIn": {
+        "message": "Próxima recarga en:"
+    },
+    "reloading": {
+        "message": "Recargando..."
+    },
+    "noTimer": {
+        "message": "Sin temporizador"
+    },
+    "reloadPaused": {
+        "message": "Recarga en pausa"
+    },
+    "everySeconds": {
+        "message": "cada $SECONDS$ s",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "cada $MIN$–$MAX$ s",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Los intervalos rápidos usan más CPU/red."
+    },
+    "reloadCount": {
+        "message": "$COUNT$ recargas",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ recargas",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Reanudar"
+    },
+    "pause": {
+        "message": "Pausar"
+    },
+    "remove": {
+        "message": "Quitar"
+    },
+    "intervalLabel": {
+        "message": "Intervalo (s):"
+    },
+    "stopWhen": {
+        "message": "Detener cuando:"
+    },
+    "stopNever": {
+        "message": "Nunca (solo manual)"
+    },
+    "stopAfterCount": {
+        "message": "Tras N recargas"
+    },
+    "stopTitleChanges": {
+        "message": "Cambia el título de la pestaña"
+    },
+    "stopContentChanges": {
+        "message": "Cambia el contenido de la página"
+    },
+    "stopTextAppears": {
+        "message": "Aparece un texto en la página"
+    },
+    "stopTextDisappears": {
+        "message": "Desaparece un texto de la página"
+    },
+    "stopTextPlaceholder": {
+        "message": "p. ej. En stock"
+    },
+    "moreOptions": {
+        "message": "Más opciones"
+    },
+    "optionHardReload": {
+        "message": "Recarga completa (omitir caché)"
+    },
+    "optionKeepScroll": {
+        "message": "Mantener la posición de desplazamiento"
+    },
+    "optionProtectTyping": {
+        "message": "No recargar mientras escribo en la página"
+    },
+    "optionRandomize": {
+        "message": "Aleatorio, hasta"
+    },
+    "unitSecShort": {
+        "message": "s"
+    },
+    "alertTabAdded": {
+        "message": "Pestaña añadida a la lista de recarga automática"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Esta pestaña ya está seleccionada para la recarga automática"
+    },
+    "alertAllRemoved": {
+        "message": "Todas las pestañas se han quitado de la recarga automática"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Detenida: alcanzó 1 recarga"
+    },
+    "stoppedCountOther": {
+        "message": "Detenida: alcanzó $COUNT$ recargas",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Detenida: cambió el título de la página"
+    },
+    "stoppedContentChanged": {
+        "message": "Detenida: cambió el contenido de la página"
+    },
+    "stoppedTextAppeared": {
+        "message": "Detenida: apareció «$TEXT$»",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Detenida: desapareció «$TEXT$»",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Haz clic para abrir la pestaña.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Recargar automáticamente cada $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Detener la recarga automática de esta pestaña"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ segundos",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 minuto"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ minutos",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Ajustes de Reload4U"
+    },
+    "settingsSubtitle": {
+        "message": "Configura tus preferencias de recarga automática"
+    },
+    "defaultSettingsHeading": {
+        "message": "Ajustes predeterminados"
+    },
+    "defaultIntervalLabel": {
+        "message": "Intervalo de recarga predeterminado"
+    },
+    "unitSeconds": {
+        "message": "segundos"
+    },
+    "minimumIntervalHint": {
+        "message": "Mínimo: $SECONDS$ segundos",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "El intervalo mínimo es de $SECONDS$ segundos",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Este intervalo se usará por defecto al añadir pestañas nuevas a la recarga automática."
+    },
+    "appearanceHeading": {
+        "message": "Apariencia"
+    },
+    "themeLabel": {
+        "message": "Tema"
+    },
+    "themeSystem": {
+        "message": "Predeterminado del sistema"
+    },
+    "themeLight": {
+        "message": "Claro"
+    },
+    "themeDark": {
+        "message": "Oscuro"
+    },
+    "themeHelp": {
+        "message": "Se aplica al popup y a esta página de ajustes. «Predeterminado del sistema» sigue la configuración de tu sistema operativo."
+    },
+    "notificationsHeading": {
+        "message": "Notificaciones"
+    },
+    "notifyOnStopLabel": {
+        "message": "Avisarme cuando una pestaña se detenga"
+    },
+    "notifyOnStopHelp": {
+        "message": "Muestra una notificación de escritorio cuando se cumple una condición de «Detener cuando». Haz clic en ella para ir a la pestaña. El navegador te pedirá permiso la primera vez."
+    },
+    "notifyPermissionDenied": {
+        "message": "No se concedió el permiso de notificaciones"
+    },
+    "shortcutHeading": {
+        "message": "Atajo de teclado"
+    },
+    "shortcutDescription": {
+        "message": "empieza a recargar automáticamente la pestaña actual, o la pausa/reanuda si ya está en la lista."
+    },
+    "shortcutNotSet": {
+        "message": "Sin asignar"
+    },
+    "shortcutChangeHint": {
+        "message": "Para cambiarlo:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Administrar atajos de extensiones"
+    },
+    "saveButton": {
+        "message": "Guardar ajustes"
+    },
+    "saveSuccess": {
+        "message": "¡Ajustes guardados correctamente!"
+    },
+    "saveError": {
+        "message": "¡Error al guardar los ajustes!"
+    },
+    "aboutHeading": {
+        "message": "Acerca de Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Versión:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Descripción:"
+    },
+    "aboutDescription": {
+        "message": "Recarga automáticamente las pestañas seleccionadas a intervalos personalizables"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Funciones:"
+    },
+    "aboutFeatures": {
+        "message": "Intervalos por pestaña, pausa/reanudación, condiciones de parada, notificaciones, intervalos aleatorios, atajo de teclado, menú contextual"
+    },
+    "madeWith": {
+        "message": "Hecho con ❤️ para mejorar la productividad en el navegador"
+    }
+}

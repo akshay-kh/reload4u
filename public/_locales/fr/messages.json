@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Rechargez chaque onglet avec son propre minuteur, de 0,5 s à des heures. Pause, reprise et arrêt si la page change."
+    },
+    "commandToggleDescription": {
+        "message": "Lancer le rechargement automatique de l'onglet actuel, ou le mettre en pause/le reprendre"
+    },
+    "popupTagline": {
+        "message": "Sélectionnez un onglet pour le recharger automatiquement."
+    },
+    "openSettings": {
+        "message": "⚙️ Paramètres"
+    },
+    "openSettingsTitle": {
+        "message": "Ouvrir les paramètres"
+    },
+    "pauseAll": {
+        "message": "⏸ Tout mettre en pause"
+    },
+    "resumeAll": {
+        "message": "▶ Tout reprendre"
+    },
+    "activeTabsHeading": {
+        "message": "Onglets en rechargement automatique"
+    },
+    "pausedTabsHeading": {
+        "message": "Onglets en pause"
+    },
+    "selectThisTab": {
+        "message": "Sélectionner cet onglet"
+    },
+    "stopAll": {
+        "message": "Arrêter tout rechargement automatique"
+    },
+    "statusActive": {
+        "message": "Actif"
+    },
+    "statusPaused": {
+        "message": "En pause"
+    },
+    "nextReloadIn": {
+        "message": "Prochain rechargement dans :"
+    },
+    "reloading": {
+        "message": "Rechargement..."
+    },
+    "noTimer": {
+        "message": "Aucun minuteur"
+    },
+    "reloadPaused": {
+        "message": "Rechargement en pause"
+    },
+    "everySeconds": {
+        "message": "toutes les $SECONDS$ s",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "toutes les $MIN$–$MAX$ s",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Les intervalles rapides consomment plus de CPU/réseau."
+    },
+    "reloadCount": {
+        "message": "$COUNT$ rechargements",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ rechargements",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Reprendre"
+    },
+    "pause": {
+        "message": "Pause"
+    },
+    "remove": {
+        "message": "Retirer"
+    },
+    "intervalLabel": {
+        "message": "Intervalle (s) :"
+    },
+    "stopWhen": {
+        "message": "Arrêter quand :"
+    },
+    "stopNever": {
+        "message": "Jamais (manuel uniquement)"
+    },
+    "stopAfterCount": {
+        "message": "Après N rechargements"
+    },
+    "stopTitleChanges": {
+        "message": "Le titre de l'onglet change"
+    },
+    "stopContentChanges": {
+        "message": "Le contenu de la page change"
+    },
+    "stopTextAppears": {
+        "message": "Un texte apparaît sur la page"
+    },
+    "stopTextDisappears": {
+        "message": "Un texte disparaît de la page"
+    },
+    "stopTextPlaceholder": {
+        "message": "ex. En stock"
+    },
+    "moreOptions": {
+        "message": "Plus d'options"
+    },
+    "optionHardReload": {
+        "message": "Rechargement forcé (ignorer le cache)"
+    },
+    "optionKeepScroll": {
+        "message": "Conserver la position de défilement"
+    },
+    "optionProtectTyping": {
+        "message": "Ne pas recharger pendant que je saisis du texte sur la page"
+    },
+    "optionRandomize": {
+        "message": "Aléatoire, jusqu'à"
+    },
+    "unitSecShort": {
+        "message": "s"
+    },
+    "alertTabAdded": {
+        "message": "Onglet ajouté à la liste de rechargement automatique"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Cet onglet est déjà sélectionné pour le rechargement automatique"
+    },
+    "alertAllRemoved": {
+        "message": "Tous les onglets ont été retirés du rechargement automatique"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Arrêté : 1 rechargement atteint"
+    },
+    "stoppedCountOther": {
+        "message": "Arrêté : $COUNT$ rechargements atteints",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Arrêté : le titre de la page a changé"
+    },
+    "stoppedContentChanged": {
+        "message": "Arrêté : le contenu de la page a changé"
+    },
+    "stoppedTextAppeared": {
+        "message": "Arrêté : « $TEXT$ » est apparu",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Arrêté : « $TEXT$ » a disparu",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U : $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Cliquez pour ouvrir l'onglet.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Rechargement automatique : $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Arrêter le rechargement automatique de cet onglet"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ secondes",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 minute"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ minutes",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Paramètres de Reload4U"
+    },
+    "settingsSubtitle": {
+        "message": "Configurez vos préférences de rechargement automatique"
+    },
+    "defaultSettingsHeading": {
+        "message": "Paramètres par défaut"
+    },
+    "defaultIntervalLabel": {
+        "message": "Intervalle de rechargement par défaut"
+    },
+    "unitSeconds": {
+        "message": "secondes"
+    },
+    "minimumIntervalHint": {
+        "message": "Minimum : $SECONDS$ secondes",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "L'intervalle minimum est de $SECONDS$ secondes",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Cet intervalle sera utilisé par défaut lors de l'ajout de nouveaux onglets au rechargement automatique."
+    },
+    "appearanceHeading": {
+        "message": "Apparence"
+    },
+    "themeLabel": {
+        "message": "Thème"
+    },
+    "themeSystem": {
+        "message": "Par défaut du système"
+    },
+    "themeLight": {
+        "message": "Clair"
+    },
+    "themeDark": {
+        "message": "Sombre"
+    },
+    "themeHelp": {
+        "message": "S'applique à la fenêtre contextuelle et à cette page de paramètres. « Par défaut du système » suit le réglage de votre système d'exploitation."
+    },
+    "notificationsHeading": {
+        "message": "Notifications"
+    },
+    "notifyOnStopLabel": {
+        "message": "Me prévenir lorsqu'un onglet s'arrête"
+    },
+    "notifyOnStopHelp": {
+        "message": "Affiche une notification de bureau lorsqu'une condition « Arrêter quand » est atteinte. Cliquez dessus pour aller à l'onglet. Votre navigateur demandera l'autorisation la première fois."
+    },
+    "notifyPermissionDenied": {
+        "message": "L'autorisation des notifications n'a pas été accordée"
+    },
+    "shortcutHeading": {
+        "message": "Raccourci clavier"
+    },
+    "shortcutDescription": {
+        "message": "lance le rechargement automatique de l'onglet actuel, ou le met en pause/le reprend s'il figure déjà dans la liste."
+    },
+    "shortcutNotSet": {
+        "message": "Non défini"
+    },
+    "shortcutChangeHint": {
+        "message": "Pour le modifier :"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Gérer les raccourcis des extensions"
+    },
+    "saveButton": {
+        "message": "Enregistrer les paramètres"
+    },
+    "saveSuccess": {
+        "message": "Paramètres enregistrés avec succès !"
+    },
+    "saveError": {
+        "message": "Erreur lors de l'enregistrement des paramètres !"
+    },
+    "aboutHeading": {
+        "message": "À propos de Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Version :"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Description :"
+    },
+    "aboutDescription": {
+        "message": "Recharge automatiquement les onglets sélectionnés à des intervalles personnalisables"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Fonctionnalités :"
+    },
+    "aboutFeatures": {
+        "message": "Intervalles par onglet, pause/reprise, conditions d'arrêt, notifications, intervalles aléatoires, raccourci clavier, menu contextuel"
+    },
+    "madeWith": {
+        "message": "Fait avec ❤️ pour une meilleure productivité dans le navigateur"
+    }
+}

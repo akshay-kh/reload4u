@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "किसी भी टैब को उसके अपने टाइमर से ऑटो-रीलोड करें, 0.5 सेकंड से घंटों तक। रोकें, फिर शुरू करें, पेज बदलने पर बंद करें।"
+    },
+    "commandToggleDescription": {
+        "message": "मौजूदा टैब का ऑटो-रीलोड शुरू करें, या उसे रोकें/फिर शुरू करें"
+    },
+    "popupTagline": {
+        "message": "ऑटो-रीलोड करने के लिए कोई टैब चुनें।"
+    },
+    "openSettings": {
+        "message": "⚙️ सेटिंग्स"
+    },
+    "openSettingsTitle": {
+        "message": "सेटिंग्स खोलें"
+    },
+    "pauseAll": {
+        "message": "⏸ सभी रोकें"
+    },
+    "resumeAll": {
+        "message": "▶ सभी फिर शुरू करें"
+    },
+    "activeTabsHeading": {
+        "message": "ऑटो-रीलोड वाले टैब"
+    },
+    "pausedTabsHeading": {
+        "message": "रोके गए टैब"
+    },
+    "selectThisTab": {
+        "message": "यह टैब चुनें"
+    },
+    "stopAll": {
+        "message": "सभी ऑटो-रीलोड बंद करें"
+    },
+    "statusActive": {
+        "message": "सक्रिय"
+    },
+    "statusPaused": {
+        "message": "रोका गया"
+    },
+    "nextReloadIn": {
+        "message": "अगला रीलोड:"
+    },
+    "reloading": {
+        "message": "रीलोड हो रहा है..."
+    },
+    "noTimer": {
+        "message": "कोई टाइमर नहीं"
+    },
+    "reloadPaused": {
+        "message": "रीलोड रोका गया"
+    },
+    "everySeconds": {
+        "message": "हर $SECONDS$ सेकंड",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "हर $MIN$–$MAX$ सेकंड",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ तेज़ अंतराल अधिक CPU/नेटवर्क इस्तेमाल करते हैं।"
+    },
+    "reloadCount": {
+        "message": "$COUNT$ बार रीलोड",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ बार रीलोड",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "फिर शुरू करें"
+    },
+    "pause": {
+        "message": "रोकें"
+    },
+    "remove": {
+        "message": "हटाएँ"
+    },
+    "intervalLabel": {
+        "message": "अंतराल (सेकंड):"
+    },
+    "stopWhen": {
+        "message": "बंद करें जब:"
+    },
+    "stopNever": {
+        "message": "कभी नहीं (केवल मैन्युअल)"
+    },
+    "stopAfterCount": {
+        "message": "N रीलोड के बाद"
+    },
+    "stopTitleChanges": {
+        "message": "टैब का शीर्षक बदले"
+    },
+    "stopContentChanges": {
+        "message": "पेज की सामग्री बदले"
+    },
+    "stopTextAppears": {
+        "message": "पेज पर टेक्स्ट दिखे"
+    },
+    "stopTextDisappears": {
+        "message": "पेज से टेक्स्ट गायब हो जाए"
+    },
+    "stopTextPlaceholder": {
+        "message": "जैसे: स्टॉक में है"
+    },
+    "moreOptions": {
+        "message": "और विकल्प"
+    },
+    "optionHardReload": {
+        "message": "हार्ड रीलोड (कैश छोड़ें)"
+    },
+    "optionKeepScroll": {
+        "message": "स्क्रॉल स्थिति बनाए रखें"
+    },
+    "optionProtectTyping": {
+        "message": "पेज पर टाइप करते समय रीलोड न करें"
+    },
+    "optionRandomize": {
+        "message": "रैंडम, अधिकतम"
+    },
+    "unitSecShort": {
+        "message": "सेकंड"
+    },
+    "alertTabAdded": {
+        "message": "टैब ऑटो-रीलोड सूची में जोड़ा गया"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "यह टैब पहले से ऑटो-रीलोड के लिए चुना गया है"
+    },
+    "alertAllRemoved": {
+        "message": "सभी टैब ऑटो-रीलोड से हटा दिए गए"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "बंद: 1 रीलोड पूरा हुआ"
+    },
+    "stoppedCountOther": {
+        "message": "बंद: $COUNT$ रीलोड पूरे हुए",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "बंद: पेज का शीर्षक बदल गया"
+    },
+    "stoppedContentChanged": {
+        "message": "बंद: पेज की सामग्री बदल गई"
+    },
+    "stoppedTextAppeared": {
+        "message": "बंद: “$TEXT$” दिखाई दिया",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "बंद: “$TEXT$” गायब हो गया",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$। टैब खोलने के लिए क्लिक करें।",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "ऑटो-रीलोड: हर $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "इस टैब का ऑटो-रीलोड बंद करें"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ सेकंड",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 मिनट"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ मिनट",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Reload4U सेटिंग्स"
+    },
+    "settingsSubtitle": {
+        "message": "अपनी ऑटो-रीलोड प्राथमिकताएँ सेट करें"
+    },
+    "defaultSettingsHeading": {
+        "message": "डिफ़ॉल्ट सेटिंग्स"
+    },
+    "defaultIntervalLabel": {
+        "message": "डिफ़ॉल्ट रीलोड अंतराल"
+    },
+    "unitSeconds": {
+        "message": "सेकंड"
+    },
+    "minimumIntervalHint": {
+        "message": "न्यूनतम: $SECONDS$ सेकंड",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "न्यूनतम अंतराल $SECONDS$ सेकंड है",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "ऑटो-रीलोड में नए टैब जोड़ते समय यही अंतराल डिफ़ॉल्ट के रूप में इस्तेमाल होगा।"
+    },
+    "appearanceHeading": {
+        "message": "दिखावट"
+    },
+    "themeLabel": {
+        "message": "थीम"
+    },
+    "themeSystem": {
+        "message": "सिस्टम डिफ़ॉल्ट"
+    },
+    "themeLight": {
+        "message": "लाइट"
+    },
+    "themeDark": {
+        "message": "डार्क"
+    },
+    "themeHelp": {
+        "message": "यह पॉपअप और इस सेटिंग्स पेज पर लागू होता है। “सिस्टम डिफ़ॉल्ट” आपके OS की सेटिंग का पालन करता है।"
+    },
+    "notificationsHeading": {
+        "message": "सूचनाएँ"
+    },
+    "notifyOnStopLabel": {
+        "message": "टैब बंद होने पर मुझे सूचित करें"
+    },
+    "notifyOnStopHelp": {
+        "message": "जब “बंद करें जब” की कोई शर्त पूरी होती है तो डेस्कटॉप सूचना दिखाता है। टैब पर जाने के लिए उस पर क्लिक करें। पहली बार आपका ब्राउज़र अनुमति माँगेगा।"
+    },
+    "notifyPermissionDenied": {
+        "message": "सूचना की अनुमति नहीं दी गई"
+    },
+    "shortcutHeading": {
+        "message": "कीबोर्ड शॉर्टकट"
+    },
+    "shortcutDescription": {
+        "message": "मौजूदा टैब का ऑटो-रीलोड शुरू करता है, या सूची में पहले से होने पर उसे रोकता/फिर शुरू करता है।"
+    },
+    "shortcutNotSet": {
+        "message": "सेट नहीं है"
+    },
+    "shortcutChangeHint": {
+        "message": "बदलने के लिए:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → एक्सटेंशन शॉर्टकट प्रबंधित करें"
+    },
+    "saveButton": {
+        "message": "सेटिंग्स सहेजें"
+    },
+    "saveSuccess": {
+        "message": "सेटिंग्स सफलतापूर्वक सहेजी गईं!"
+    },
+    "saveError": {
+        "message": "सेटिंग्स सहेजने में त्रुटि!"
+    },
+    "aboutHeading": {
+        "message": "Reload4U के बारे में"
+    },
+    "aboutVersion": {
+        "message": "संस्करण:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "विवरण:"
+    },
+    "aboutDescription": {
+        "message": "चुने गए ब्राउज़र टैब को अपनी पसंद के अंतराल पर ऑटो-रीलोड करें"
+    },
+    "aboutFeaturesLabel": {
+        "message": "सुविधाएँ:"
+    },
+    "aboutFeatures": {
+        "message": "प्रति-टैब अंतराल, रोकना/फिर शुरू करना, बंद करने की शर्तें, सूचनाएँ, रैंडम अंतराल, कीबोर्ड शॉर्टकट, राइट-क्लिक मेनू"
+    },
+    "madeWith": {
+        "message": "बेहतर ब्राउज़र उत्पादकता के लिए ❤️ से बनाया गया"
+    }
+}

@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "任意のタブを個別のタイマーで自動再読み込み。0.5秒から数時間まで。一時停止・再開、ページ変更時の自動停止にも対応。"
+    },
+    "commandToggleDescription": {
+        "message": "現在のタブの自動再読み込みを開始、または一時停止/再開"
+    },
+    "popupTagline": {
+        "message": "自動再読み込みするタブを選択してください。"
+    },
+    "openSettings": {
+        "message": "⚙️ 設定"
+    },
+    "openSettingsTitle": {
+        "message": "設定を開く"
+    },
+    "pauseAll": {
+        "message": "⏸ すべて一時停止"
+    },
+    "resumeAll": {
+        "message": "▶ すべて再開"
+    },
+    "activeTabsHeading": {
+        "message": "自動再読み込み中のタブ"
+    },
+    "pausedTabsHeading": {
+        "message": "一時停止中のタブ"
+    },
+    "selectThisTab": {
+        "message": "このタブを選択"
+    },
+    "stopAll": {
+        "message": "すべての自動再読み込みを停止"
+    },
+    "statusActive": {
+        "message": "動作中"
+    },
+    "statusPaused": {
+        "message": "一時停止中"
+    },
+    "nextReloadIn": {
+        "message": "次の再読み込みまで:"
+    },
+    "reloading": {
+        "message": "再読み込み中..."
+    },
+    "noTimer": {
+        "message": "タイマーなし"
+    },
+    "reloadPaused": {
+        "message": "再読み込みは一時停止中"
+    },
+    "everySeconds": {
+        "message": "$SECONDS$秒ごと",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "$MIN$～$MAX$秒ごと",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ 短い間隔はCPU/ネットワークの負荷が高くなります。"
+    },
+    "reloadCount": {
+        "message": "$COUNT$回再読み込み",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$回再読み込み",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "再開"
+    },
+    "pause": {
+        "message": "一時停止"
+    },
+    "remove": {
+        "message": "削除"
+    },
+    "intervalLabel": {
+        "message": "間隔（秒）:"
+    },
+    "stopWhen": {
+        "message": "停止条件:"
+    },
+    "stopNever": {
+        "message": "なし（手動のみ）"
+    },
+    "stopAfterCount": {
+        "message": "N回再読み込み後"
+    },
+    "stopTitleChanges": {
+        "message": "タブのタイトルが変わったとき"
+    },
+    "stopContentChanges": {
+        "message": "ページの内容が変わったとき"
+    },
+    "stopTextAppears": {
+        "message": "ページにテキストが表示されたとき"
+    },
+    "stopTextDisappears": {
+        "message": "ページからテキストが消えたとき"
+    },
+    "stopTextPlaceholder": {
+        "message": "例: 在庫あり"
+    },
+    "moreOptions": {
+        "message": "その他のオプション"
+    },
+    "optionHardReload": {
+        "message": "強制再読み込み（キャッシュを無視）"
+    },
+    "optionKeepScroll": {
+        "message": "スクロール位置を保持"
+    },
+    "optionProtectTyping": {
+        "message": "ページで入力中は再読み込みしない"
+    },
+    "optionRandomize": {
+        "message": "ランダム、最大"
+    },
+    "unitSecShort": {
+        "message": "秒"
+    },
+    "alertTabAdded": {
+        "message": "タブを自動再読み込みリストに追加しました"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "このタブはすでに自動再読み込みに選択されています"
+    },
+    "alertAllRemoved": {
+        "message": "すべてのタブを自動再読み込みから削除しました"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "停止: 1回の再読み込みに到達"
+    },
+    "stoppedCountOther": {
+        "message": "停止: $COUNT$回の再読み込みに到達",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "停止: ページのタイトルが変わりました"
+    },
+    "stoppedContentChanged": {
+        "message": "停止: ページの内容が変わりました"
+    },
+    "stoppedTextAppeared": {
+        "message": "停止: 「$TEXT$」が表示されました",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "停止: 「$TEXT$」が消えました",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$。クリックしてタブを開きます。",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "$DURATION$ごとに自動再読み込み",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "このタブの自動再読み込みを停止"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$秒",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1分"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$分",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Reload4U 設定"
+    },
+    "settingsSubtitle": {
+        "message": "自動再読み込みの設定を行います"
+    },
+    "defaultSettingsHeading": {
+        "message": "既定の設定"
+    },
+    "defaultIntervalLabel": {
+        "message": "既定の再読み込み間隔"
+    },
+    "unitSeconds": {
+        "message": "秒"
+    },
+    "minimumIntervalHint": {
+        "message": "最小: $SECONDS$秒",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "最小間隔は$SECONDS$秒です",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "自動再読み込みに新しいタブを追加するときの既定の間隔です。"
+    },
+    "appearanceHeading": {
+        "message": "外観"
+    },
+    "themeLabel": {
+        "message": "テーマ"
+    },
+    "themeSystem": {
+        "message": "システムの設定に従う"
+    },
+    "themeLight": {
+        "message": "ライト"
+    },
+    "themeDark": {
+        "message": "ダーク"
+    },
+    "themeHelp": {
+        "message": "ポップアップとこの設定ページに適用されます。「システムの設定に従う」はOSの設定に従います。"
+    },
+    "notificationsHeading": {
+        "message": "通知"
+    },
+    "notifyOnStopLabel": {
+        "message": "タブが停止したら通知する"
+    },
+    "notifyOnStopHelp": {
+        "message": "「停止条件」に達したときにデスクトップ通知を表示します。クリックするとそのタブに移動します。初回はブラウザーが許可を求めます。"
+    },
+    "notifyPermissionDenied": {
+        "message": "通知の許可が得られませんでした"
+    },
+    "shortcutHeading": {
+        "message": "キーボードショートカット"
+    },
+    "shortcutDescription": {
+        "message": "現在のタブの自動再読み込みを開始します。すでにリストにある場合は一時停止/再開します。"
+    },
+    "shortcutNotSet": {
+        "message": "未設定"
+    },
+    "shortcutChangeHint": {
+        "message": "変更方法:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → 拡張機能のショートカットを管理"
+    },
+    "saveButton": {
+        "message": "設定を保存"
+    },
+    "saveSuccess": {
+        "message": "設定を保存しました。"
+    },
+    "saveError": {
+        "message": "設定の保存中にエラーが発生しました。"
+    },
+    "aboutHeading": {
+        "message": "Reload4U について"
+    },
+    "aboutVersion": {
+        "message": "バージョン:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "説明:"
+    },
+    "aboutDescription": {
+        "message": "選択したブラウザータブを任意の間隔で自動再読み込みします"
+    },
+    "aboutFeaturesLabel": {
+        "message": "機能:"
+    },
+    "aboutFeatures": {
+        "message": "タブごとの間隔、一時停止/再開、停止条件、通知、ランダム間隔、キーボードショートカット、右クリックメニュー"
+    },
+    "madeWith": {
+        "message": "ブラウザーの生産性向上のために ❤️ を込めて作りました"
+    }
+}

@@ -1,0 +1,152 @@
+{
+    "extName": { "message": "Reload 4 U", "description": "Extension name (Chrome Web Store / browser UI)" },
+    "extDescription": { "message": "Auto-reload any tab on its own timer, from every 0.5 seconds to hours. Pause, resume, and stop automatically when the page changes.", "description": "Extension description. Chrome Web Store limit: 132 characters." },
+    "commandToggleDescription": { "message": "Start auto-reloading the current tab, or pause/resume it", "description": "Description of the keyboard shortcut, shown on the browser's shortcuts page" },
+
+    "popupTagline": { "message": "Select a tab to auto-reload it." },
+    "openSettings": { "message": "⚙️ Settings", "description": "Button in the popup that opens the settings page" },
+    "openSettingsTitle": { "message": "Open Settings", "description": "Tooltip of the Settings button" },
+    "pauseAll": { "message": "⏸ Pause All" },
+    "resumeAll": { "message": "▶ Resume All" },
+    "activeTabsHeading": { "message": "Active Auto-Reload Tabs" },
+    "pausedTabsHeading": { "message": "Paused Tabs" },
+    "selectThisTab": { "message": "Select This Tab" },
+    "stopAll": { "message": "Stop All Auto-Reload" },
+
+    "statusActive": { "message": "Active" },
+    "statusPaused": { "message": "Paused" },
+    "nextReloadIn": { "message": "Next reload in:" },
+    "reloading": { "message": "Reloading..." },
+    "noTimer": { "message": "No timer" },
+    "reloadPaused": { "message": "Reload paused" },
+    "everySeconds": {
+        "message": "every $SECONDS$s",
+        "description": "Static label for very short intervals. SECONDS is a number such as 1 or 0.5.",
+        "placeholders": { "seconds": { "content": "$1", "example": "1" } }
+    },
+    "everySecondsRange": {
+        "message": "every $MIN$–$MAX$s",
+        "description": "Static label for a randomized interval. MIN and MAX are numbers of seconds.",
+        "placeholders": { "min": { "content": "$1", "example": "1" }, "max": { "content": "$2", "example": "3" } }
+    },
+    "fastIntervalWarning": { "message": "⚠ Fast intervals use more CPU/network." },
+    "reloadCount": {
+        "message": "$COUNT$ reloads",
+        "description": "How many times the tab has been reloaded so far",
+        "placeholders": { "count": { "content": "$1", "example": "3" } }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ reloads",
+        "description": "Reloads so far out of the limit set by the 'After N reloads' stop condition",
+        "placeholders": { "count": { "content": "$1", "example": "3" }, "limit": { "content": "$2", "example": "5" } }
+    },
+    "resume": { "message": "Resume" },
+    "pause": { "message": "Pause" },
+    "remove": { "message": "Remove" },
+    "intervalLabel": { "message": "Interval (sec):" },
+    "stopWhen": { "message": "Stop when:" },
+    "stopNever": { "message": "Never (manual only)" },
+    "stopAfterCount": { "message": "After N reloads" },
+    "stopTitleChanges": { "message": "Tab title changes" },
+    "stopContentChanges": { "message": "Page content changes" },
+    "stopTextAppears": { "message": "Text appears on page" },
+    "stopTextDisappears": { "message": "Text disappears from page" },
+    "stopTextPlaceholder": { "message": "e.g. In stock", "description": "Placeholder of the text box for the word to watch for on the page" },
+    "moreOptions": { "message": "More options" },
+    "optionHardReload": { "message": "Hard reload (skip cache)" },
+    "optionKeepScroll": { "message": "Keep scroll position" },
+    "optionProtectTyping": { "message": "Don't reload while I'm typing on the page" },
+    "optionRandomize": { "message": "Randomize, up to", "description": "Followed by a number box and the word for 'sec'" },
+    "unitSecShort": { "message": "sec" },
+    "alertTabAdded": { "message": "Tab added to auto-reload list" },
+    "alertTabAlreadyAdded": { "message": "This tab is already selected for auto-reload" },
+    "alertAllRemoved": { "message": "All tabs removed from auto-reload" },
+
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "description": "Shown on a paused tab that stopped by itself. REASON is one of the 'stopped...' messages.",
+        "placeholders": { "reason": { "content": "$1" } }
+    },
+    "stoppedCountOne": { "message": "Stopped: reached 1 reload" },
+    "stoppedCountOther": {
+        "message": "Stopped: reached $COUNT$ reloads",
+        "placeholders": { "count": { "content": "$1", "example": "5" } }
+    },
+    "stoppedTitleChanged": { "message": "Stopped: page title changed" },
+    "stoppedContentChanged": { "message": "Stopped: page content changed" },
+    "stoppedTextAppeared": {
+        "message": "Stopped: \"$TEXT$\" appeared",
+        "description": "TEXT is the word or phrase the user asked to watch for",
+        "placeholders": { "text": { "content": "$1", "example": "In stock" } }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Stopped: \"$TEXT$\" disappeared",
+        "placeholders": { "text": { "content": "$1", "example": "Sold out" } }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "description": "Desktop notification title. TAB is the title of the tab that stopped.",
+        "placeholders": { "tab": { "content": "$1", "example": "Tickets" } }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Click to open the tab.",
+        "description": "Desktop notification body. REASON is one of the 'stopped...' messages.",
+        "placeholders": { "reason": { "content": "$1" } }
+    },
+
+    "menuAutoReloadEvery": {
+        "message": "Auto-reload every $DURATION$",
+        "description": "Right-click menu item. DURATION is one of the 'duration...' messages.",
+        "placeholders": { "duration": { "content": "$1", "example": "30 seconds" } }
+    },
+    "menuStop": { "message": "Stop auto-reloading this tab" },
+    "durationSeconds": {
+        "message": "$COUNT$ seconds",
+        "placeholders": { "count": { "content": "$1", "example": "30" } }
+    },
+    "durationMinuteOne": { "message": "1 minute" },
+    "durationMinutes": {
+        "message": "$COUNT$ minutes",
+        "placeholders": { "count": { "content": "$1", "example": "5" } }
+    },
+
+    "settingsTitle": { "message": "Reload4U Settings" },
+    "settingsSubtitle": { "message": "Configure your auto-reload preferences" },
+    "defaultSettingsHeading": { "message": "Default Settings" },
+    "defaultIntervalLabel": { "message": "Default Reload Interval" },
+    "unitSeconds": { "message": "seconds" },
+    "minimumIntervalHint": {
+        "message": "Minimum: $SECONDS$ seconds",
+        "placeholders": { "seconds": { "content": "$1", "example": "0.5" } }
+    },
+    "minimumIntervalError": {
+        "message": "Minimum interval is $SECONDS$ seconds",
+        "placeholders": { "seconds": { "content": "$1", "example": "0.5" } }
+    },
+    "defaultIntervalHelp": { "message": "This interval will be used as the default when adding new tabs to auto-reload." },
+    "appearanceHeading": { "message": "Appearance" },
+    "themeLabel": { "message": "Theme" },
+    "themeSystem": { "message": "System default" },
+    "themeLight": { "message": "Light" },
+    "themeDark": { "message": "Dark" },
+    "themeHelp": { "message": "Applies to the popup and this settings page. \"System default\" follows your OS setting." },
+    "notificationsHeading": { "message": "Notifications" },
+    "notifyOnStopLabel": { "message": "Notify me when a tab stops" },
+    "notifyOnStopHelp": { "message": "Shows a desktop notification when a \"Stop when\" condition is reached. Click it to jump to the tab. Your browser will ask for permission the first time." },
+    "notifyPermissionDenied": { "message": "Notification permission was not granted" },
+    "shortcutHeading": { "message": "Keyboard Shortcut" },
+    "shortcutDescription": { "message": "starts auto-reloading the current tab, or pauses/resumes it if it's already on the list.", "description": "Sentence that follows the key combination, e.g. 'Alt+Shift+U starts auto-reloading ...'" },
+    "shortcutNotSet": { "message": "Not set" },
+    "shortcutChangeHint": { "message": "To change it:" },
+    "shortcutChangeFirefox": { "message": "⚙️ → Manage Extension Shortcuts", "description": "Menu path in Firefox's add-ons page, following 'about:addons →'" },
+    "saveButton": { "message": "Save Settings" },
+    "saveSuccess": { "message": "Settings saved successfully!" },
+    "saveError": { "message": "Error saving settings!" },
+    "aboutHeading": { "message": "About Reload4U" },
+    "aboutVersion": { "message": "Version:" },
+    "aboutDescriptionLabel": { "message": "Description:" },
+    "aboutDescription": { "message": "Auto-reload selected browser tabs at customizable intervals" },
+    "aboutFeaturesLabel": { "message": "Features:" },
+    "aboutFeatures": { "message": "Per-tab intervals, pause/resume, stop conditions, notifications, random intervals, keyboard shortcut, right-click menu" },
+    "madeWith": { "message": "Made with ❤️ for better browser productivity" }
+}

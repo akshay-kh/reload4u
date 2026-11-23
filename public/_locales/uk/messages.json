@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Автоперезавантаження будь-якої вкладки за власним таймером: від 0,5 с до годин. Пауза, відновлення й зупинка при зміні сторінки."
+    },
+    "commandToggleDescription": {
+        "message": "Запустити автоперезавантаження поточної вкладки або призупинити/відновити його"
+    },
+    "popupTagline": {
+        "message": "Виберіть вкладку для автоперезавантаження."
+    },
+    "openSettings": {
+        "message": "⚙️ Налаштування"
+    },
+    "openSettingsTitle": {
+        "message": "Відкрити налаштування"
+    },
+    "pauseAll": {
+        "message": "⏸ Призупинити все"
+    },
+    "resumeAll": {
+        "message": "▶ Відновити все"
+    },
+    "activeTabsHeading": {
+        "message": "Вкладки з автоперезавантаженням"
+    },
+    "pausedTabsHeading": {
+        "message": "Призупинені вкладки"
+    },
+    "selectThisTab": {
+        "message": "Вибрати цю вкладку"
+    },
+    "stopAll": {
+        "message": "Зупинити все автоперезавантаження"
+    },
+    "statusActive": {
+        "message": "Активна"
+    },
+    "statusPaused": {
+        "message": "Призупинена"
+    },
+    "nextReloadIn": {
+        "message": "Наступне перезавантаження через:"
+    },
+    "reloading": {
+        "message": "Перезавантаження..."
+    },
+    "noTimer": {
+        "message": "Немає таймера"
+    },
+    "reloadPaused": {
+        "message": "Перезавантаження призупинено"
+    },
+    "everySeconds": {
+        "message": "кожні $SECONDS$ с",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "кожні $MIN$–$MAX$ с",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Короткі інтервали збільшують навантаження на процесор і мережу."
+    },
+    "reloadCount": {
+        "message": "Перезавантажень: $COUNT$",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "Перезавантажень: $COUNT$/$LIMIT$",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Відновити"
+    },
+    "pause": {
+        "message": "Пауза"
+    },
+    "remove": {
+        "message": "Видалити"
+    },
+    "intervalLabel": {
+        "message": "Інтервал (с):"
+    },
+    "stopWhen": {
+        "message": "Зупинити, коли:"
+    },
+    "stopNever": {
+        "message": "Ніколи (лише вручну)"
+    },
+    "stopAfterCount": {
+        "message": "Після N перезавантажень"
+    },
+    "stopTitleChanges": {
+        "message": "Зміниться заголовок вкладки"
+    },
+    "stopContentChanges": {
+        "message": "Зміниться вміст сторінки"
+    },
+    "stopTextAppears": {
+        "message": "На сторінці з’явиться текст"
+    },
+    "stopTextDisappears": {
+        "message": "Текст зникне зі сторінки"
+    },
+    "stopTextPlaceholder": {
+        "message": "напр. В наявності"
+    },
+    "moreOptions": {
+        "message": "Додатково"
+    },
+    "optionHardReload": {
+        "message": "Жорстке перезавантаження (без кешу)"
+    },
+    "optionKeepScroll": {
+        "message": "Зберігати позицію прокручування"
+    },
+    "optionProtectTyping": {
+        "message": "Не перезавантажувати, поки я вводжу текст на сторінці"
+    },
+    "optionRandomize": {
+        "message": "Випадково, до"
+    },
+    "unitSecShort": {
+        "message": "с"
+    },
+    "alertTabAdded": {
+        "message": "Вкладку додано до списку автоперезавантаження"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Цю вкладку вже вибрано для автоперезавантаження"
+    },
+    "alertAllRemoved": {
+        "message": "Усі вкладки видалено з автоперезавантаження"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Зупинено: виконано 1 перезавантаження"
+    },
+    "stoppedCountOther": {
+        "message": "Зупинено: виконано перезавантажень — $COUNT$",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Зупинено: змінився заголовок сторінки"
+    },
+    "stoppedContentChanged": {
+        "message": "Зупинено: змінився вміст сторінки"
+    },
+    "stoppedTextAppeared": {
+        "message": "Зупинено: з’явився текст «$TEXT$»",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Зупинено: зник текст «$TEXT$»",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Натисніть, щоб відкрити вкладку.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Автоперезавантаження: $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Зупинити автоперезавантаження цієї вкладки"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ с",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 хв"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ хв",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Налаштування Reload4U"
+    },
+    "settingsSubtitle": {
+        "message": "Налаштуйте параметри автоперезавантаження"
+    },
+    "defaultSettingsHeading": {
+        "message": "Типові налаштування"
+    },
+    "defaultIntervalLabel": {
+        "message": "Типовий інтервал перезавантаження"
+    },
+    "unitSeconds": {
+        "message": "секунд"
+    },
+    "minimumIntervalHint": {
+        "message": "Мінімум: $SECONDS$ с",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "Мінімальний інтервал — $SECONDS$ с",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Цей інтервал використовується за замовчуванням під час додавання нових вкладок до автоперезавантаження."
+    },
+    "appearanceHeading": {
+        "message": "Вигляд"
+    },
+    "themeLabel": {
+        "message": "Тема"
+    },
+    "themeSystem": {
+        "message": "Як у системі"
+    },
+    "themeLight": {
+        "message": "Світла"
+    },
+    "themeDark": {
+        "message": "Темна"
+    },
+    "themeHelp": {
+        "message": "Застосовується до спливного вікна та цієї сторінки налаштувань. «Як у системі» відповідає налаштуванню вашої ОС."
+    },
+    "notificationsHeading": {
+        "message": "Сповіщення"
+    },
+    "notifyOnStopLabel": {
+        "message": "Сповіщати, коли вкладка зупиниться"
+    },
+    "notifyOnStopHelp": {
+        "message": "Показує сповіщення на робочому столі, коли виконано умову «Зупинити, коли». Натисніть на нього, щоб перейти до вкладки. Уперше браузер запитає дозвіл."
+    },
+    "notifyPermissionDenied": {
+        "message": "Дозвіл на сповіщення не надано"
+    },
+    "shortcutHeading": {
+        "message": "Комбінація клавіш"
+    },
+    "shortcutDescription": {
+        "message": "запускає автоперезавантаження поточної вкладки або призупиняє/відновлює його, якщо вона вже в списку."
+    },
+    "shortcutNotSet": {
+        "message": "Не задано"
+    },
+    "shortcutChangeHint": {
+        "message": "Щоб змінити:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Керування швидкими клавішами розширень"
+    },
+    "saveButton": {
+        "message": "Зберегти налаштування"
+    },
+    "saveSuccess": {
+        "message": "Налаштування успішно збережено!"
+    },
+    "saveError": {
+        "message": "Помилка під час збереження налаштувань!"
+    },
+    "aboutHeading": {
+        "message": "Про Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Версія:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Опис:"
+    },
+    "aboutDescription": {
+        "message": "Автоматично перезавантажує вибрані вкладки браузера через настроювані інтервали"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Можливості:"
+    },
+    "aboutFeatures": {
+        "message": "Інтервали для кожної вкладки, пауза/відновлення, умови зупинки, сповіщення, випадкові інтервали, комбінація клавіш, контекстне меню"
+    },
+    "madeWith": {
+        "message": "Зроблено з ❤️ для продуктивної роботи в браузері"
+    }
+}

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Reload4U Settings</title>
+    <title data-i18n="settingsTitle">Reload4U Settings</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="assets/style.css" />
@@ -14,8 +14,8 @@
         <div class="flex items-center gap-3 mb-4">
           <img src="../public/images/icon48.png" alt="Reload4U" class="w-12 h-12">
           <div>
-            <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400">Reload4U Settings</h1>
-            <p class="text-gray-600 dark:text-gray-400">Configure your auto-reload preferences</p>
+            <h1 class="text-3xl font-bold text-blue-600 dark:text-blue-400" data-i18n="settingsTitle">Reload4U Settings</h1>
+            <p class="text-gray-600 dark:text-gray-400" data-i18n="settingsSubtitle">Configure your auto-reload preferences</p>
           </div>
         </div>
       </div>
@@ -25,11 +25,11 @@
         
         <!-- Default Interval Setting -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Default Settings</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4" data-i18n="defaultSettingsHeading">Default Settings</h2>
           
           <div class="space-y-4">
             <div>
-              <label for="defaultInterval" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label for="defaultInterval" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-i18n="defaultIntervalLabel">
                 Default Reload Interval
               </label>
               <div class="flex items-center gap-3">
@@ -41,12 +41,12 @@
                   value="30"
                   class="w-32 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md text-center focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                <span class="text-sm text-gray-700 dark:text-gray-300">seconds</span>
+                <span class="text-sm text-gray-700 dark:text-gray-300" data-i18n="unitSeconds">seconds</span>
                 <span id="minIntervalHint" class="text-sm text-gray-500 dark:text-gray-400">
                   Minimum: 0.5 seconds
                 </span>
               </div>
-              <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+              <p class="mt-2 text-xs text-gray-500 dark:text-gray-400" data-i18n="defaultIntervalHelp">
                 This interval will be used as the default when adding new tabs to auto-reload.
               </p>
             </div>
@@ -55,32 +55,32 @@
 
         <!-- Appearance Setting -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Appearance</h2>
-          <label for="themeSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4" data-i18n="appearanceHeading">Appearance</h2>
+          <label for="themeSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2" data-i18n="themeLabel">
             Theme
           </label>
           <select
             id="themeSelect"
             class="w-48 px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
           >
-            <option value="system">System default</option>
-            <option value="light">Light</option>
-            <option value="dark">Dark</option>
+            <option value="system" data-i18n="themeSystem">System default</option>
+            <option value="light" data-i18n="themeLight">Light</option>
+            <option value="dark" data-i18n="themeDark">Dark</option>
           </select>
-          <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          <p class="mt-2 text-xs text-gray-500 dark:text-gray-400" data-i18n="themeHelp">
             Applies to the popup and this settings page. "System default" follows your OS setting.
           </p>
         </div>
 
         <!-- Notifications Setting -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Notifications</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4" data-i18n="notificationsHeading">Notifications</h2>
           <div class="flex items-center justify-between gap-4">
             <div>
-              <label for="notifyOnStop" class="text-sm font-medium text-gray-700 dark:text-gray-300">
+              <label for="notifyOnStop" class="text-sm font-medium text-gray-700 dark:text-gray-300" data-i18n="notifyOnStopLabel">
                 Notify me when a tab stops
               </label>
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+              <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="notifyOnStopHelp">
                 Shows a desktop notification when a "Stop when" condition is reached. Click it to jump to the tab.
                 Your browser will ask for permission the first time.
               </p>
@@ -95,25 +95,27 @@
 
         <!-- Keyboard Shortcut -->
         <div class="mb-6">
-          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">Keyboard Shortcut</h2>
+          <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4" data-i18n="shortcutHeading">Keyboard Shortcut</h2>
           <p class="text-sm text-gray-700 dark:text-gray-300">
             <kbd id="shortcutKeys" class="px-2 py-0.5 text-xs font-mono bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded">Alt+Shift+U</kbd>
-            starts auto-reloading the current tab, or pauses/resumes it if it's already on the list.
+            <span data-i18n="shortcutDescription">starts auto-reloading the current tab, or pauses/resumes it if it's already on the list.</span>
           </p>
-          <p id="shortcutHint" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-            To change it, open <code>chrome://extensions/shortcuts</code> in Chrome, or
-            <code>about:addons</code> → ⚙️ → Manage Extension Shortcuts in Firefox.
-          </p>
+          <div id="shortcutHint" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+            <p data-i18n="shortcutChangeHint">To change it:</p>
+            <ul class="mt-1 space-y-0.5">
+              <li>Chrome: <code>chrome://extensions/shortcuts</code></li>
+              <li>Firefox: <code>about:addons</code> → <span data-i18n="shortcutChangeFirefox">⚙️ → Manage Extension Shortcuts</span></li>
+            </ul>
+          </div>
         </div>
 
         <!-- Save Button -->
         <div class="flex justify-between items-center pt-4 border-t border-gray-200 dark:border-gray-700">
-          <div id="saveStatus" class="text-sm text-green-600 dark:text-green-400 hidden">
-            ✅ Settings saved successfully!
-          </div>
+          <div id="saveStatus" class="text-sm text-green-600 dark:text-green-400 hidden"></div>
           <button 
             id="saveSettings" 
             class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow transition-colors"
+            data-i18n="saveButton"
           >
             Save Settings
           </button>
@@ -122,15 +124,15 @@
 
       <!-- About Section -->
       <div class="mt-8 bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4">About Reload4U</h2>
+        <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-4" data-i18n="aboutHeading">About Reload4U</h2>
         <div class="space-y-2 text-sm text-gray-600 dark:text-gray-400">
-          <p><strong>Version:</strong> <span id="extVersion"></span></p>
-          <p><strong>Description:</strong> Auto-reload selected browser tabs at customizable intervals</p>
-          <p><strong>Features:</strong> Per-tab intervals, pause/resume, stop conditions, notifications, random intervals, keyboard shortcut, right-click menu</p>
+          <p><strong data-i18n="aboutVersion">Version:</strong> <span id="extVersion"></span></p>
+          <p><strong data-i18n="aboutDescriptionLabel">Description:</strong> <span data-i18n="aboutDescription">Auto-reload selected browser tabs at customizable intervals</span></p>
+          <p><strong data-i18n="aboutFeaturesLabel">Features:</strong> <span data-i18n="aboutFeatures">Per-tab intervals, pause/resume, stop conditions, notifications, random intervals, keyboard shortcut, right-click menu</span></p>
         </div>
         
         <div class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
-          <p class="text-xs text-gray-500 dark:text-gray-400">
+          <p class="text-xs text-gray-500 dark:text-gray-400" data-i18n="madeWith">
             Made with ❤️ for better browser productivity
           </p>
         </div>

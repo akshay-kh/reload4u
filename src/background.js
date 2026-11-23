@@ -48,6 +48,15 @@ const MENU_INTERVALS = [10, 30, 60, 300]; // seconds
 const DEFAULT_INTERVAL = 30;     // seconds – used when settings have none
 const ALARM_MIN_INTERVAL = 30;   // seconds – chrome.alarms floor (0.5 min)
 const MIN_INTERVAL = 0.5;        // seconds – absolute floor
+// Localized string lookup (strings: public/_locales/<lang>/messages.json). Defined
+// here rather than imported from i18n.js: the worker is a classic script, and a
+// shared import would make the bundler emit a chunk it can't load.
+function t(key, substitutions) {
+    const args = substitutions === undefined ? undefined
+        : (Array.isArray(substitutions) ? substitutions : [substitutions]).map(String);
+    return chrome.i18n.getMessage(key, args) || key;
+}
+
 // Firefox clamps chrome.alarms periods to 1 minute, so 30–59s intervals
 // would silently fire every 60s. Detected via the extension URL scheme
 // rather than the user agent, which can be spoofed/overridden.
@@ -275,7 +284,7 @@ function captureContentHash(tabId, forceBaseline) {
                 return;
             }
             if (hash !== baseline) {
-                triggerStop(tabId, 'Stopped: page content changed');
+                triggerStop(tabId, t('stoppedContentChanged'));
             }
         });
     }).catch(function () {
@@ -300,9 +309,9 @@ function checkPageText(tabId, stopAfter) {
         const found = results && results[0] && results[0].result;
         if (typeof found !== 'boolean') return;
         if (stopAfter.when === 'disappears' && !found) {
-            triggerStop(tabId, `Stopped: "${stopAfter.text}" disappeared`);
+            triggerStop(tabId, t('stoppedTextDisappeared', stopAfter.text));
         } else if (stopAfter.when !== 'disappears' && found) {
-            triggerStop(tabId, `Stopped: "${stopAfter.text}" appeared`);
+            triggerStop(tabId, t('stoppedTextAppeared', stopAfter.text));
         }
     }).catch(function () {
         // Not injectable — leave the tab watched but skip this check.
@@ -556,8 +565,8 @@ function notifyStop(tabId, reason) {
             chrome.notifications.create(NOTIFICATION_PREFIX + tabId, {
                 type: 'basic',
                 iconUrl: chrome.runtime.getURL('images/icon128.png'),
-                title: 'Reload4U: ' + (tab.title || tab.url),
-                message: reason + '. Click to open the tab.'
+                title: t('notificationTitle', tab.title || tab.url),
+                message: t('notificationMessage', reason)
             });
         });
     });
@@ -595,7 +604,7 @@ function trackReloadCount(tabId) {
             chrome.storage.session.set({ [key]: { count: count } });
 
             if (tabData.stopAfter && tabData.stopAfter.type === 'count' && count >= tabData.stopAfter.limit) {
-                triggerStop(tabId, `Stopped: reached ${tabData.stopAfter.limit} reload${tabData.stopAfter.limit === 1 ? '' : 's'}`);
+                triggerStop(tabId, tabData.stopAfter.limit === 1 ? t('stoppedCountOne') : t('stoppedCountOther', tabData.stopAfter.limit));
             }
         });
     });
@@ -620,7 +629,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo) {
                     return;
                 }
                 if (changeInfo.title !== baseline) {
-                    triggerStop(idStr, 'Stopped: page title changed');
+                    triggerStop(idStr, t('stoppedTitleChanged'));
                 }
             });
         });
@@ -743,9 +752,9 @@ if (chrome.commands) {
 // ---------- context menu ----------
 
 function formatSeconds(seconds) {
-    if (seconds < 60) return seconds + ' seconds';
+    if (seconds < 60) return t('durationSeconds', seconds);
     const minutes = seconds / 60;
-    return minutes + (minutes === 1 ? ' minute' : ' minutes');
+    return minutes === 1 ? t('durationMinuteOne') : t('durationMinutes', minutes);
 }
 
 function createContextMenus() {
@@ -758,7 +767,7 @@ function createContextMenus() {
             chrome.contextMenus.create({
                 id: MENU_INTERVAL_PREFIX + seconds,
                 parentId: MENU_PARENT,
-                title: 'Auto-reload every ' + formatSeconds(seconds),
+                title: t('menuAutoReloadEvery', formatSeconds(seconds)),
                 contexts: contexts
             });
         });
@@ -771,7 +780,7 @@ function createContextMenus() {
         chrome.contextMenus.create({
             id: MENU_STOP,
             parentId: MENU_PARENT,
-            title: 'Stop auto-reloading this tab',
+            title: t('menuStop'),
             contexts: contexts
         });
     });

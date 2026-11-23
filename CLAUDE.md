@@ -21,6 +21,8 @@ Repo: https://github.com/akshay-kh/reload4u · Current version: 1.1.0
 src/background.js   MV3 service worker — owns ALL reload scheduling
 src/popup.html/.js  Toolbar popup: add/remove/pause tabs, per-tab interval, countdown
 src/settings.html/.js  Options page: default interval
+src/i18n.js         `t(key, subs)` + `applyI18n()` over chrome.i18n (popup + settings; background has its own inlined `t`)
+public/_locales/    <lang>/messages.json — `en` is the source of truth; manifest uses __MSG_*__
 src/theme.js        Shared theme applier (imported by popup + settings): toggles `dark` on <html>
 src/style.css       Tailwind entry (darkMode: 'class')
 public/manifest.json  Copied to dist/ as-is (publicDir)
@@ -68,6 +70,13 @@ vite.config.ts      root = src, outDir = ../dist, entries: popup, settings, back
   worker hydrate. No new permission — `action` was already declared.
 
 ## Conventions
+- i18n: no hard-coded user-visible strings. Add the key to `public/_locales/en/messages.json` (with a
+  `description`; numbers/text go through `placeholders`), then use `data-i18n`/`data-i18n-title`/
+  `data-i18n-placeholder` in HTML or `t('key', subs)` in JS. Add the key to every other locale
+  (`tests/unit/i18n.test.js` enforces identical keys/placeholders and a 132-char `extDescription`).
+  No plural support in chrome.i18n → use separate `...One`/`...Other` messages. `background.js` must
+  NOT import `i18n.js` (classic-script worker; the bundler would emit a shared chunk). `stoppedReason`
+  is stored already localized (in the locale active when the tab stopped).
 - Tab IDs are strings as storage keys; `parseInt` only when calling `chrome.tabs.*`.
 - Alarm names: `reloadTab_<tabId>`; keepalive alarm: `reload4u_keepalive`.
 - Dark mode: every color utility needs a `dark:` counterpart (incl. classNames built in popup.js).

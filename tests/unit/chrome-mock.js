@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+
 // Minimal in-memory fake of the chrome.* APIs used by the extension. Callbacks
 // and onChanged events are delivered asynchronously (microtasks), like the
 // real APIs, so tests must `await flush()` after triggering anything.
@@ -20,6 +23,28 @@ function createEvent() {
 
 const clone = function (v) { return v === undefined ? undefined : JSON.parse(JSON.stringify(v)); };
 const later = function (fn) { Promise.resolve().then(fn); };
+
+// chrome.i18n backed by the real English catalog, with the same $1/$NAME$
+// placeholder substitution as the browser, so tests assert shipped strings.
+const MESSAGES = JSON.parse(readFileSync(
+    resolve(process.cwd(), 'public/_locales/en/messages.json'), 'utf8')); // vitest runs from the repo root
+
+function getMessage(key, substitutions) {
+    if (key === '@@ui_locale') return 'en';
+    const entry = MESSAGES[key];
+    if (!entry) return '';
+    const subs = substitutions === undefined ? [] : [].concat(substitutions);
+    const placeholders = {};
+    Object.keys(entry.placeholders || {}).forEach(function (name) {
+        placeholders[name.toLowerCase()] = entry.placeholders[name].content;
+    });
+    return entry.message.replace(/\$([A-Za-z0-9_@]+)\$/g, function (whole, name) {
+        const content = placeholders[name.toLowerCase()];
+        return content === undefined ? whole : content.replace(/\$(\d)/g, function (m, n) {
+            return subs[n - 1] === undefined ? '' : subs[n - 1];
+        });
+    });
+}
 
 function createStorageArea(name, onChanged) {
     const data = {};
@@ -92,6 +117,9 @@ export function createChromeMock(options) {
             onInstalled: createEvent(),
             onStartup: createEvent(),
             openOptionsPage: function () {}
+        },
+        i18n: {
+            getMessage: getMessage
         },
         storage: {
             onChanged: storageOnChanged,

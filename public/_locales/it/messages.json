@@ -1,0 +1,371 @@
+{
+    "extName": {
+        "message": "Reload 4 U"
+    },
+    "extDescription": {
+        "message": "Ricarica automaticamente qualsiasi scheda con il suo timer, da 0,5 secondi a ore. Pausa, riprendi e ferma al cambio pagina."
+    },
+    "commandToggleDescription": {
+        "message": "Avvia la ricarica automatica della scheda corrente, oppure mettila in pausa/riprendila"
+    },
+    "popupTagline": {
+        "message": "Seleziona una scheda per ricaricarla automaticamente."
+    },
+    "openSettings": {
+        "message": "⚙️ Impostazioni"
+    },
+    "openSettingsTitle": {
+        "message": "Apri le impostazioni"
+    },
+    "pauseAll": {
+        "message": "⏸ Metti tutto in pausa"
+    },
+    "resumeAll": {
+        "message": "▶ Riprendi tutto"
+    },
+    "activeTabsHeading": {
+        "message": "Schede con ricarica automatica"
+    },
+    "pausedTabsHeading": {
+        "message": "Schede in pausa"
+    },
+    "selectThisTab": {
+        "message": "Seleziona questa scheda"
+    },
+    "stopAll": {
+        "message": "Ferma tutte le ricariche automatiche"
+    },
+    "statusActive": {
+        "message": "Attiva"
+    },
+    "statusPaused": {
+        "message": "In pausa"
+    },
+    "nextReloadIn": {
+        "message": "Prossima ricarica tra:"
+    },
+    "reloading": {
+        "message": "Ricaricamento..."
+    },
+    "noTimer": {
+        "message": "Nessun timer"
+    },
+    "reloadPaused": {
+        "message": "Ricarica in pausa"
+    },
+    "everySeconds": {
+        "message": "ogni $SECONDS$ s",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "1"
+            }
+        }
+    },
+    "everySecondsRange": {
+        "message": "ogni $MIN$–$MAX$ s",
+        "placeholders": {
+            "min": {
+                "content": "$1",
+                "example": "1"
+            },
+            "max": {
+                "content": "$2",
+                "example": "3"
+            }
+        }
+    },
+    "fastIntervalWarning": {
+        "message": "⚠ Gli intervalli brevi usano più CPU/rete."
+    },
+    "reloadCount": {
+        "message": "$COUNT$ ricariche",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            }
+        }
+    },
+    "reloadCountOfLimit": {
+        "message": "$COUNT$/$LIMIT$ ricariche",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "3"
+            },
+            "limit": {
+                "content": "$2",
+                "example": "5"
+            }
+        }
+    },
+    "resume": {
+        "message": "Riprendi"
+    },
+    "pause": {
+        "message": "Pausa"
+    },
+    "remove": {
+        "message": "Rimuovi"
+    },
+    "intervalLabel": {
+        "message": "Intervallo (s):"
+    },
+    "stopWhen": {
+        "message": "Ferma quando:"
+    },
+    "stopNever": {
+        "message": "Mai (solo manuale)"
+    },
+    "stopAfterCount": {
+        "message": "Dopo N ricariche"
+    },
+    "stopTitleChanges": {
+        "message": "Il titolo della scheda cambia"
+    },
+    "stopContentChanges": {
+        "message": "Il contenuto della pagina cambia"
+    },
+    "stopTextAppears": {
+        "message": "Un testo compare nella pagina"
+    },
+    "stopTextDisappears": {
+        "message": "Un testo scompare dalla pagina"
+    },
+    "stopTextPlaceholder": {
+        "message": "es. Disponibile"
+    },
+    "moreOptions": {
+        "message": "Altre opzioni"
+    },
+    "optionHardReload": {
+        "message": "Ricarica forzata (ignora la cache)"
+    },
+    "optionKeepScroll": {
+        "message": "Mantieni la posizione di scorrimento"
+    },
+    "optionProtectTyping": {
+        "message": "Non ricaricare mentre scrivo nella pagina"
+    },
+    "optionRandomize": {
+        "message": "Casuale, fino a"
+    },
+    "unitSecShort": {
+        "message": "s"
+    },
+    "alertTabAdded": {
+        "message": "Scheda aggiunta all'elenco di ricarica automatica"
+    },
+    "alertTabAlreadyAdded": {
+        "message": "Questa scheda è già selezionata per la ricarica automatica"
+    },
+    "alertAllRemoved": {
+        "message": "Tutte le schede sono state rimosse dalla ricarica automatica"
+    },
+    "stoppedReason": {
+        "message": "⏹ $REASON$",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "stoppedCountOne": {
+        "message": "Fermata: raggiunta 1 ricarica"
+    },
+    "stoppedCountOther": {
+        "message": "Fermata: raggiunte $COUNT$ ricariche",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "stoppedTitleChanged": {
+        "message": "Fermata: il titolo della pagina è cambiato"
+    },
+    "stoppedContentChanged": {
+        "message": "Fermata: il contenuto della pagina è cambiato"
+    },
+    "stoppedTextAppeared": {
+        "message": "Fermata: «$TEXT$» è comparso",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "In stock"
+            }
+        }
+    },
+    "stoppedTextDisappeared": {
+        "message": "Fermata: «$TEXT$» è scomparso",
+        "placeholders": {
+            "text": {
+                "content": "$1",
+                "example": "Sold out"
+            }
+        }
+    },
+    "notificationTitle": {
+        "message": "Reload4U: $TAB$",
+        "placeholders": {
+            "tab": {
+                "content": "$1",
+                "example": "Tickets"
+            }
+        }
+    },
+    "notificationMessage": {
+        "message": "$REASON$. Fai clic per aprire la scheda.",
+        "placeholders": {
+            "reason": {
+                "content": "$1"
+            }
+        }
+    },
+    "menuAutoReloadEvery": {
+        "message": "Ricarica automatica: $DURATION$",
+        "placeholders": {
+            "duration": {
+                "content": "$1",
+                "example": "30 seconds"
+            }
+        }
+    },
+    "menuStop": {
+        "message": "Ferma la ricarica automatica di questa scheda"
+    },
+    "durationSeconds": {
+        "message": "$COUNT$ secondi",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "30"
+            }
+        }
+    },
+    "durationMinuteOne": {
+        "message": "1 minuto"
+    },
+    "durationMinutes": {
+        "message": "$COUNT$ minuti",
+        "placeholders": {
+            "count": {
+                "content": "$1",
+                "example": "5"
+            }
+        }
+    },
+    "settingsTitle": {
+        "message": "Impostazioni di Reload4U"
+    },
+    "settingsSubtitle": {
+        "message": "Configura le preferenze di ricarica automatica"
+    },
+    "defaultSettingsHeading": {
+        "message": "Impostazioni predefinite"
+    },
+    "defaultIntervalLabel": {
+        "message": "Intervallo di ricarica predefinito"
+    },
+    "unitSeconds": {
+        "message": "secondi"
+    },
+    "minimumIntervalHint": {
+        "message": "Minimo: $SECONDS$ secondi",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "minimumIntervalError": {
+        "message": "L'intervallo minimo è di $SECONDS$ secondi",
+        "placeholders": {
+            "seconds": {
+                "content": "$1",
+                "example": "0.5"
+            }
+        }
+    },
+    "defaultIntervalHelp": {
+        "message": "Questo intervallo verrà usato come predefinito quando aggiungi nuove schede alla ricarica automatica."
+    },
+    "appearanceHeading": {
+        "message": "Aspetto"
+    },
+    "themeLabel": {
+        "message": "Tema"
+    },
+    "themeSystem": {
+        "message": "Predefinito di sistema"
+    },
+    "themeLight": {
+        "message": "Chiaro"
+    },
+    "themeDark": {
+        "message": "Scuro"
+    },
+    "themeHelp": {
+        "message": "Si applica al popup e a questa pagina delle impostazioni. «Predefinito di sistema» segue l'impostazione del tuo sistema operativo."
+    },
+    "notificationsHeading": {
+        "message": "Notifiche"
+    },
+    "notifyOnStopLabel": {
+        "message": "Avvisami quando una scheda si ferma"
+    },
+    "notifyOnStopHelp": {
+        "message": "Mostra una notifica sul desktop quando viene raggiunta una condizione «Ferma quando». Fai clic per passare alla scheda. Il browser chiederà il permesso la prima volta."
+    },
+    "notifyPermissionDenied": {
+        "message": "Il permesso per le notifiche non è stato concesso"
+    },
+    "shortcutHeading": {
+        "message": "Scorciatoia da tastiera"
+    },
+    "shortcutDescription": {
+        "message": "avvia la ricarica automatica della scheda corrente, oppure la mette in pausa/la riprende se è già nell'elenco."
+    },
+    "shortcutNotSet": {
+        "message": "Non impostata"
+    },
+    "shortcutChangeHint": {
+        "message": "Per cambiarla:"
+    },
+    "shortcutChangeFirefox": {
+        "message": "⚙️ → Gestisci scorciatoie delle estensioni"
+    },
+    "saveButton": {
+        "message": "Salva impostazioni"
+    },
+    "saveSuccess": {
+        "message": "Impostazioni salvate correttamente!"
+    },
+    "saveError": {
+        "message": "Errore durante il salvataggio delle impostazioni!"
+    },
+    "aboutHeading": {
+        "message": "Informazioni su Reload4U"
+    },
+    "aboutVersion": {
+        "message": "Versione:"
+    },
+    "aboutDescriptionLabel": {
+        "message": "Descrizione:"
+    },
+    "aboutDescription": {
+        "message": "Ricarica automaticamente le schede selezionate del browser a intervalli personalizzabili"
+    },
+    "aboutFeaturesLabel": {
+        "message": "Funzioni:"
+    },
+    "aboutFeatures": {
+        "message": "Intervalli per scheda, pausa/ripresa, condizioni di arresto, notifiche, intervalli casuali, scorciatoia da tastiera, menu contestuale"
+    },
+    "madeWith": {
+        "message": "Fatto con ❤️ per una migliore produttività nel browser"
+    }
+}

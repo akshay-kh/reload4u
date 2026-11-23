@@ -1,10 +1,11 @@
 name: Tests
 
-# Runs on every commit pushed to any branch, on every PR, and on merges to
-# master (a merge is a push to master). The README badge tracks master.
+# Runs on every PR (each new commit pushed to a PR branch) and on pushes to
+# master (a merge is a push to master). Plain pushes to other branches don't
+# run, so a PR branch isn't tested twice. The README badge tracks master.
 on:
   push:
-    branches: ['**']
+    branches: [master]
   pull_request:
   workflow_dispatch:
 
